@@ -1,0 +1,29 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+model Rider {
+    id        Int       @id @default(autoincrement())
+    name      String
+    surname   String
+    nickname  String?
+    is_active Boolean
+    Session   Session[]
+}
+
+model Session {
+    id            Int       @id @default(autoincrement())
+    rider_id      Int
+    date          DateTime? @default(now()) @db.Date
+    lunch_orders  Int?
+    dinner_orders Float?
+    lunch_time    Int?
+    dinner_time   Float?
+    tip           Float?
+    rider         Rider     @relation(fields: [rider_id], references: [id])
+}
