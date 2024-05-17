@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "DISABLE_ESLINT_PLUGIN=true next build",
-    "start": "DISABLE_ESLINT_PLUGIN=true next start",
+    "build": "next build",
+    "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
@@ -32,7 +32,7 @@
     "clsx": "^2.1.1",
     "date-fns": "^3.6.0",
     "lucide-react": "^0.378.0",
-    "next": "14.2.3",
+    "next": "^14.2.3",
     "next-themes": "^0.3.0",
     "phosphor-icons": "^1.4.2",
     "phosphor-react": "^1.4.1",
