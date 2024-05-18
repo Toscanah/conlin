@@ -32,8 +32,6 @@ export default function StatsResult({
   const [result, setResult] = useState<StatsType[]>();
   const [loading, setLoading] = useState<boolean>(false);
 
-  
-
   useEffect(() => {
     setLoading(true);
     const body = isAllRiders

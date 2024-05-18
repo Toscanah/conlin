@@ -6,7 +6,7 @@ import { ReactNode, useCallback, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Plus, X } from "@phosphor-icons/react";
 import { StatsType } from "./StatsType";
-import GraphDialog from "./GraphDialog";
+import Graph from "./Graph";
 
 export default function Layout({ riders }: { riders: Rider[] }) {
   // state che tiene conto delle key A MANO, non facendo stats.length
@@ -47,8 +47,6 @@ export default function Layout({ riders }: { riders: Rider[] }) {
     ];
     setStats(newStats);
   };
-
-
 
   // per qualche motivo quando rimuovo un stat,
   //tutti gli stat davanti si resetttano graficamente ma i dati nel results rimangono correetti
@@ -134,7 +132,9 @@ export default function Layout({ riders }: { riders: Rider[] }) {
         </div> */}
       </div>
       <div className="flex justify-center items-center">
-        {results[0] && results[0]?.data.length !== 0 && <GraphDialog results={results} />}
+        {results[0] && results[0]?.data.length !== 0 && (
+          <Graph results={results} />
+        )}
       </div>
 
       {/* <div

@@ -17,8 +17,9 @@ import {
   mangoFusionPalette,
   cheerfulFiestaPalette,
 } from "@mui/x-charts/colorPalettes";
+import { useTheme } from "next-themes";
 
-export default function GraphDialog({
+export default function Graph({
   results,
 }: {
   results: { index: number; data: StatsType[] }[];
@@ -88,6 +89,8 @@ export default function GraphDialog({
     }, 0);
   }
 
+  const { theme, setTheme } = useTheme();
+
   return (
     <div className="flex flex-col items-center justify-center gap-4 w-[70vw]">
       {/* <Button onClick={handleOpen}>Genera grafico</Button> */}
@@ -95,7 +98,6 @@ export default function GraphDialog({
       {results && (
         <div className="max-w-none h-[500px] w-[120%] p-4 flex flex-wrap overflow-y-auto items-center justify-center">
           {results.map(({ index, data }) => {
-  
             const numGraphs = results.length;
             let widthClass = "h-[100%] ";
             widthClass += "w-[100%]";
@@ -118,7 +120,9 @@ export default function GraphDialog({
                 style={{ minHeight: "300px" }}
               >
                 <ThemeProvider
-                  theme={createTheme({ palette: { mode: "light" } })}
+                  theme={createTheme({
+                    palette: { mode: theme == "light" ? "light" : "dark" },
+                  })}
                 >
                   <BarChart
                     xAxis={[

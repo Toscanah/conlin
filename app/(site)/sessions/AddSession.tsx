@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/select";
 import { useState } from "react";
 import { Separator } from "@/components/ui/separator";
+import BarLoader from "react-spinners/BarLoader";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -42,6 +43,7 @@ export default function AddSession({
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
   const [session, setSession] = useState<FormValues>();
   const [total, setTotal] = useState<string | undefined>("");
+  const [loading, setLoading] = useState<boolean>(false);
   const form = getSessionForm();
 
   function onSubmit(values: FormValues) {
@@ -91,7 +93,8 @@ export default function AddSession({
   }
 
   function insertData() {
-    // TODO:: loading
+    setLoading(true);
+
     fetch("/api/sessions/add/", {
       method: "POST",
       body: JSON.stringify({
@@ -105,17 +108,17 @@ export default function AddSession({
         tip: session?.tip,
       }),
     }).then(() => {
+      setLoading(false);
       window.location.reload();
     });
   }
 
-  // TODO: il dialogo deve essere piu largo
-  // togliere gli zeri dai vai calcoli
-
   return (
     <div className="flex flex-col items-center w-full">
       <h1 className="text-4xl my-8">Aggiungi sessione</h1>
-
+      {loading && (
+        <BarLoader color="#00C0FF" loading={loading} width={"100%"} className="mb-4"/>
+      )}
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
