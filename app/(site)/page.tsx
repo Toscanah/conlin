@@ -4,6 +4,7 @@ import RidersDialog from "./RidersPageButton";
 import getRiders from "./sql/getRiders";
 import Layout from "./stats/Layout";
 import getActiveRiders from "./sql/getActiveRiders";
+import { ChangeTheme } from "./ChangeTheme";
 
 export default async function Home() {
   return (
@@ -21,14 +22,12 @@ export default async function Home() {
           </TabsTrigger>
         </TabsList>
         <TabsContent
-        
           value="register-session"
           className="flex justify-center items-center w-[550px]"
         >
           <AddSession riders={await getActiveRiders()} />
         </TabsContent>
         <TabsContent
-          
           value="stats"
           className="flex justify-center items-center w-[80vw] mt-0 gap-8"
         >
@@ -38,6 +37,10 @@ export default async function Home() {
 
       <div className="absolute text-4xl top-4 left-4">
         <RidersDialog />
+      </div>
+
+      <div className="absolute top-4 right-4 hover:cursor-pointer">
+        <ChangeTheme />
       </div>
     </div>
   );
