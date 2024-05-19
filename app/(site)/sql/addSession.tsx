@@ -3,8 +3,10 @@ import prisma from "./db";
 
 export default async function addSession(newSession: Session) {
   function storeCorrectDate(date: Date) {
+    const a = new Date(date);
+    console.log(a);
     return new Date(
-      Date.parse(date.toUTCString()) - date.getTimezoneOffset() * 60000
+      Date.parse(a.toUTCString()) - a.getTimezoneOffset() * 60000
     );
   }
   
@@ -15,7 +17,7 @@ export default async function addSession(newSession: Session) {
       dinner_orders: newSession.dinner_orders,
       lunch_time: newSession.lunch_time,
       dinner_time: newSession.dinner_time,
-      date: storeCorrectDate(new Date()),
+      date: storeCorrectDate(newSession?.date ?? new Date()),
       tip: newSession.tip
     },
   });

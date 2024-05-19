@@ -2,6 +2,8 @@ import getRiders from "../sql/getRiders";
 import BackHome from "./BackHome";
 import RidersTable from "./table/RidersTable";
 
+export const dynamic = "force-dynamic";
+
 export default async function ManageRiders() {
   const riders = await getRiders();
 

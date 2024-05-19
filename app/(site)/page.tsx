@@ -6,6 +6,8 @@ import Layout from "./stats/Layout";
 import getActiveRiders from "./sql/getActiveRiders";
 import { ChangeTheme } from "./ChangeTheme";
 
+export const dynamic = "force-dynamic";
+
 export default async function Home() {
   return (
     <div className="flex justify-center items-center">

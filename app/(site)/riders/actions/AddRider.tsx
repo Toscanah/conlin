@@ -165,9 +165,16 @@ export default function AddRider({
                         Sto aggiungendo
                       </Button>
                     ) : (
-                      <DialogClose asChild>
-                        <Button type="submit">Aggiungi</Button>
-                      </DialogClose>
+                      <div className="flex gap-2">
+                        <DialogClose asChild>
+                          <Button variant={"secondary"} onClick={() => setOpenDialog(false)}>
+                            Indietro
+                          </Button>
+                        </DialogClose>
+                        <DialogClose asChild>
+                          <Button type="submit">Aggiungi</Button>
+                        </DialogClose>
+                      </div>
                     )}
                   </DialogFooter>
                 </div>

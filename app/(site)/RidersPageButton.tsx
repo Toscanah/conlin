@@ -4,6 +4,8 @@ import { UsersThree  } from "@phosphor-icons/react";
 
 import Link from "next/link";
 
+export const revalidate = 0;
+
 export default function RidersDialog() {
   return (
     <Link href={"/riders"}>

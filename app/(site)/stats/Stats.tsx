@@ -33,6 +33,8 @@ import { useEffect, useState, memo } from "react";
 import StatsResult from "./StatsResult";
 import { StatsType } from "./StatsType";
 
+export const revalidate = false;
+
 export default function Stats({
   riders: receivedRiders,
   index,

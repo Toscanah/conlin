@@ -60,6 +60,7 @@ export const formSchema = z
     lunchTime: timeSchema,
     dinnerTime: timeSchema,
     tip: tipSchema,
+    date: z.date().optional(),
     errorMessage: z.string().optional(),
   })
   .refine(

@@ -1,5 +1,10 @@
 "use client";
 
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -10,7 +15,10 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { format } from "date-fns";
+import { Calendar as CalendarIcon } from "@phosphor-icons/react";
 import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
 import {
   Select,
   SelectContent,
@@ -21,6 +29,7 @@ import {
 import { useState } from "react";
 import { Separator } from "@/components/ui/separator";
 import BarLoader from "react-spinners/BarLoader";
+import { it } from "date-fns/locale";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -33,6 +42,9 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Rider } from "@prisma/client";
 import getSessionForm, { FormValues } from "../forms/getSessionForm";
+import { Calendar } from "@/components/ui/calendar";
+
+export const dynamic = "force-dynamic";
 
 export default function AddSession({
   riders: receivedRiders,
@@ -44,7 +56,8 @@ export default function AddSession({
   const [session, setSession] = useState<FormValues>();
   const [total, setTotal] = useState<string | undefined>("");
   const [loading, setLoading] = useState<boolean>(false);
-  const form = getSessionForm();
+  const [date, setDate] = useState<Date>();
+  const form: any = getSessionForm();
 
   function onSubmit(values: FormValues) {
     setConfirmDialogOpen(true);
@@ -106,10 +119,11 @@ export default function AddSession({
         lunch_time: session?.lunchTime,
         dinner_time: session?.dinnerTime,
         tip: session?.tip,
+        date: session?.date ?? new Date(),
       }),
     }).then(() => {
       setLoading(false);
-      window.location.reload();
+      //window.location.reload();
     });
   }
 
@@ -117,7 +131,12 @@ export default function AddSession({
     <div className="flex flex-col items-center w-full">
       <h1 className="text-4xl my-8">Aggiungi sessione</h1>
       {loading && (
-        <BarLoader color="#00C0FF" loading={loading} width={"100%"} className="mb-4"/>
+        <BarLoader
+          color="#00C0FF"
+          loading={loading}
+          width={"100%"}
+          className="mb-4"
+        />
       )}
       <Form {...form}>
         <form
@@ -247,20 +266,66 @@ export default function AddSession({
             <a>Lascia vuoto se non il ragazzo non ha lavorato</a>
           </FormDescription>
 
-          <FormField
-            control={form.control}
-            name="tip"
-            render={({ field }) => (
-              <FormItem className="w-full">
-                <FormLabel>Mancia</FormLabel>
-                <FormControl>
-                  <Input placeholder="Mancia" {...field} />
-                </FormControl>
+          <div className="w-[100%] flex justify-between">
+            <FormField
+              control={form.control}
+              name="tip"
+              render={({ field }) => (
+                <FormItem className="w-[250px]">
+                  <FormLabel>Mancia</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Mancia" {...field} />
+                  </FormControl>
 
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="date"
+              render={({ field }) => (
+                <FormItem className="w-[250px]">
+                  <FormLabel>Data</FormLabel>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant={"outline"}
+                          className={cn(
+                            "w-full pl-3 text-left font-normal",
+                            !field.value && "text-muted-foreground"
+                          )}
+                        >
+                          {field.value ? (
+                            format(field.value, "PPP", { locale: it })
+                          ) : (
+                            <span>Seleziona una data</span>
+                          )}
+                          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        locale={it}
+                        mode="single"
+                        selected={field.value}
+                        onSelect={field.onChange}
+                        disabled={(date) =>
+                          date > new Date() || date < new Date("1900-01-01")
+                        }
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
+
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
 
           <Button type="submit" name="submit" className="w-[200px]">
             Registra
@@ -286,10 +351,10 @@ export default function AddSession({
                   Riepilogo
                 </AlertDialogTitle>
 
-                <AlertDialogDescription className="text-xl text-black">
+                <AlertDialogDescription className="text-xl">
                   <Separator className="my-2" />
                   {session && (
-                    <div className="flex flex-col gap-1">
+                    <div className="flex flex-col gap-1 text-foreground">
                       <a>
                         Ragazzo: <strong>{session.rider.split("-")[1]}</strong>
                       </a>
@@ -332,6 +397,18 @@ export default function AddSession({
                           Mancia: <strong>{session.tip}€</strong>
                         </a>
                       )}
+
+                      {session?.date && (
+                        <a>
+                          Data:{" "}
+                          <strong>
+                            {session?.date
+                              ? session.date.toLocaleDateString()
+                              : new Date().toLocaleDateString()}
+                          </strong>
+                        </a>
+                      )}
+
                       <a>
                         Totale: <strong>{total}€</strong>
                       </a>

@@ -73,9 +73,9 @@ export default function Layout({ riders }: { riders: Rider[] }) {
   };
 
   useEffect(() => {
-    console.clear();
-    console.log("Componenti: ", stats);
-    console.log("Risultati: ", results);
+    // console.clear();
+    // console.log("Componenti: ", stats);
+    // console.log("Risultati: ", results);
   }, [stats, results]);
 
   return (

@@ -52,6 +52,7 @@ export default function EditRider({
         response.json().then((editedRider) => {
           onEdit(editedRider);
           setSubmitted(false);
+          window.location.reload();
         });
       }
     });
