@@ -60,6 +60,7 @@ export default function AddRider({
           onAddedRider(addedRider);
           setSubmitted(false);
           setOpenDialog(false);
+          window.location.reload();
         });
       }
     });
