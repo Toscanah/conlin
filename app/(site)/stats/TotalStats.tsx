@@ -12,26 +12,26 @@ export default function TotalStats({ totals }: { totals: TotalsType }) {
   return (
     <Table className="text-xl w-full">
       <TableHeader >
-        <TableRow className="flex justify-center w-full">
+        <TableRow className="flex justify-center w-full items-center">
           {totals.totalOrders !== undefined && (
-            <TableHead className="w-[20%]">Ordini totali eseguiti</TableHead>
+            <TableHead className="w-[20%] flex items-center">Ordini totali eseguiti</TableHead>
           )}
           {totals.totalHours !== undefined && (
-            <TableHead className="w-[20%]">Ore totali lavorate</TableHead>
+            <TableHead className="w-[20%] flex items-center">Ore totali lavorate</TableHead>
           )}
           {totals.totalPay !== undefined && (
-            <TableHead className="w-[20%]">Paghe totale date</TableHead>
+            <TableHead className="w-[20%] flex items-center">Paghe totale date</TableHead>
           )}
           {totals.totalTip !== undefined && (
-            <TableHead className="w-[20%]">Mance totali guadagnate</TableHead>
+            <TableHead className="w-[20%] flex items-center">Mance totali guadagnate</TableHead>
           )}
           {totals.totalMoney !== undefined && (
-            <TableHead className="w-[20%]">Incassi totali</TableHead>
+            <TableHead className="w-[20%] flex items-center">Incassi totali</TableHead>
           )}
         </TableRow>
       </TableHeader>
       <TableBody>
-        <TableRow className="flex justify-center w-full">
+        <TableRow className="flex justify-center w-full items-center">
           {totals.totalOrders !== undefined && (
             <TableCell className="w-[20%]">
               <strong>{totals.totalOrders}</strong>
