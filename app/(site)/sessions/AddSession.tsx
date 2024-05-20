@@ -227,7 +227,7 @@ export default function AddSession({
                         <Question size={16} />
                       </HoverCardTrigger>
                       <HoverCardContent>
-                        Lascia vuoto se le consegne sono 0
+                        Le ore posso anche essere "mezze", es: 4.3 ore
                       </HoverCardContent>
                     </HoverCard>
                   </FormLabel>
@@ -248,6 +248,14 @@ export default function AddSession({
                     <div>
                       Consegne a <strong>PRANZO</strong>
                     </div>
+                    <HoverCard>
+                      <HoverCardTrigger>
+                        <Question size={16} />
+                      </HoverCardTrigger>
+                      <HoverCardContent>
+                        Lascia vuoto se le consegne sono 0
+                      </HoverCardContent>
+                    </HoverCard>
                   </FormLabel>
                   <FormControl>
                     <Input {...field} type="number" />
@@ -268,14 +276,6 @@ export default function AddSession({
                     <div>
                       Ore a <strong>CENA</strong>
                     </div>
-                    <HoverCard>
-                      <HoverCardTrigger>
-                        <Question size={16} />
-                      </HoverCardTrigger>
-                      <HoverCardContent>
-                        Le ore posso anche essere "mezze", es: 4.3 ore
-                      </HoverCardContent>
-                    </HoverCard>
                   </FormLabel>
                   <FormControl>
                     <Input {...field} type="number" />
