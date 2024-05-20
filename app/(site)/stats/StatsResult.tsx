@@ -44,7 +44,6 @@ export default function StatsResult({
     }).then((response) => {
       if (response.ok) {
         response.json().then((result) => {
-          
           setResult(result);
           onResult(result, index);
           setLoading(false);

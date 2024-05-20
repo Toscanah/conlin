@@ -232,7 +232,7 @@ export default function AddSession({
                     </HoverCard>
                   </FormLabel>
                   <FormControl>
-                    <Input {...field} type="number" />
+                    <Input {...field} type="number" step={0.1} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -278,7 +278,7 @@ export default function AddSession({
                     </div>
                   </FormLabel>
                   <FormControl>
-                    <Input {...field} type="number" />
+                    <Input {...field} type="number" step={0.1} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -321,7 +321,7 @@ export default function AddSession({
                     Mancia
                   </FormLabel>
                   <FormControl>
-                    <Input {...field} type="number" />
+                    <Input {...field} type="number" step={0.1} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

@@ -81,7 +81,7 @@ export default function ChangeParams() {
                     Moltiplicatore <strong>PRANZO</strong>
                   </FormLabel>
                   <FormControl>
-                    <Input {...field} type="number" />
+                    <Input {...field} type="number" step={0.1}/>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -97,7 +97,7 @@ export default function ChangeParams() {
                     Moltiplicatore <strong>CENA</strong>
                   </FormLabel>
                   <FormControl>
-                    <Input {...field} type="number" />
+                    <Input {...field} type="number" step={0.1}/>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -113,7 +113,7 @@ export default function ChangeParams() {
                     Moltiplicatore <strong>ORDINI</strong>
                   </FormLabel>
                   <FormControl>
-                    <Input {...field} type="number" />
+                    <Input {...field} type="number" step={0.1}/>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
