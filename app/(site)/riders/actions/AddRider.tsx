@@ -72,7 +72,6 @@ export default function AddRider({
           setTimeout(() => {
             window.location.reload();
           }, 3000);
-          window.location.reload();
         });
       }
     });
