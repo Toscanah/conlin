@@ -2,6 +2,7 @@
 
 import BarLoader from "react-spinners/BarLoader";
 import { Loader2 } from "lucide-react";
+import { useToast } from "@/components/ui/use-toast";
 import {
   Dialog,
   DialogContent,
@@ -35,6 +36,7 @@ export default function EditRider({
 }) {
   const [submitted, setSubmitted] = useState(false);
   const form = getRiderForm(rider);
+  const { toast } = useToast();
 
   function onSubmit(values: FormValues) {
     setSubmitted(true);
@@ -52,7 +54,16 @@ export default function EditRider({
         response.json().then((editedRider) => {
           onEdit(editedRider);
           setSubmitted(false);
-          window.location.reload();
+
+          toast({
+            title: "Successo",
+            duration: 3000,
+            description: "Il ragazzo è stato modificato correttamente!",
+          });
+
+          setTimeout(() => {
+            window.location.reload();
+          }, 3000);
         });
       }
     });

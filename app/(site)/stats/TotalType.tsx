@@ -1,8 +1,7 @@
-export type StatsType = {
-  riderName: string;
+export type TotalsType = {
   totalOrders?: number;
   totalHours?: number;
   totalPay?: number;
-  totalTip?: number | undefined;
+  totalTip?: number;
   totalMoney?: number;
 };

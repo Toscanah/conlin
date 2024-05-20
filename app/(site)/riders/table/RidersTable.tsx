@@ -49,7 +49,11 @@ export default function RidersTable({
     setRiders((prevRiders) => [...prevRiders, newRider]);
   }
 
-  const columns = getColumns(onEdit);
+  function onDelete() {
+
+  }
+
+  const columns = getColumns(onEdit, onDelete);
   const table = getTable(
     riders,
     columns,

@@ -34,7 +34,7 @@ export default function Graph({
     }
 
     const formattedData: any[] = [];
-    result.forEach(({ totalOrders, totalHours, totalMoney, totalTip }) => {
+    result.forEach(({ totalOrders, totalHours, totalPay, totalTip, totalMoney }) => {
       const riderData: any = {};
 
       if (totalOrders !== undefined) {
@@ -43,11 +43,14 @@ export default function Graph({
       if (totalHours !== undefined) {
         riderData.hours = totalHours;
       }
-      if (totalMoney !== undefined) {
-        riderData.money = totalMoney;
+      if (totalPay !== undefined) {
+        riderData.pay = totalPay;
       }
       if (totalTip !== undefined) {
         riderData.tip = totalTip;
+      }
+      if (totalMoney !== undefined) {
+        riderData.total = totalMoney;
       }
 
       formattedData.push(riderData);
@@ -67,12 +70,16 @@ export default function Graph({
       series.push({ dataKey: "hours", label: "Ore" });
     }
 
-    if (data.some((item) => item.money !== undefined)) {
-      series.push({ dataKey: "money", label: "Incassi" });
+    if (data.some((item) => item.pay !== undefined)) {
+      series.push({ dataKey: "pay", label: "Paga" });
     }
 
     if (data.some((item) => item.tip !== undefined)) {
-      series.push({ dataKey: "tip", label: "Mancie" });
+      series.push({ dataKey: "tip", label: "Mancia" });
+    }
+
+    if (data.some((item) => item.total !== undefined)) {
+      series.push({ dataKey: "total", label: "Incasso" });
     }
 
     return series;
@@ -133,7 +140,7 @@ export default function Graph({
                     ]}
                     dataset={formatData(data)}
                     sx={{ width: "100%", height: "100%" }}
-                    colors={["#00C0FF", "#D81B9B", "#FF0000", "#0AFFD5"]}
+                    colors={["#00C0FF", "#D81B9B", "#FF0000", "#0AFFD5", "#B94BC6"]}
                     series={generateSeries(formatData(data))}
                     slotProps={{
                       noDataOverlay: { message: "TEST TEST TEST" },

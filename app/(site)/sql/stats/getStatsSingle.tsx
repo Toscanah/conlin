@@ -8,6 +8,7 @@ export default async function getStatsSingle(
   context: string
 ): Promise<StatsType[]> {
   const { from, to } = date;
+  console.log(date);
 
   const aggregatedOrders = await prisma.session.aggregate({
     where: {
@@ -32,6 +33,7 @@ export default async function getStatsSingle(
     },
     select: {
       nickname: true,
+      surname: true,
     },
   });
 
@@ -41,35 +43,42 @@ export default async function getStatsSingle(
   const totalHours =
     (aggregatedOrders._sum.lunch_time ?? 0) +
     (aggregatedOrders._sum.dinner_time ?? 0);
-  const totalMoney =
+  const totalPay =
     (aggregatedOrders._sum.lunch_time ?? 0) * 6 +
     (aggregatedOrders._sum.dinner_time ?? 0) * 7 +
     (aggregatedOrders._sum.lunch_orders ?? 0) +
     (aggregatedOrders._sum.dinner_orders ?? 0);
   const totalTip = aggregatedOrders._sum.tip ?? 0;
+  const totalMoney = totalPay + totalTip;
 
   let result: StatsType[];
+  let riderName: string = rider?.nickname ?? rider?.surname ?? "";
+
   switch (context) {
     case "orders":
-      result = [{ riderName: rider?.nickname ?? "", totalOrders }];
+      result = [{ riderName, totalOrders }];
       break;
     case "time":
-      result = [{ riderName: rider?.nickname ?? "", totalHours }];
+      result = [{ riderName, totalHours }];
       break;
-    case "money":
-      result = [{ riderName: rider?.nickname ?? "", totalMoney }];
+    case "pay":
+      result = [{ riderName, totalPay: parseFloat(totalPay.toFixed(2)) }];
       break;
     case "tip":
-      result = [{ riderName: rider?.nickname ?? "", totalTip }];
+      result = [{ riderName, totalTip }];
+      break;
+    case "total":
+      result = [{ riderName, totalMoney: parseFloat(totalMoney.toFixed(2)) }];
       break;
     case "all":
       result = [
         {
-          riderName: rider?.nickname ?? "",
+          riderName,
           totalOrders,
           totalHours,
-          totalMoney,
+          totalPay: parseFloat(totalPay.toFixed(2)),
           totalTip,
+          totalMoney: parseFloat(totalMoney.toFixed(2)),
         },
       ];
       break;
@@ -77,7 +86,5 @@ export default async function getStatsSingle(
       throw new Error("Invalid context provided");
   }
 
-  // se ha lavorato allora torna il risultato, 
-  //se non ha fatto un cazzo (magari anche ore, ma ordini no) allora vuoto
-  return (totalOrders == 0 && totalHours == 0) ? [] : result;
+  return totalOrders == 0 && totalHours == 0 ? [] : result;
 }

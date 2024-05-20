@@ -26,6 +26,7 @@ import getRiderForm, { FormValues } from "../../forms/getRiderForm";
 import { useState } from "react";
 import { UserPlus } from "@phosphor-icons/react";
 import { Loader2 } from "lucide-react";
+import { useToast } from "@/components/ui/use-toast";
 
 export default function AddRider({
   onAddedRider,
@@ -35,6 +36,7 @@ export default function AddRider({
   const [submitted, setSubmitted] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
   const form = getRiderForm(null);
+  const { toast } = useToast();
 
   function onSubmit(values: FormValues) {
     setSubmitted(true);
@@ -60,6 +62,16 @@ export default function AddRider({
           onAddedRider(addedRider);
           setSubmitted(false);
           setOpenDialog(false);
+
+          toast({
+            title: "Successo",
+            duration: 3000,
+            description: "Il ragazzo è stato aggiunto correttamente!",
+          });
+    
+          setTimeout(() => {
+            window.location.reload();
+          }, 3000);
         });
       }
     });

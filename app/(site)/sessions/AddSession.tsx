@@ -1,5 +1,6 @@
 "use client";
 
+import { useToast } from "@/components/ui/use-toast";
 import {
   Popover,
   PopoverContent,
@@ -19,6 +20,7 @@ import { format } from "date-fns";
 import { Calendar as CalendarIcon } from "@phosphor-icons/react";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import { Question } from "@phosphor-icons/react";
 import {
   Select,
   SelectContent,
@@ -26,7 +28,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useState } from "react";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
+import { useContext, useState } from "react";
 import { Separator } from "@/components/ui/separator";
 import BarLoader from "react-spinners/BarLoader";
 import { it } from "date-fns/locale";
@@ -43,6 +50,7 @@ import {
 import { Rider } from "@prisma/client";
 import getSessionForm, { FormValues } from "../forms/getSessionForm";
 import { Calendar } from "@/components/ui/calendar";
+import { MultiplierContext } from "../multipliers/MultipliersProvider";
 
 export const dynamic = "force-dynamic";
 
@@ -58,18 +66,26 @@ export default function AddSession({
   const [loading, setLoading] = useState<boolean>(false);
   const [date, setDate] = useState<Date>();
   const form: any = getSessionForm();
+  const { toast } = useToast();
+
+  const { lunchMultiplier, dinnerMultiplier, ordersMultiplier } =
+    useContext(MultiplierContext);
+
+  console.log(lunchMultiplier);
 
   function onSubmit(values: FormValues) {
     setConfirmDialogOpen(true);
     setSession(values);
 
     const lunch = values.lunchTime
-      ? 6 * values.lunchTime + (values.lunchOrders ?? 0)
+      ? lunchMultiplier * values.lunchTime +
+        ordersMultiplier * (values.lunchOrders ?? 0)
       : 0;
     const dinner = values.dinnerTime
-      ? 7 * values.dinnerTime + (values.dinnerOrders ?? 0)
+      ? dinnerMultiplier * values.dinnerTime +
+        ordersMultiplier * (values.dinnerOrders ?? 0)
       : 0;
-    const tip = values.tip ?? 0;
+    const tip = values.tip ?? undefined;
 
     let final = "";
     let total = 0;
@@ -88,7 +104,7 @@ export default function AddSession({
       total += dinner;
     }
 
-    if (tip > 0) {
+    if (tip && tip > 0) {
       if (final) {
         final += " + ";
       }
@@ -96,7 +112,7 @@ export default function AddSession({
       total += tip;
     }
 
-    if (final) {
+    if ((final && dinner > 0 && lunch > 0) || tip) {
       final += " = " + total.toFixed(2);
     } else {
       final = total.toFixed(2);
@@ -106,6 +122,7 @@ export default function AddSession({
   }
 
   function insertData() {
+    setConfirmDialogOpen(false);
     setLoading(true);
 
     fetch("/api/sessions/add/", {
@@ -123,7 +140,16 @@ export default function AddSession({
       }),
     }).then(() => {
       setLoading(false);
-      //window.location.reload();
+
+      toast({
+        title: "Successo",
+        duration: 3000,
+        description: "La sessione è stata registrata correttamente!",
+      });
+
+      setTimeout(() => {
+        window.location.reload();
+      }, 3000);
     });
   }
 
@@ -148,14 +174,16 @@ export default function AddSession({
             name="rider"
             render={({ field }) => (
               <FormItem className="w-[100%]">
-                <FormLabel>Ragazzo</FormLabel>
+                <FormLabel className="flex items-center justify-between h-[16px]">
+                  Ragazzo
+                </FormLabel>
                 <Select
                   onValueChange={field.onChange}
                   defaultValue={field.value}
                 >
                   <FormControl>
                     <SelectTrigger>
-                      <SelectValue placeholder="Seleziona un ragazzo" />
+                      <SelectValue placeholder="" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
@@ -184,21 +212,74 @@ export default function AddSession({
             )}
           />
 
-          <div className="w-[100%] flex justify-between">
+          <div className="w-[100%] flex justify-between items-center">
+            <FormField
+              control={form.control}
+              name="lunchTime"
+              render={({ field }) => (
+                <FormItem className="w-[260px]">
+                  <FormLabel className="flex items-center justify-between">
+                    <div>
+                      Ore a <strong>PRANZO</strong>
+                    </div>
+                    <HoverCard>
+                      <HoverCardTrigger>
+                        <Question size={16} />
+                      </HoverCardTrigger>
+                      <HoverCardContent>
+                        Lascia vuoto se le consegne sono 0
+                      </HoverCardContent>
+                    </HoverCard>
+                  </FormLabel>
+                  <FormControl>
+                    <Input {...field} type="number" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
             <FormField
               control={form.control}
               name="lunchOrders"
               render={({ field }) => (
-                <FormItem className="w-[250px]">
-                  <FormLabel>
-                    Consegne a <strong>PRANZO</strong>
+                <FormItem className="w-[260px]">
+                  <FormLabel className="flex items-center justify-between h-[16px]">
+                    <div>
+                      Consegne a <strong>PRANZO</strong>
+                    </div>
                   </FormLabel>
                   <FormControl>
-                    <Input placeholder="Numero di consegne PRANZO" {...field} />
+                    <Input {...field} type="number" />
                   </FormControl>
-                  <FormDescription className="">
-                    Lascia vuoto se 0 consegne
-                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+
+          <div className="w-[100%] flex justify-between">
+            <FormField
+              control={form.control}
+              name="dinnerTime"
+              render={({ field }) => (
+                <FormItem className="w-[260px]">
+                  <FormLabel className="flex items-center justify-between ">
+                    <div>
+                      Ore a <strong>CENA</strong>
+                    </div>
+                    <HoverCard>
+                      <HoverCardTrigger>
+                        <Question size={16} />
+                      </HoverCardTrigger>
+                      <HoverCardContent>
+                        Le ore posso anche essere "mezze", es: 4.3 ore
+                      </HoverCardContent>
+                    </HoverCard>
+                  </FormLabel>
+                  <FormControl>
+                    <Input {...field} type="number" />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
@@ -208,75 +289,40 @@ export default function AddSession({
               control={form.control}
               name="dinnerOrders"
               render={({ field }) => (
-                <FormItem className="w-[250px]">
-                  <FormLabel>
-                    Consegne a <strong>CENA</strong>
+                <FormItem className="w-[260px]">
+                  <FormLabel className="flex items-center justify-between h-[16px]">
+                    <div>
+                      Consegne a <strong>CENA</strong>
+                    </div>
                   </FormLabel>
                   <FormControl>
-                    <Input placeholder="Numero di consegne CENA" {...field} />
+                    <Input {...field} type="number" />
                   </FormControl>
-                  <FormDescription className="">
-                    Lascia vuoto se 0 consegne
-                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
             />
           </div>
 
-          <div className="w-[100%] flex justify-between">
-            <FormField
-              control={form.control}
-              name="lunchTime"
-              render={({ field }) => (
-                <FormItem className="w-[250px]">
-                  <FormLabel>
-                    Ore a <strong>PRANZO</strong>
-                  </FormLabel>
-                  <FormControl>
-                    <Input placeholder="Numero di ore PRANZO" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="dinnerTime"
-              render={({ field }) => (
-                <FormItem className="w-[250px]">
-                  <FormLabel>
-                    Ore a <strong>CENA</strong>
-                  </FormLabel>
-                  <FormControl>
-                    <Input placeholder="Numero di ore CENA" {...field} />
-                  </FormControl>
-
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-
-          <FormDescription className="text-center flex flex-col w-[450px]">
+          {/* <FormDescription className="text-center flex flex-col w-[450px]">
             <a>
               Puoi anche utilizzare ore non esatte, es: "2.5" (2 ore e mezza)
             </a>
             <a>Lascia vuoto se non il ragazzo non ha lavorato</a>
-          </FormDescription>
+          </FormDescription> */}
 
           <div className="w-[100%] flex justify-between">
             <FormField
               control={form.control}
               name="tip"
               render={({ field }) => (
-                <FormItem className="w-[250px]">
-                  <FormLabel>Mancia</FormLabel>
+                <FormItem className="w-[260px]">
+                  <FormLabel className="flex items-center justify-between h-[16px]">
+                    Mancia
+                  </FormLabel>
                   <FormControl>
-                    <Input placeholder="Mancia" {...field} />
+                    <Input {...field} type="number" />
                   </FormControl>
-
                   <FormMessage />
                 </FormItem>
               )}
@@ -286,8 +332,10 @@ export default function AddSession({
               control={form.control}
               name="date"
               render={({ field }) => (
-                <FormItem className="w-[250px]">
-                  <FormLabel>Data</FormLabel>
+                <FormItem className="w-[260px]">
+                  <FormLabel className="flex items-center justify-between h-[16px]">
+                    Data
+                  </FormLabel>
                   <Popover>
                     <PopoverTrigger asChild>
                       <FormControl>
@@ -301,7 +349,7 @@ export default function AddSession({
                           {field.value ? (
                             format(field.value, "PPP", { locale: it })
                           ) : (
-                            <span>Seleziona una data</span>
+                            <span></span>
                           )}
                           <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                         </Button>
@@ -320,7 +368,6 @@ export default function AddSession({
                       />
                     </PopoverContent>
                   </Popover>
-
                   <FormMessage />
                 </FormItem>
               )}
@@ -368,8 +415,8 @@ export default function AddSession({
                                 : session.lunchOrders}{" "}
                               ordini per {session.lunchTime} ore (
                               {(
-                                6 * session.lunchTime +
-                                (session.lunchOrders ?? 0)
+                                lunchMultiplier * session.lunchTime +
+                                ordersMultiplier * (session.lunchOrders ?? 0)
                               ).toFixed(2) + "€"}
                               )
                             </strong>
@@ -385,14 +432,14 @@ export default function AddSession({
                                 : session.dinnerOrders}{" "}
                               ordini per {session.dinnerTime} ore (
                               {(
-                                7 * session.dinnerTime +
-                                (session.dinnerOrders ?? 0)
+                                dinnerMultiplier * session.dinnerTime +
+                                ordersMultiplier * (session.dinnerOrders ?? 0)
                               ).toFixed(2) + "€"}
                               )
                             </strong>
                           </a>
                         )}
-                      {session !== undefined && session.tip !== 0 && (
+                      {session.tip !== undefined && session.tip !== 0 && (
                         <a>
                           Mancia: <strong>{session.tip}€</strong>
                         </a>

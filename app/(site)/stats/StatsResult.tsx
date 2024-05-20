@@ -44,6 +44,7 @@ export default function StatsResult({
     }).then((response) => {
       if (response.ok) {
         response.json().then((result) => {
+          
           setResult(result);
           onResult(result, index);
           setLoading(false);
@@ -59,19 +60,22 @@ export default function StatsResult({
           <TableHeader className="sticky top-0 z-10 bg-background">
             <TableRow>
               {result.some((item) => item.riderName !== undefined) && (
-                <TableHead className="w-[15%]">Ragazzo</TableHead>
+                <TableHead className="w-[12%]">Ragazzo</TableHead>
               )}
               {result.some((item) => item.totalOrders !== undefined) && (
-                <TableHead className="w-[15%]">Consegne</TableHead>
+                <TableHead className="w-[12%]">Consegne</TableHead>
               )}
               {result.some((item) => item.totalHours !== undefined) && (
-                <TableHead className="w-[15%]">Ore</TableHead>
+                <TableHead className="w-[12%]">Ore</TableHead>
               )}
-              {result.some((item) => item.totalMoney !== undefined) && (
-                <TableHead className="w-[15%]">Guadagno</TableHead>
+              {result.some((item) => item.totalPay !== undefined) && (
+                <TableHead className="w-[12%]">Paga</TableHead>
               )}
               {result.some((item) => item.totalTip !== undefined) && (
-                <TableHead className="w-[15%]">Mancia</TableHead>
+                <TableHead className="w-[12%]">Mancia</TableHead>
+              )}
+              {result.some((item) => item.totalMoney !== undefined) && (
+                <TableHead className="w-[12%]">Incasso totale</TableHead>
               )}
             </TableRow>
           </TableHeader>
@@ -85,11 +89,14 @@ export default function StatsResult({
                 {item.totalHours !== undefined && (
                   <TableCell>{item.totalHours}</TableCell>
                 )}
-                {item.totalMoney !== undefined && (
-                  <TableCell>{item.totalMoney}€</TableCell>
+                {item.totalPay !== undefined && (
+                  <TableCell>{item.totalPay}€</TableCell>
                 )}
                 {item.totalTip !== undefined && (
                   <TableCell>{item.totalTip}€</TableCell>
+                )}
+                {item.totalMoney !== undefined && (
+                  <TableCell>{item.totalMoney}€</TableCell>
                 )}
               </TableRow>
             ))}

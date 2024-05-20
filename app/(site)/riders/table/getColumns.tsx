@@ -5,9 +5,11 @@ import { ArrowsDownUp } from "@phosphor-icons/react";
 import { Rider } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
 import EditRider from "../actions/EditRider";
+import DeleteRider from "../actions/DeleteRider";
 
 export default function getColumns(
   onEdit: (rider: Rider) => void,
+  onDelete: (rider: Rider) => void
 ): ColumnDef<Rider>[] {
   return [
     {
@@ -90,7 +92,14 @@ export default function getColumns(
     },
     {
       accessorKey: "Azioni",
-      cell: ({ row }) => <EditRider rider={row.original} onEdit={onEdit} />,
+      cell: ({ row }) => {
+        return (
+          <div className="flex gap-2">
+            <EditRider rider={row.original} onEdit={onEdit} />
+            {/* <DeleteRider rider={row.original} onDelete={onDelete} /> */}
+          </div>
+        );
+      },
     },
   ];
 }

@@ -4,7 +4,6 @@ import prisma from "./db";
 export default async function addSession(newSession: Session) {
   function storeCorrectDate(date: Date) {
     const a = new Date(date);
-    console.log(a);
     return new Date(
       Date.parse(a.toUTCString()) - a.getTimezoneOffset() * 60000
     );

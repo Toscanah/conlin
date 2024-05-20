@@ -7,6 +7,7 @@ export default async function getStatsAll(
   context: string
 ): Promise<StatsType[]> {
   const { from, to } = date;
+  //console.log(date);
 
   const aggregatedData = await prisma.session.groupBy({
     by: ["rider_id"],
@@ -25,7 +26,6 @@ export default async function getStatsAll(
     },
   });
 
-  // Construct the result based on the context
   const result = await Promise.all(
     aggregatedData.map(async (data) => {
       const rider = await prisma.rider.findUnique({
@@ -34,6 +34,7 @@ export default async function getStatsAll(
         },
         select: {
           nickname: true,
+          surname: true,
         },
       });
 
@@ -41,37 +42,48 @@ export default async function getStatsAll(
 
       const totalOrders = (_sum.lunch_orders ?? 0) + (_sum.dinner_orders ?? 0);
       const totalHours = (_sum.lunch_time ?? 0) + (_sum.dinner_time ?? 0);
-      const totalMoney =
+      const totalPay =
         (_sum.lunch_time ?? 0) * 6 +
         (_sum.dinner_time ?? 0) * 7 +
         (_sum.lunch_orders ?? 0) +
         (_sum.dinner_orders ?? 0);
       const totalTip = _sum.tip ?? 0;
+      const totalMoney = totalPay + totalTip;
+
+      let riderName: string = rider?.nickname ?? rider?.surname ?? "";
+
+      
 
       switch (context) {
         case "orders":
-          return { riderName: rider?.nickname ?? "", totalOrders };
+          return { riderName, totalOrders };
         case "time":
-          return { riderName: rider?.nickname ?? "", totalHours };
-        case "money":
-          return { riderName: rider?.nickname ?? "", totalMoney };
+          return { riderName, totalHours };
+        case "pay":
+          return { riderName, totalPay: parseFloat(totalPay.toFixed(2)) };
         case "tip":
-          return { riderName: rider?.nickname ?? "", totalTip };
+          return { riderName, totalTip };
+        case "total":
+          return { riderName, totalMoney: parseFloat(totalMoney.toFixed(2)) };
         case "all":
           return {
-            riderName: rider?.nickname ?? "",
+            riderName,
             totalOrders,
             totalHours,
-            totalMoney,
+            totalPay: parseFloat(totalPay.toFixed(2)),
             totalTip,
+            totalMoney: parseFloat(totalMoney.toFixed(2)),
           };
         default:
           throw new Error("Invalid context provided");
       }
+      
     })
+
   );
 
   result.sort((a, b) => a.riderName.localeCompare(b.riderName));
+  //console.log(result);
 
   return result;
 }

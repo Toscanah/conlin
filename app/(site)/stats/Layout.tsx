@@ -8,12 +8,40 @@ import { Plus, X } from "@phosphor-icons/react";
 import { StatsType } from "./StatsType";
 import Graph from "./Graph";
 
+import { TotalsType } from "./TotalType";
+import TotalStats from "./TotalStats";
+import { Separator } from "@/components/ui/separator";
+
 export default function Layout({ riders }: { riders: Rider[] }) {
   // state che tiene conto delle key A MANO, non facendo stats.length
 
   const [results, setResults] = useState<
     { index: number; data: StatsType[] }[]
   >([]);
+  const [totals, setTotals] = useState<TotalsType>({});
+
+  useEffect(() => {
+    if (results && results[0] && results[0].data.length !== 0) {
+      let totals: TotalsType = {};
+
+      results[0].data.map((single) => {
+        if (single.totalOrders !== undefined)
+          totals.totalOrders = (totals.totalOrders ?? 0) + single.totalOrders;
+        if (single.totalHours !== undefined)
+          totals.totalHours = (totals.totalHours ?? 0) + single.totalHours;
+        if (single.totalPay !== undefined)
+          totals.totalPay = (totals.totalPay ?? 0) + single.totalPay;
+        if (single.totalTip !== undefined)
+          totals.totalTip = (totals.totalTip ?? 0) + single.totalTip;
+        if (single.totalMoney !== undefined)
+          totals.totalMoney = (totals.totalMoney ?? 0) + single.totalMoney;
+        return null;
+      });
+
+      console.log(totals);
+      setTotals(totals);
+    }
+  }, [results]);
 
   function onResult(result: StatsType[], index: number) {
     setResults((prevResults) => {
@@ -72,17 +100,12 @@ export default function Layout({ riders }: { riders: Rider[] }) {
     }
   };
 
-  useEffect(() => {
-    // console.clear();
-    // console.log("Componenti: ", stats);
-    // console.log("Risultati: ", results);
-  }, [stats, results]);
-
   return (
-    <div className="w-full flex flex-col gap-12 items-center justify-center">
+    <div className="w-full flex flex-col gap-14 items-center justify-center">
       <div>
         <h1 className="text-4xl mt-8 w-full text-center">Statistiche</h1>
       </div>
+
       <div className="flex w-full flex-wrap gap-y-8 justify-center">
         <div className="w-[80%] flex flex-col gap-y-8">
           {stats.map((stat, index) => (
@@ -131,6 +154,11 @@ export default function Layout({ riders }: { riders: Rider[] }) {
           )}
         </div> */}
       </div>
+
+      {totals && results[0] && results[0].data.length > 1 && (
+        <TotalStats totals={totals} />
+      )}
+
       <div className="flex justify-center items-center">
         {results[0] && results[0]?.data.length !== 0 && (
           <Graph results={results} />

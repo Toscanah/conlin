@@ -17,12 +17,14 @@ import {
 } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import {
+  format,
   subDays,
   startOfMonth,
   endOfMonth,
   startOfYear,
   endOfYear,
-  format,
+  startOfDay,
+  endOfDay,
 } from "date-fns";
 
 import { DateRange } from "react-day-picker";
@@ -49,25 +51,39 @@ export default function Stats({
   const [date, setDate] = useState<DateRange>();
   const [context, setContext] = useState<string>("all");
 
+  useEffect(() => {
+    if (!date?.from || !date.to) {
+      onResult([], index);
+    }
+  }, [date]);
+
   function handlePresetSelect(value: string) {
+    const today = new Date();
+
     switch (value) {
       case "today":
-        setDate({ from: new Date(), to: new Date() });
+        setDate({ from: startOfDay(today), to: startOfDay(today) });
         break;
       case "yesterday":
-        setDate({ from: subDays(new Date(), 1), to: subDays(new Date(), 1) });
+        const yesterday = subDays(today, 1);
+        setDate({ from: startOfDay(yesterday), to: startOfDay(yesterday) });
         break;
       case "last7":
-        setDate({ from: subDays(new Date(), 6), to: new Date() });
+        const last7 = subDays(today, 6);
+        setDate({ from: startOfDay(last7), to: startOfDay(today) });
         break;
       case "last30":
-        setDate({ from: subDays(new Date(), 29), to: new Date() });
+        const last30 = subDays(today, 29);
+        setDate({ from: startOfDay(last30), to: startOfDay(today) });
         break;
       case "thisMonth":
-        setDate({ from: startOfMonth(new Date()), to: endOfMonth(new Date()) });
+        setDate({
+          from: startOfMonth(today),
+          to: startOfDay(endOfMonth(today)),
+        });
         break;
       case "thisYear":
-        setDate({ from: startOfYear(new Date()), to: endOfYear(new Date()) });
+        setDate({ from: startOfYear(today), to: startOfDay(endOfYear(today)) });
         break;
       default:
         break;
@@ -120,13 +136,19 @@ export default function Stats({
               >
                 <CalendarIcon className="mr-2 h-4 w-4" />
                 {date ? (
-                  date.from && date.to ? (
-                    `${format(date.from, "PPP", {
-                      locale: it,
-                    })} - ${format(date.to, "PPP", { locale: it })}`
-                  ) : (
-                    <span>Seleziona la data</span>
-                  )
+                  <>
+                    {date.from
+                      ? `${format(date.from, "PPP", {
+                          locale: it,
+                        })}`
+                      : ""}
+                    {" - "}
+                    {date.to
+                      ? `${format(date.to, "PPP", {
+                          locale: it,
+                        })}`
+                      : ""}
+                  </>
                 ) : (
                   <span>Seleziona la data</span>
                 )}
@@ -182,11 +204,14 @@ export default function Stats({
             <SelectItem key={3} value={"time"}>
               Ore
             </SelectItem>
-            <SelectItem key={4} value={"money"}>
-              Incassi (no mancia)
+            <SelectItem key={4} value={"pay"}>
+              Paga
             </SelectItem>
             <SelectItem key={5} value={"tip"}>
               Mancie
+            </SelectItem>
+            <SelectItem key={6} value={"total"}>
+              Incasso totale
             </SelectItem>
           </SelectContent>
         </Select>
