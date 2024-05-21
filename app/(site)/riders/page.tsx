@@ -1,5 +1,5 @@
 import getRiders from "../sql/getRiders";
-import BackHome from "./BackHome";
+import BackHome from "../../components/BackHome";
 import RidersTable from "./table/RidersTable";
 
 export const dynamic = "force-dynamic";

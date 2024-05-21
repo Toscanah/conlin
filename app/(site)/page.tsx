@@ -2,12 +2,13 @@
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import AddSession from "./sessions/AddSession";
-import RidersDialog from "./RidersPageButton";
+import RidersPageButton from "./RidersPageButton";
 import getRiders from "./sql/getRiders";
 import Layout from "./stats/Layout";
 import getActiveRiders from "./sql/getActiveRiders";
 import { ChangeTheme } from "./ChangeTheme";
-import ChangeParams from "./multipliers/ChangeParams";
+import ChangeParamsDialog from "./multipliers/ChangeParams";
+import SessionsPageButton from "./SessionsPageButton";
 
 export const dynamic = "force-dynamic";
 
@@ -45,8 +46,9 @@ export default async function Home() {
       
 
       <div className="flex flex-col gap-4 absolute text-4xl top-4 left-4">
-        <RidersDialog />
-        <ChangeParams/>
+        <RidersPageButton />
+        <ChangeParamsDialog/>
+        <SessionsPageButton/>
       </div>
 
       <div className="absolute top-4 right-4 hover:cursor-pointer">

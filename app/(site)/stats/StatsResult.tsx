@@ -12,7 +12,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { StatsType } from "./StatsType";
+import { StatsType } from "../types/StatsType";
 
 export default function StatsResult({
   index,

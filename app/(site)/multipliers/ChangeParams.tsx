@@ -25,7 +25,7 @@ import { MultiplierContext } from "../multipliers/MultipliersProvider";
 import { useContext, useState } from "react";
 import getParamsForm, { FormValues } from "../forms/getParamsForm";
 
-export default function ChangeParams() {
+export default function ChangeParamsDialog() {
   const [openDialog, setOpenDialog] = useState<boolean>(false);
 
   const {

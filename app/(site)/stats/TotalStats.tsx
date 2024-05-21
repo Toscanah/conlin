@@ -6,7 +6,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { TotalsType } from "./TotalType";
+import { TotalsType } from "../types/TotalType";
 
 export default function TotalStats({ totals }: { totals: TotalsType }) {
   return (

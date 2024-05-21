@@ -5,10 +5,10 @@ import Stats from "./Stats";
 import { ReactNode, useCallback, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Plus, X } from "@phosphor-icons/react";
-import { StatsType } from "./StatsType";
+import { StatsType } from "../types/StatsType";
 import Graph from "./Graph";
 
-import { TotalsType } from "./TotalType";
+import { TotalsType } from "../types/TotalType";
 import TotalStats from "./TotalStats";
 import { Separator } from "@/components/ui/separator";
 

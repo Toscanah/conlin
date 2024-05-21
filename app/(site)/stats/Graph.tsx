@@ -1,4 +1,4 @@
-import { StatsType } from "./StatsType";
+import { StatsType } from "../types/StatsType";
 import { Button } from "@/components/ui/button";
 import { BarChart } from "@mui/x-charts/BarChart";
 import { createTheme, ThemeProvider } from "@mui/material";

@@ -33,7 +33,7 @@ import { Button } from "@/components/ui/button";
 import { Calendar as CalendarIcon } from "@phosphor-icons/react";
 import { useEffect, useState, memo } from "react";
 import StatsResult from "./StatsResult";
-import { StatsType } from "./StatsType";
+import { StatsType } from "../types/StatsType";
 
 export const revalidate = false;
 

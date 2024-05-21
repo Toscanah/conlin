@@ -6,7 +6,7 @@ import Link from "next/link";
 
 export const revalidate = 0;
 
-export default function RidersDialog() {
+export default function RidersPageButton() {
   return (
     <Link href={"/riders"}>
       <UsersThree  size={48} className="hover:cursor-pointer" />

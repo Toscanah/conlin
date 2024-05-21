@@ -19,20 +19,6 @@ export default function getColumns(
           .getSortedRowModel()
           ?.flatRows?.findIndex((flatRow) => flatRow.id === row.id) || 0) + 1,
     },
-    // {
-    //   accessorKey: "id",
-    //   header: ({ column }) => {
-    //     return (
-    //       <Button
-    //         variant="ghost"
-    //         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-    //       >
-    //         ID
-    //         <ArrowsDownUp className="ml-2 h-4 w-4" />
-    //       </Button>
-    //     );
-    //   },
-    // },
     {
       accessorKey: "name",
       header: ({ column }) => {
