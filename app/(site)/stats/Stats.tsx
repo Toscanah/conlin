@@ -50,6 +50,7 @@ export default function Stats({
   const [rider, setRider] = useState<string>("all");
   const [date, setDate] = useState<DateRange>();
   const [context, setContext] = useState<string>("all");
+  const [session, setSession] = useState<string>("both");
 
   useEffect(() => {
     if (!date?.from || !date.to) {
@@ -215,6 +216,27 @@ export default function Stats({
             </SelectItem>
           </SelectContent>
         </Select>
+
+        <Select onValueChange={setSession} defaultValue="both">
+          <div className="space-y-2 w-1/3">
+            <Label htmlFor="session">Sessione?</Label>
+            <SelectTrigger id="session">
+              <SelectValue placeholder="Seleziona una sessione" />
+            </SelectTrigger>
+          </div>
+
+          <SelectContent>
+            <SelectItem key={1} value={"both"} defaultChecked={true}>
+              Pranzo + cena
+            </SelectItem>
+            <SelectItem key={2} value={"lunch"}>
+              Pranzo
+            </SelectItem>
+            <SelectItem key={3} value={"dinner"}>
+              Cena
+            </SelectItem>
+          </SelectContent>
+        </Select>
       </div>
 
       {rider !== "all" && date?.from && date?.to && (
@@ -225,6 +247,7 @@ export default function Stats({
           context={context}
           isAllRiders={false}
           onResult={onResult}
+          session={session}
         />
       )}
 
@@ -235,6 +258,7 @@ export default function Stats({
           context={context}
           isAllRiders={true}
           onResult={onResult}
+          session={session}
         />
       )}
     </div>

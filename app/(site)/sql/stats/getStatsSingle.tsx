@@ -5,11 +5,12 @@ import { DateRange } from "react-day-picker";
 export default async function getStatsSingle(
   riderId: number,
   date: DateRange,
-  context: string
+  context: string,
+  session: string
 ): Promise<StatsType[]> {
   const { from, to } = date;
-  console.log(date);
 
+  // Fetch all data for the given rider and date range
   const aggregatedOrders = await prisma.session.aggregate({
     where: {
       rider_id: riderId,
@@ -37,22 +38,38 @@ export default async function getStatsSingle(
     },
   });
 
-  const totalOrders =
-    (aggregatedOrders._sum.lunch_orders ?? 0) +
-    (aggregatedOrders._sum.dinner_orders ?? 0);
-  const totalHours =
-    (aggregatedOrders._sum.lunch_time ?? 0) +
-    (aggregatedOrders._sum.dinner_time ?? 0);
-  const totalPay =
-    (aggregatedOrders._sum.lunch_time ?? 0) * 6 +
-    (aggregatedOrders._sum.dinner_time ?? 0) * 7 +
-    (aggregatedOrders._sum.lunch_orders ?? 0) +
-    (aggregatedOrders._sum.dinner_orders ?? 0);
-  const totalTip = aggregatedOrders._sum.tip ?? 0;
+  // Initialize totals
+  let totalOrders = 0;
+  let totalHours = 0;
+  let totalPay = 0;
+  let totalTip = aggregatedOrders._sum.tip ?? 0;
+
+  // Calculate totals based on the session type
+  if (session === "both" || session === "lunch") {
+    totalOrders += aggregatedOrders._sum.lunch_orders ?? 0;
+    totalHours += aggregatedOrders._sum.lunch_time ?? 0;
+    totalPay +=
+      (aggregatedOrders._sum.lunch_time ?? 0) * 6 +
+      (aggregatedOrders._sum.lunch_orders ?? 0);
+  }
+
+  if (session === "both" || session === "dinner") {
+    totalOrders += aggregatedOrders._sum.dinner_orders ?? 0;
+    totalHours += aggregatedOrders._sum.dinner_time ?? 0;
+    totalPay +=
+      (aggregatedOrders._sum.dinner_time ?? 0) * 7 +
+      (aggregatedOrders._sum.dinner_orders ?? 0);
+  }
+
   const totalMoney = totalPay + totalTip;
 
   let result: StatsType[];
-  let riderName: string = rider?.nickname ?? rider?.surname ?? "";
+  let riderName: string =
+    rider?.nickname && rider.nickname.trim() !== ""
+      ? rider.nickname
+      : rider?.surname && rider.surname.trim() !== ""
+      ? rider.surname
+      : "";
 
   switch (context) {
     case "orders":
@@ -86,5 +103,5 @@ export default async function getStatsSingle(
       throw new Error("Invalid context provided");
   }
 
-  return totalOrders == 0 && totalHours == 0 ? [] : result;
+  return totalOrders === 0 && totalHours === 0 ? [] : result;
 }

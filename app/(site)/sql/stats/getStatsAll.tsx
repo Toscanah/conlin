@@ -4,11 +4,12 @@ import { DateRange } from "react-day-picker";
 
 export default async function getStatsAll(
   date: DateRange,
-  context: string
+  context: string,
+  session: string
 ): Promise<StatsType[]> {
   const { from, to } = date;
-  //console.log(date);
 
+  // Fetch aggregated data for all riders within the date range
   const aggregatedData = await prisma.session.groupBy({
     by: ["rider_id"],
     where: {
@@ -38,21 +39,35 @@ export default async function getStatsAll(
         },
       });
 
-      const { _sum } = data;
+      // Initialize totals
+      let totalOrders = 0;
+      let totalHours = 0;
+      let totalPay = 0;
+      let totalTip = data._sum.tip ?? 0;
 
-      const totalOrders = (_sum.lunch_orders ?? 0) + (_sum.dinner_orders ?? 0);
-      const totalHours = (_sum.lunch_time ?? 0) + (_sum.dinner_time ?? 0);
-      const totalPay =
-        (_sum.lunch_time ?? 0) * 6 +
-        (_sum.dinner_time ?? 0) * 7 +
-        (_sum.lunch_orders ?? 0) +
-        (_sum.dinner_orders ?? 0);
-      const totalTip = _sum.tip ?? 0;
+      // Calculate totals based on the session type
+      if (session === "both" || session === "lunch") {
+        totalOrders += data._sum.lunch_orders ?? 0;
+        totalHours += data._sum.lunch_time ?? 0;
+        totalPay +=
+          (data._sum.lunch_time ?? 0) * 6 + (data._sum.lunch_orders ?? 0);
+      }
+
+      if (session === "both" || session === "dinner") {
+        totalOrders += data._sum.dinner_orders ?? 0;
+        totalHours += data._sum.dinner_time ?? 0;
+        totalPay +=
+          (data._sum.dinner_time ?? 0) * 7 + (data._sum.dinner_orders ?? 0);
+      }
+
       const totalMoney = totalPay + totalTip;
 
-      let riderName: string = rider?.nickname ?? rider?.surname ?? "";
-
-      
+      let riderName: string =
+        rider?.nickname && rider.nickname.trim() !== ""
+          ? rider.nickname
+          : rider?.surname && rider.surname.trim() !== ""
+          ? rider.surname
+          : "";
 
       switch (context) {
         case "orders":
@@ -77,13 +92,10 @@ export default async function getStatsAll(
         default:
           throw new Error("Invalid context provided");
       }
-      
     })
-
   );
 
   result.sort((a, b) => a.riderName.localeCompare(b.riderName));
-  //console.log(result);
 
   return result;
 }

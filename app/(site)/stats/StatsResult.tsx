@@ -19,6 +19,7 @@ export default function StatsResult({
   riderId,
   date,
   context,
+  session,
   isAllRiders,
   onResult,
 }: {
@@ -26,6 +27,7 @@ export default function StatsResult({
   riderId?: number;
   date: DateRange | undefined;
   context: string;
+  session: string;
   isAllRiders: boolean;
   onResult: (result: StatsType[], index: number) => void;
 }) {
@@ -35,8 +37,8 @@ export default function StatsResult({
   useEffect(() => {
     setLoading(true);
     const body = isAllRiders
-      ? { date, context, isAllRiders: true }
-      : { riderId, date, context, isAllRiders: false };
+      ? { date, context, session, isAllRiders: true }
+      : { date, context, session, isAllRiders: false, riderId };
 
     fetch("/api/stats/get", {
       method: "POST",
@@ -44,13 +46,56 @@ export default function StatsResult({
     }).then((response) => {
       if (response.ok) {
         response.json().then((result) => {
-          setResult(result);
-          onResult(result, index);
+          let sortedResult: StatsType[];
+
+          switch (context) {
+            case "all":
+              sortedResult = result.sort((a: StatsType, b: StatsType) =>
+                a.riderName.localeCompare(b.riderName)
+              );
+              break;
+            case "orders":
+              sortedResult = result.sort(
+                (a: StatsType, b: StatsType) =>
+                  (b.totalOrders ?? 0) - (a.totalOrders ?? 0)
+              );
+              break;
+            case "time":
+              sortedResult = result.sort(
+                (a: StatsType, b: StatsType) =>
+                  (b.totalHours ?? 0) - (a.totalHours ?? 0)
+              );
+              break;
+            case "pay":
+              sortedResult = result.sort(
+                (a: StatsType, b: StatsType) =>
+                  (b.totalPay ?? 0) - (a.totalPay ?? 0)
+              );
+              break;
+            case "tip":
+              sortedResult = result.sort(
+                (a: StatsType, b: StatsType) =>
+                  (b.totalTip ?? 0) - (a.totalTip ?? 0)
+              );
+              break;
+            case "total":
+              sortedResult = result.sort(
+                (a: StatsType, b: StatsType) =>
+                  (b.totalMoney ?? 0) - (a.totalMoney ?? 0)
+              );
+              break;
+            default:
+              sortedResult = result;
+              break;
+          }
+
+          setResult(sortedResult);
+          onResult(sortedResult, index);
           setLoading(false);
         });
       }
     });
-  }, [riderId, date, context, isAllRiders]);
+  }, [riderId, date, context, session, isAllRiders]);
 
   return (
     <div className="w-full overflow-y-auto max-h-[400px]">
@@ -92,7 +137,7 @@ export default function StatsResult({
                   <TableCell>{item.totalPay}€</TableCell>
                 )}
                 {item.totalTip !== undefined && (
-                  <TableCell>{item.totalTip}€</TableCell>
+                  <TableCell>{item.totalTip.toFixed(2)}€</TableCell>
                 )}
                 {item.totalMoney !== undefined && (
                   <TableCell>{item.totalMoney}€</TableCell>

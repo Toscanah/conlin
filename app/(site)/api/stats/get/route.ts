@@ -13,7 +13,8 @@ export async function POST(request: Request) {
           from: addDays(body.date.from, 1),
           to: addDays(body.date.to, 1),
         },
-        body.context
+        body.context,
+        body.session
       )
     );
   } else {
@@ -24,7 +25,8 @@ export async function POST(request: Request) {
           from: addDays(body.date.from, 1),
           to: addDays(body.date.to, 1),
         },
-        body.context
+        body.context,
+        body.session
       )
     );
   }

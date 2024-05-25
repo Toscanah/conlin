@@ -128,9 +128,7 @@ export default function AddSession({
     fetch("/api/sessions/add/", {
       method: "POST",
       body: JSON.stringify({
-        rider_id: Number.parseInt(
-          session?.rider.charAt(0) ? session?.rider.charAt(0) : ""
-        ),
+        rider_id: Number.parseInt(session?.rider.split("-")[0] ?? "0"),
         lunch_orders: session?.lunchOrders,
         dinner_orders: session?.dinnerOrders,
         lunch_time: session?.lunchTime,
@@ -192,9 +190,7 @@ export default function AddSession({
                         key={rider.id}
                         value={rider.id.toString() + "-" + rider.nickname}
                       >
-                        {rider.name +
-                          " " +
-                          (rider.surname ? rider.surname : "")}
+                        {rider.name + " " + (rider.surname ?? "")}
                         {rider.nickname && (
                           <>
                             {" "}
