@@ -4,7 +4,7 @@
 
 @layer base {
   /*colore figo forse?*/
-
+/*
   :root {
     --background: 195 100% 100%;
     --foreground: 195 5% 10%;
@@ -49,8 +49,8 @@
     --ring: 195 100% 50%;
     --radius: 1rem;
   }
-
-  /*
+*/
+  
   :root {
     --background: 0 0% 100%;
     --foreground: 240 10% 3.9%;
@@ -94,7 +94,7 @@
     --border: 240 3.7% 15.9%;
     --input: 240 3.7% 15.9%;
     --ring: 240 4.9% 83.9%;
-  }*/
+  }
 }
 
 @layer base {

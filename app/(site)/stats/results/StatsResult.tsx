@@ -3,16 +3,43 @@
 import BarLoader from "react-spinners/BarLoader";
 import { DateRange } from "react-day-picker";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { StatsType } from "../../types/StatsType";
+import * as React from "react";
+import {
+  ColumnDef,
+  ColumnFiltersState,
+  SortingState,
+  VisibilityState,
+  flexRender,
+  getCoreRowModel,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
+import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { StatsType } from "../types/StatsType";
+import getTable from "./getTable";
+import getColumns from "./getColumns";
 
 export default function StatsResult({
   index,
@@ -31,8 +58,20 @@ export default function StatsResult({
   isAllRiders: boolean;
   onResult: (result: StatsType[], index: number) => void;
 }) {
-  const [result, setResult] = useState<StatsType[]>();
+  const [result, setResult] = useState<StatsType[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+
+  const [globalFilter, setGlobalFilter] = useState("");
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+  const columns = getColumns();
+  const table = getTable(
+    result,
+    columns,
+    globalFilter,
+    setGlobalFilter,
+    columnVisibility,
+    setColumnVisibility
+  );
 
   useEffect(() => {
     setLoading(true);
@@ -97,10 +136,48 @@ export default function StatsResult({
     });
   }, [riderId, date, context, session, isAllRiders]);
 
+  useEffect(() => {
+    const isSessionBoth = session === "both";
+
+    const visibility = {
+      riderName: true,
+      lunchOrders:
+        context === "all" ||
+        (context === "orders" && (session === "both" || session === "lunch")),
+      dinnerOrders:
+        context === "all" ||
+        (context === "orders" && (session === "both" || session === "dinner")),
+      totalOrders: (context === "orders" && isSessionBoth) || context === "all",
+      lunchHours:
+        context === "all" ||
+        (context === "time" && (session === "both" || session === "lunch")),
+      dinnerHours:
+        context === "all" ||
+        (context === "time" && (session === "both" || session === "dinner")),
+      totalHours: (context === "time" && isSessionBoth) || context === "all",
+      lunchPay:
+        context === "all" ||
+        (context === "pay" && (session === "both" || session === "lunch")),
+      dinnerPay:
+        context === "all" ||
+        (context === "pay" && (session === "both" || session === "dinner")),
+      totalPay: (context === "pay" && isSessionBoth) || context === "all",
+      lunchTip:
+        context === "all" ||
+        (context === "tip" && (session === "both" || session === "lunch")),
+      dinnerTip:
+        context === "all" ||
+        (context === "tip" && (session === "both" || session === "dinner")),
+      totalTip: (context === "tip" && isSessionBoth) || context === "all",
+      totalMoney: context === "all" || context === "total",
+    };
+
+    setColumnVisibility(visibility);
+  }, [context, session]);
+
   return (
-    <div className="w-full overflow-y-auto max-h-[400px]">
-      {date && result && result.length !== 0 ? (
-        <Table className="w-full text-2xl">
+    <div className="w-full overflow-y-auto max-h-[400px] rounded-md border">
+      {/* <Table className="w-full text-2xl">
           <TableHeader className="sticky top-0 z-10 bg-background">
             <TableRow>
               {result.some((item) => item.riderName !== undefined) && (
@@ -145,11 +222,61 @@ export default function StatsResult({
               </TableRow>
             ))}
           </TableBody>
+        </Table> */}
+
+      {date && result && result.length !== 0 ? (
+        <Table className="">
+          <TableHeader>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id}>
+                {headerGroup.headers.map((header) => {
+                  return (
+                    <TableHead key={header.id}>
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
+                    </TableHead>
+                  );
+                })}
+              </TableRow>
+            ))}
+          </TableHeader>
+          <TableBody>
+            {table.getRowModel().rows?.length ? (
+              table.getRowModel().rows.map((row) => (
+                <TableRow
+                  key={row.id}
+                  data-state={row.getIsSelected() && "selected"}
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id}>
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
+                  No results.
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
         </Table>
       ) : loading ? (
         <BarLoader color="#00C0FF" loading={loading} width={"100%"} />
       ) : (
-        <h1 className="w-full text-center text-4xl overflow-y-hidden">
+        <h1 className="w-full text-center text-4xl overflow-y-hidden my-4">
           Nessun risultato!
         </h1>
       )}

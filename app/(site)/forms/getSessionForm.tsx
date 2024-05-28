@@ -59,7 +59,8 @@ export const formSchema = z
     dinnerOrders: ordersSchema,
     lunchTime: timeSchema,
     dinnerTime: timeSchema,
-    tip: tipSchema,
+    tipLunch: tipSchema,
+    tipDinner: tipSchema,
     date: z.date().optional(),
     errorMessage: z.string().optional(),
   })

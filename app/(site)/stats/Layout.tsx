@@ -6,10 +6,10 @@ import { ReactNode, useCallback, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Plus, X } from "@phosphor-icons/react";
 import { StatsType } from "../types/StatsType";
-import Graph from "./Graph";
+import Graph from "./results/Graph";
 
 import { TotalsType } from "../types/TotalType";
-import TotalStats from "./TotalStats";
+import TotalStats from "./results/TotalStats";
 import { Separator } from "@/components/ui/separator";
 
 export default function Layout({ riders }: { riders: Rider[] }) {
@@ -155,9 +155,9 @@ export default function Layout({ riders }: { riders: Rider[] }) {
         </div> */}
       </div>
 
-      {totals && results[0] && results[0].data.length > 1 && (
-        <TotalStats totals={totals} />
-      )}
+      {Object.keys(totals).length !== 0 &&
+        results[0] &&
+        results[0].data.length > 1 && <TotalStats totals={totals} />}
 
       <div className="flex justify-center items-center">
         {results[0] && results[0]?.data.length !== 0 && (

@@ -20,7 +20,7 @@ export default async function Home() {
       
         <Tabs
           defaultValue="register-session"
-          className="flex flex-col justify-center mt-10 items-center"
+          className="flex flex-col justify-center mt-10 items-center w-[90vw]"
         >
           <TabsList defaultValue="stats">
             <TabsTrigger value="register-session" className="w-[400px]">
@@ -38,7 +38,7 @@ export default async function Home() {
           </TabsContent>
           <TabsContent
             value="stats"
-            className="flex justify-center items-center w-[80vw] mt-0 gap-8"
+            className="flex justify-center items-center w-[100%] mt-0 gap-8"
           >
             <Layout riders={await getRiders()} />
           </TabsContent>

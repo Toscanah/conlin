@@ -24,6 +24,7 @@ model Session {
     dinner_orders Float?
     lunch_time    Int?
     dinner_time   Float?
-    tip           Float?
+    tip_lunch     Float?
+    tip_dinner    Float?
     rider         Rider     @relation(fields: [rider_id], references: [id])
 }

@@ -24,7 +24,7 @@ export default function Graph({
 }: {
   results: { index: number; data: StatsType[] }[];
 }) {
-  console.log(results);
+  
   // se aggiungo 2 campi nuovi, lascio vuoto il primo, completo il secondo, e poi il primo
   // nell'array results ci sarà prima il risultato del secondo, poi del primo
   // da ordinare in base all'index cosi da rispettare l'ordine dei grafici con le statistiche

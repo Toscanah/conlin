@@ -85,7 +85,10 @@ export default function AddSession({
       ? dinnerMultiplier * values.dinnerTime +
         ordersMultiplier * (values.dinnerOrders ?? 0)
       : 0;
-    const tip = values.tip ?? undefined;
+
+    const lunchTip = values.tipLunch ?? 0;
+    const dinnerTip = values.tipDinner ?? 0;
+    const totalTip = lunchTip + dinnerTip;
 
     let final = "";
     let total = 0;
@@ -104,15 +107,15 @@ export default function AddSession({
       total += dinner;
     }
 
-    if (tip && tip > 0) {
+    if (totalTip > 0) {
       if (final) {
         final += " + ";
       }
-      final += tip.toFixed(2);
-      total += tip;
+      final += totalTip.toFixed(2);
+      total += totalTip;
     }
 
-    if ((final && dinner > 0 && lunch > 0) || tip) {
+    if (final && (dinner > 0 || lunch > 0 || totalTip > 0)) {
       final += " = " + total.toFixed(2);
     } else {
       final = total.toFixed(2);
@@ -133,7 +136,8 @@ export default function AddSession({
         dinner_orders: session?.dinnerOrders,
         lunch_time: session?.lunchTime,
         dinner_time: session?.dinnerTime,
-        tip: session?.tip,
+        tip_lunch: session?.tipLunch,
+        tip_dinner: session?.tipDinner,
         date: session?.date ?? new Date(),
       }),
     }).then(() => {
@@ -310,11 +314,13 @@ export default function AddSession({
           <div className="w-[100%] flex justify-between">
             <FormField
               control={form.control}
-              name="tip"
+              name="tipLunch"
               render={({ field }) => (
                 <FormItem className="w-[260px]">
                   <FormLabel className="flex items-center justify-between h-[16px]">
-                    Mancia
+                    <div>
+                      Mancia a <strong>PRANZO</strong>
+                    </div>
                   </FormLabel>
                   <FormControl>
                     <Input {...field} type="number" step={0.1} />
@@ -326,9 +332,29 @@ export default function AddSession({
 
             <FormField
               control={form.control}
-              name="date"
+              name="tipDinner"
               render={({ field }) => (
                 <FormItem className="w-[260px]">
+                  <FormLabel className="flex items-center justify-between h-[16px]">
+                    <div>
+                      Mancia a <strong>CENA</strong>
+                    </div>
+                  </FormLabel>
+                  <FormControl>
+                    <Input {...field} type="number" step={0.1} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+
+          <div className="w-[100%] flex justify-between">
+            <FormField
+              control={form.control}
+              name="date"
+              render={({ field }) => (
+                <FormItem className="w-full">
                   <FormLabel className="flex items-center justify-between h-[16px]">
                     Data
                   </FormLabel>
@@ -435,11 +461,30 @@ export default function AddSession({
                             </strong>
                           </a>
                         )}
-                      {session.tip !== undefined && session.tip !== 0 && (
+                      {(session.tipLunch !== undefined &&
+                        session.tipLunch !== 0) ||
+                      (session.tipDinner !== undefined &&
+                        session.tipDinner !== 0) ? (
                         <a>
-                          Mancia: <strong>{session.tip}€</strong>
+                          Mancia:{" "}
+                          <strong>
+                            {session.tipLunch !== undefined &&
+                            session.tipLunch !== 0
+                              ? session.tipLunch + "€"
+                              : ""}
+                            {session.tipLunch !== undefined &&
+                            session.tipLunch !== 0 &&
+                            session.tipDinner !== undefined &&
+                            session.tipDinner !== 0
+                              ? " + "
+                              : ""}
+                            {session.tipDinner !== undefined &&
+                            session.tipDinner !== 0
+                              ? session.tipDinner + "€"
+                              : ""}
+                          </strong>
                         </a>
-                      )}
+                      ) : null}
 
                       {session?.date && (
                         <a>

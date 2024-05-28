@@ -20,7 +20,6 @@ export default function SessionsTable({
   initialSessions,
 }: {
   initialSessions: SessionWithRider[];
-  
 }) {
   const [sessions, setSessions] = useState<SessionWithRider[]>(initialSessions);
   const [globalFilter, setGlobalFilter] = useState("");
