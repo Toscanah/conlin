@@ -13,7 +13,7 @@ export default function getColumns(): ColumnDef<StatsType>[] {
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            Chi
+            Ragazzo
             <ArrowsDownUp className="ml-2 h-4 w-4" />
           </Button>
         );
@@ -71,7 +71,7 @@ export default function getColumns(): ColumnDef<StatsType>[] {
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            Ordini totali
+            Consegne totali
             <ArrowsDownUp className="ml-2 h-4 w-4" />
           </Button>
         );
@@ -291,7 +291,7 @@ export default function getColumns(): ColumnDef<StatsType>[] {
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            Totale di tutto
+            Incasso totale
             <ArrowsDownUp className="ml-2 h-4 w-4" />
           </Button>
         );

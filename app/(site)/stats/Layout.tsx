@@ -101,80 +101,86 @@ export default function Layout({ riders }: { riders: Rider[] }) {
   };
 
   return (
-    <div className="w-full flex flex-col gap-14 items-center justify-center">
-      <div>
-        <h1 className="text-4xl mt-8 w-full text-center">Statistiche</h1>
-      </div>
+    <div className="w-full flex flex-col items-center justify-center">
+      <h1 className="text-4xl my-8">Statistiche</h1>
 
-      <div className="flex w-full flex-wrap gap-y-8 justify-center">
-        <div className="w-[80%] flex flex-col gap-y-8">
-          {stats.map((stat, index) => (
-            <div className="relative group" key={index}>
-              {stat}
-              {/* <X
-                onClick={() => handleRemoveStats(index)}
-                size={36}
-                className="absolute top-[-1rem] right-[-1rem] invisible 
-            group-hover:visible hover:cursor-pointer hover:bg-opacity-50 hover:bg-white rounded-full p-1"
-              /> */}
-            </div>
-          ))}
-        </div>
-        {/* <div className="w-[49%] flex flex-col gap-y-8">
-          {stats.map(
-            (stat, index) =>
-              index % 2 === 0 && ( // Render in left column if index is odd
-                <div className="relative group" key={stats.length}>
-                  {stat}
-                  <X
-                    onClick={() => handleRemoveStats(index)}
-                    size={36}
-                    className="absolute top-[-1rem] right-[-1rem] invisible 
-            group-hover:visible hover:cursor-pointer hover:bg-opacity-50 hover:bg-white rounded-full p-1"
-                  />
-                </div>
-              )
-          )}
+      <div className="flex flex-col items-center w-full gap-y-14">
+        <div className="flex w-full flex-wrap gap-y-8 justify-center">
+          <div className="w-[80%] flex flex-col gap-y-8">
+            {stats.map((stat, index) => (
+              <div className="relative group" key={index}>
+                {stat}
+                {/* <X
+                  onClick={() => handleRemoveStats(index)}
+                  size={36}
+                  className="absolute top-[-1rem] right-[-1rem] invisible 
+              group-hover:visible hover:cursor-pointer hover:bg-opacity-50 hover:bg-white rounded-full p-1"
+                /> */}
+              </div>
+            ))}
+          </div>
+          {/* <div className="w-[49%] flex flex-col gap-y-8">
+            {stats.map(
+              (stat, index) =>
+                index % 2 === 0 && ( // Render in left column if index is odd
+                  <div className="relative group" key={stats.length}>
+                    {stat}
+                    <X
+                      onClick={() => handleRemoveStats(index)}
+                      size={36}
+                      className="absolute top-[-1rem] right-[-1rem] invisible 
+              group-hover:visible hover:cursor-pointer hover:bg-opacity-50 hover:bg-white rounded-full p-1"
+                    />
+                  </div>
+                )
+            )}
+          </div>
+  
+          <div className="w-[49%] flex flex-col gap-y-8">
+            {stats.map(
+              (stat, index) =>
+                index % 2 !== 0 && ( // Render in right column if index is even
+                  <div className="relative group" key={stats.length}>
+                    {stat}
+                    <X
+                      onClick={() => handleRemoveStats(index)}
+                      size={36}
+                      className="absolute top-[-1rem] right-[-1rem] invisible 
+              group-hover:visible hover:cursor-pointer hover:bg-opacity-50 hover:bg-white rounded-full p-1"
+                    />
+                  </div>
+                )
+            )}
+          </div> */}
         </div>
 
-        <div className="w-[49%] flex flex-col gap-y-8">
-          {stats.map(
-            (stat, index) =>
-              index % 2 !== 0 && ( // Render in right column if index is even
-                <div className="relative group" key={stats.length}>
-                  {stat}
-                  <X
-                    onClick={() => handleRemoveStats(index)}
-                    size={36}
-                    className="absolute top-[-1rem] right-[-1rem] invisible 
-            group-hover:visible hover:cursor-pointer hover:bg-opacity-50 hover:bg-white rounded-full p-1"
-                  />
-                </div>
-              )
+        {Object.keys(totals).length !== 0 &&
+          results[0] &&
+          results[0].data.length > 1 && (
+            <>
+              <span className="text-[0.25rem]">-</span>
+              <TotalStats totals={totals} />
+            </>
           )}
+
+        {results[0] && results[0]?.data.length !== 0 && (
+          <>
+            <span className="text-[0.25rem]">-</span>
+            <Graph results={results} />
+          </>
+        )}
+
+        {/* <div
+          className={`${
+            stats.length % 2 === 0 ? "w-full invisible" : "w-[49%]"
+          } flex items-center justify-center invisible`}
+        >
+          <Button className="" onClick={handleAddStats}>
+            <Plus className="mr-2 h-4 w-4" />
+            Aggiungi statistica
+          </Button>
         </div> */}
       </div>
-
-      {Object.keys(totals).length !== 0 &&
-        results[0] &&
-        results[0].data.length > 1 && <TotalStats totals={totals} />}
-
-      <div className="flex justify-center items-center">
-        {results[0] && results[0]?.data.length !== 0 && (
-          <Graph results={results} />
-        )}
-      </div>
-
-      {/* <div
-        className={`${
-          stats.length % 2 === 0 ? "w-full invisible" : "w-[49%]"
-        } flex items-center justify-center invisible`}
-      >
-        <Button className="" onClick={handleAddStats}>
-          <Plus className="mr-2 h-4 w-4" />
-          Aggiungi statistica
-        </Button>
-      </div> */}
     </div>
   );
 }

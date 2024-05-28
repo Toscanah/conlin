@@ -73,6 +73,8 @@ export default function StatsResult({
     setColumnVisibility
   );
 
+  const [noResult, setNoResult] = useState<boolean>(false);
+
   useEffect(() => {
     setLoading(true);
     const body = isAllRiders
@@ -85,6 +87,7 @@ export default function StatsResult({
     }).then((response) => {
       if (response.ok) {
         response.json().then((result) => {
+          setLoading(false);
           let sortedResult: StatsType[];
 
           switch (context) {
@@ -130,7 +133,8 @@ export default function StatsResult({
 
           setResult(sortedResult);
           onResult(sortedResult, index);
-          setLoading(false);
+          setNoResult(sortedResult.length == 0);
+          
         });
       }
     });
@@ -176,61 +180,21 @@ export default function StatsResult({
   }, [context, session]);
 
   return (
-    <div className="w-full overflow-y-auto max-h-[400px] rounded-md border">
-      {/* <Table className="w-full text-2xl">
-          <TableHeader className="sticky top-0 z-10 bg-background">
-            <TableRow>
-              {result.some((item) => item.riderName !== undefined) && (
-                <TableHead className="w-[12%]">Ragazzo</TableHead>
-              )}
-              {result.some((item) => item.totalOrders !== undefined) && (
-                <TableHead className="w-[12%]">Consegne</TableHead>
-              )}
-              {result.some((item) => item.totalHours !== undefined) && (
-                <TableHead className="w-[12%]">Ore</TableHead>
-              )}
-              {result.some((item) => item.totalPay !== undefined) && (
-                <TableHead className="w-[12%]">Paga</TableHead>
-              )}
-              {result.some((item) => item.totalTip !== undefined) && (
-                <TableHead className="w-[12%]">Mancia</TableHead>
-              )}
-              {result.some((item) => item.totalMoney !== undefined) && (
-                <TableHead className="w-[12%]">Incasso totale</TableHead>
-              )}
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {result.map((item, index) => (
-              <TableRow key={index}>
-                <TableCell>{item.riderName}</TableCell>
-                {item.totalOrders !== undefined && (
-                  <TableCell>{item.totalOrders}</TableCell>
-                )}
-                {item.totalHours !== undefined && (
-                  <TableCell>{item.totalHours}</TableCell>
-                )}
-                {item.totalPay !== undefined && (
-                  <TableCell>{item.totalPay}€</TableCell>
-                )}
-                {item.totalTip !== undefined && (
-                  <TableCell>{item.totalTip.toFixed(2)}€</TableCell>
-                )}
-                {item.totalMoney !== undefined && (
-                  <TableCell>{item.totalMoney}€</TableCell>
-                )}
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table> */}
+    <div
+      className="w-full overflow-y-auto max-h-[400px] rounded-md border"
+      id="main"
+    >
+      {loading && (
+        <BarLoader color="#00C0FF" loading={loading} width={"100%"} />
+      )}
 
-      {date && result && result.length !== 0 ? (
+      {((date && result && result.length !== 0) || noResult) && (
         <Table className="">
           <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
+            {table.getRowModel().rows?.length > 0 &&
+              table.getHeaderGroups().map((headerGroup) => (
+                <TableRow key={headerGroup.id}>
+                  {headerGroup.headers.map((header) => (
                     <TableHead key={header.id}>
                       {header.isPlaceholder
                         ? null
@@ -239,13 +203,12 @@ export default function StatsResult({
                             header.getContext()
                           )}
                     </TableHead>
-                  );
-                })}
-              </TableRow>
-            ))}
+                  ))}
+                </TableRow>
+              ))}
           </TableHeader>
           <TableBody>
-            {table.getRowModel().rows?.length ? (
+            {table.getRowModel().rows?.length > 0 ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
@@ -267,18 +230,12 @@ export default function StatsResult({
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  No results.
+                  Nessun risultato!
                 </TableCell>
               </TableRow>
             )}
           </TableBody>
         </Table>
-      ) : loading ? (
-        <BarLoader color="#00C0FF" loading={loading} width={"100%"} />
-      ) : (
-        <h1 className="w-full text-center text-4xl overflow-y-hidden my-4">
-          Nessun risultato!
-        </h1>
       )}
     </div>
   );

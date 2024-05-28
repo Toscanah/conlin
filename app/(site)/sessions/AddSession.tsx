@@ -157,7 +157,7 @@ export default function AddSession({
 
   return (
     <div className="flex flex-col items-center w-full">
-      <h1 className="text-4xl my-8">Aggiungi sessione</h1>
+      <h1 className="text-4xl my-8">Aggiungi turno</h1>
       {loading && (
         <BarLoader
           color="#00C0FF"
@@ -217,7 +217,7 @@ export default function AddSession({
               control={form.control}
               name="lunchTime"
               render={({ field }) => (
-                <FormItem className="w-[260px]">
+                <FormItem className="w-[47%]">
                   <FormLabel className="flex items-center justify-between">
                     <div>
                       Ore a <strong>PRANZO</strong>
@@ -243,7 +243,7 @@ export default function AddSession({
               control={form.control}
               name="lunchOrders"
               render={({ field }) => (
-                <FormItem className="w-[260px]">
+                <FormItem className="w-[47%]">
                   <FormLabel className="flex items-center justify-between h-[16px]">
                     <div>
                       Consegne a <strong>PRANZO</strong>
@@ -271,7 +271,7 @@ export default function AddSession({
               control={form.control}
               name="dinnerTime"
               render={({ field }) => (
-                <FormItem className="w-[260px]">
+                <FormItem className="w-[47%]">
                   <FormLabel className="flex items-center justify-between ">
                     <div>
                       Ore a <strong>CENA</strong>
@@ -289,7 +289,7 @@ export default function AddSession({
               control={form.control}
               name="dinnerOrders"
               render={({ field }) => (
-                <FormItem className="w-[260px]">
+                <FormItem className="w-[47%]">
                   <FormLabel className="flex items-center justify-between h-[16px]">
                     <div>
                       Consegne a <strong>CENA</strong>
@@ -304,19 +304,12 @@ export default function AddSession({
             />
           </div>
 
-          {/* <FormDescription className="text-center flex flex-col w-[450px]">
-            <a>
-              Puoi anche utilizzare ore non esatte, es: "2.5" (2 ore e mezza)
-            </a>
-            <a>Lascia vuoto se non il ragazzo non ha lavorato</a>
-          </FormDescription> */}
-
           <div className="w-[100%] flex justify-between">
             <FormField
               control={form.control}
               name="tipLunch"
               render={({ field }) => (
-                <FormItem className="w-[260px]">
+                <FormItem className="w-[47%]">
                   <FormLabel className="flex items-center justify-between h-[16px]">
                     <div>
                       Mancia a <strong>PRANZO</strong>
@@ -334,7 +327,7 @@ export default function AddSession({
               control={form.control}
               name="tipDinner"
               render={({ field }) => (
-                <FormItem className="w-[260px]">
+                <FormItem className="w-[47%]">
                   <FormLabel className="flex items-center justify-between h-[16px]">
                     <div>
                       Mancia a <strong>CENA</strong>
@@ -396,7 +389,7 @@ export default function AddSession({
             />
           </div>
 
-          <Button type="submit" name="submit" className="w-[200px]">
+          <Button type="submit" name="submit" className="w-[200px] self-end">
             Registra
           </Button>
 
@@ -481,6 +474,14 @@ export default function AddSession({
                             {session.tipDinner !== undefined &&
                             session.tipDinner !== 0
                               ? session.tipDinner + "€"
+                              : ""}
+                            {session.tipLunch !== undefined &&
+                            session.tipLunch !== 0 &&
+                            session.tipDinner !== undefined &&
+                            session.tipDinner !== 0
+                              ? " = " +
+                                (session.tipLunch + session.tipDinner) +
+                                "€"
                               : ""}
                           </strong>
                         </a>

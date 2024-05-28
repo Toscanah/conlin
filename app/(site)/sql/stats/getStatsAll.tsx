@@ -245,8 +245,6 @@ export default async function getStatsAll(
     })
   );
 
-  console.log("Query: ", aggregatedData);
-  console.log("Risultato: ", result);
   const filteredResult = result.filter((r) => r !== null) as StatsType[];
 
   filteredResult.sort((a, b) => a.riderName.localeCompare(b.riderName));

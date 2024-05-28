@@ -53,10 +53,10 @@ export default function ChangeParamsDialog() {
 
   return (
     <Dialog open={openDialog}>
-      <DialogTrigger asChild>
+      <DialogTrigger asChild className="">
         <Sliders
-          size={48}
-          className="hover:cursor-pointer"
+          size={40}
+          className="hover:cursor-pointer hover:scale-110 hover:bg-white hover:bg-opacity-5 rounded p-1"
           onClick={(e) => setOpenDialog(true)}
         />
       </DialogTrigger>

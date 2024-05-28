@@ -99,11 +99,11 @@ export default function Graph({
   const { theme, setTheme } = useTheme();
 
   return (
-    <div className="flex flex-col items-center justify-center gap-4 w-[70vw]">
+    <div className="flex flex-col items-center justify-center gap-4 w-[80%]">
       {/* <Button onClick={handleOpen}>Genera grafico</Button> */}
 
       {results && (
-        <div className="max-w-none h-[500px] w-[120%] p-4 flex flex-wrap overflow-y-auto items-center justify-center">
+        <div className="max-w-none h-[500px] w-[100%] p-4 flex flex-wrap overflow-y-auto items-center justify-center">
           {results.map(({ index, data }) => {
             const numGraphs = results.length;
             let widthClass = "h-[100%] ";

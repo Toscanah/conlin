@@ -21,8 +21,8 @@ model Session {
     rider_id      Int
     date          DateTime? @default(now()) @db.Date
     lunch_orders  Int?
-    dinner_orders Float?
-    lunch_time    Int?
+    dinner_orders Int?
+    lunch_time    Float?
     dinner_time   Float?
     tip_lunch     Float?
     tip_dinner    Float?

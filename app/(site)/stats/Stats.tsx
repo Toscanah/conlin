@@ -219,9 +219,9 @@ export default function Stats({
 
         <Select onValueChange={setSession} defaultValue="both">
           <div className="space-y-2 w-1/3">
-            <Label htmlFor="session">Sessione?</Label>
+            <Label htmlFor="session">Turno?</Label>
             <SelectTrigger id="session">
-              <SelectValue placeholder="Seleziona una sessione" />
+              <SelectValue placeholder="Seleziona un turno" />
             </SelectTrigger>
           </div>
 

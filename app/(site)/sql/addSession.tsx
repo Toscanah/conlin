@@ -8,7 +8,7 @@ export default async function addSession(newSession: Session) {
       Date.parse(a.toUTCString()) - a.getTimezoneOffset() * 60000
     );
   }
-  
+
   return await prisma.session.create({
     data: {
       rider_id: newSession.rider_id,
@@ -17,7 +17,8 @@ export default async function addSession(newSession: Session) {
       lunch_time: newSession.lunch_time,
       dinner_time: newSession.dinner_time,
       date: storeCorrectDate(newSession?.date ?? new Date()),
-      tip: newSession.tip
+      tip_lunch: newSession.tip_lunch,
+      tip_dinner: newSession.tip_dinner,
     },
   });
 }
