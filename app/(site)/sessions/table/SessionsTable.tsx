@@ -35,9 +35,9 @@ export default function SessionsTable({
   );
 
   return (
-    <div>
+    <>
       <div className="flex items-center py-4 w-full gap-2">
-        <>* = ordinato per data di default</>
+        {/* <>* = ordinato per data di default</> */}
         {/* <Input
           placeholder="Filtra"
           value={globalFilter ?? ""}
@@ -123,6 +123,6 @@ export default function SessionsTable({
           Prossimi
         </Button>
       </div>
-    </div>
+    </>
   );
 }

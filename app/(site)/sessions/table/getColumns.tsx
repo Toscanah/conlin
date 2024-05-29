@@ -56,6 +56,13 @@ export default function getColumns(
           </Button>
         );
       },
+      cell: ({ row }) => {
+        return row.original.rider?.nickname == undefined ? (
+          <span className="text-muted-foreground">/</span>
+        ) : (
+          row.original.rider?.nickname
+        );
+      },
       // cell: ({ row }) => row.original.rider?.nickname,
     },
     {
@@ -66,9 +73,39 @@ export default function getColumns(
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            Ordini pranzo
+            Consegne pranzo
             <ArrowsDownUp className="ml-2 h-4 w-4" />
           </Button>
+        );
+      },
+      cell: ({ row }) => {
+        return row.original.lunch_orders == undefined ||
+          row.original.lunch_orders == 0 ? (
+          <span className="text-muted-foreground">/</span>
+        ) : (
+          row.original.lunch_orders
+        );
+      },
+    },
+    {
+      accessorKey: "dinner_orders",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Consegne cena
+            <ArrowsDownUp className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+      cell: ({ row }) => {
+        return row.original.dinner_orders == undefined ||
+          row.original.dinner_orders == 0 ? (
+          <span className="text-muted-foreground">/</span>
+        ) : (
+          row.original.dinner_orders
         );
       },
     },
@@ -85,18 +122,12 @@ export default function getColumns(
           </Button>
         );
       },
-    },
-    {
-      accessorKey: "dinner_orders",
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            Ordini cena
-            <ArrowsDownUp className="ml-2 h-4 w-4" />
-          </Button>
+      cell: ({ row }) => {
+        return row.original.lunch_time == undefined ||
+          row.original.lunch_time == 0 ? (
+          <span className="text-muted-foreground">/</span>
+        ) : (
+          row.original.lunch_time
         );
       },
     },
@@ -113,18 +144,56 @@ export default function getColumns(
           </Button>
         );
       },
+      cell: ({ row }) => {
+        return row.original.dinner_time == undefined ||
+          row.original.dinner_time == 0 ? (
+          <span className="text-muted-foreground">/</span>
+        ) : (
+          row.original.dinner_time
+        );
+      },
     },
     {
-      accessorKey: "tip",
+      accessorKey: "tip_lunch",
       header: ({ column }) => {
         return (
           <Button
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            Mancia
+            Mancia pranzo
             <ArrowsDownUp className="ml-2 h-4 w-4" />
           </Button>
+        );
+      },
+      cell: ({ row }) => {
+        return row.original.tip_lunch == undefined ||
+          row.original.tip_lunch == 0 ? (
+          <span className="text-muted-foreground">/</span>
+        ) : (
+          row.original.tip_lunch
+        );
+      },
+    },
+    {
+      accessorKey: "tip_dinner",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Mancia cena
+            <ArrowsDownUp className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+      cell: ({ row }) => {
+        return row.original.tip_dinner == undefined ||
+          row.original.tip_dinner == 0 ? (
+          <span className="text-muted-foreground">/</span>
+        ) : (
+          row.original.tip_dinner
         );
       },
     },
