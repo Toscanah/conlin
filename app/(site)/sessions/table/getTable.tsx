@@ -1,5 +1,6 @@
 import {
   ColumnDef,
+  ColumnFiltersState,
   VisibilityState,
   getCoreRowModel,
   getFilteredRowModel,
@@ -13,28 +14,28 @@ import { SessionWithRider } from "../../types/SessionWithRider";
 export default function getTable(
   sessions: SessionWithRider[],
   columns: ColumnDef<SessionWithRider>[],
-  globalFilter: string,
-  setGlobalFilter: Dispatch<SetStateAction<string>>,
   columnVisibility: VisibilityState,
-  setColumnVisibility: Dispatch<SetStateAction<VisibilityState>>
+  setColumnVisibility: Dispatch<SetStateAction<VisibilityState>>,
+  columnFilters: ColumnFiltersState,
+  setColumnFilters: Dispatch<SetStateAction<ColumnFiltersState>>
 ) {
   return useReactTable({
     onColumnVisibilityChange: setColumnVisibility,
-    onGlobalFilterChange: setGlobalFilter,
-    getFilteredRowModel: getFilteredRowModel(),
     data: sessions,
     columns: columns,
     getPaginationRowModel: getPaginationRowModel(),
     getCoreRowModel: getCoreRowModel(),
     autoResetPageIndex: false,
     getSortedRowModel: getSortedRowModel(),
+    onColumnFiltersChange: setColumnFilters,
+    getFilteredRowModel: getFilteredRowModel(),
     state: {
       columnVisibility,
-      globalFilter,
+      columnFilters,
     },
     initialState: {
       pagination: {
-        pageSize: 12,
+        pageSize: 8,
       },
     },
   });

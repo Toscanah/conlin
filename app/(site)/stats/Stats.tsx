@@ -11,6 +11,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import {
   Popover,
   PopoverContent,
   PopoverTrigger,
@@ -30,10 +38,15 @@ import {
 import { DateRange } from "react-day-picker";
 import { Rider } from "@prisma/client";
 import { Button } from "@/components/ui/button";
-import { Calendar as CalendarIcon } from "@phosphor-icons/react";
+import {
+  Calendar as CalendarIcon,
+  CaretUpDown,
+  Check,
+} from "@phosphor-icons/react";
 import { useEffect, useState, memo } from "react";
 import StatsResult from "./results/StatsResult";
 import { StatsType } from "../types/StatsType";
+import { FormLabel } from "@/components/ui/form";
 
 export const revalidate = false;
 
@@ -47,10 +60,17 @@ export default function Stats({
   onResult: (result: StatsType[], index: number) => void;
 }) {
   const riders = receivedRiders;
-  const [rider, setRider] = useState<string>("all");
+  const [rider, setRider] = useState<Rider>({
+    id: -1,
+    name: "Tutti",
+    surname: "Tutti",
+    nickname: "Tutti",
+    is_active: false,
+  });
   const [date, setDate] = useState<DateRange>();
   const [context, setContext] = useState<string>("all");
   const [session, setSession] = useState<string>("both");
+  const [ridersPopoverOpen, setRidersPopoverOpen] = useState<boolean>(false);
 
   useEffect(() => {
     if (!date?.from || !date.to) {
@@ -94,7 +114,94 @@ export default function Stats({
   return (
     <div className="flex flex-col items-center p-6 w-[100%] gap-8 border- border rounded-lg">
       <div className="flex items-center gap-8 w-full">
-        <Select onValueChange={setRider} defaultValue="all">
+        <div className="space-y-2 w-1/3">
+          <Label htmlFor="rider">Ragazzo</Label>
+          <Popover >
+            {/**open={ridersPopoverOpen} */}
+            <PopoverTrigger asChild id="rider">
+              <Button
+                variant="outline"
+                role="combobox"
+                className={cn(
+                  "w-[100%] justify-between",
+                  !rider && "text-muted-foreground"
+                )}
+                onClick={() => {
+                  //setRidersPopoverOpen(true);
+                }}
+              >
+                {rider ? (
+                  rider.nickname ?? rider.name + " " + rider.surname
+                ) : (
+                  <span className="invisible">no placeholder</span>
+                )}
+                <CaretUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-[--radix-popover-trigger-width] max-h-[--radix-popover-content-available-height] p-0">
+              <Command>
+                <CommandInput placeholder="Cerca..." />
+                <CommandEmpty>Nessun ragazzo trovato</CommandEmpty>
+                <CommandGroup>
+                  <CommandList>
+                    <CommandItem
+                      key={-1}
+                      onSelect={() => {
+                        setRider({
+                          id: -1,
+                          name: "Tutti",
+                          surname: "Tutti",
+                          nickname: "Tutti",
+                          is_active: false,
+                        });
+                        //setRidersPopoverOpen(false);
+                      }}
+                    >
+                      <Check
+                        className={cn(
+                          "mr-2 h-4 w-4",
+                          rider && rider.id === -1 ? "opacity-100" : "opacity-0"
+                        )}
+                      />
+
+                      <strong>Tutti</strong>
+                    </CommandItem>
+                    {riders?.length ? (
+                      riders.map((singleRider) => (
+                        <CommandItem
+                          key={singleRider.id}
+                          onSelect={() => {
+                            setRider(singleRider);
+                            //setRidersPopoverOpen(false);
+                          }}
+                        >
+                          <Check
+                            className={cn(
+                              "mr-2 h-4 w-4",
+                              singleRider === rider
+                                ? "opacity-100"
+                                : "opacity-0"
+                            )}
+                          />
+                          {singleRider.name} {singleRider.surname ?? ""}{" "}
+                          {singleRider.nickname && (
+                            <>
+                              (<strong>{singleRider.nickname}</strong>)
+                            </>
+                          )}
+                        </CommandItem>
+                      ))
+                    ) : (
+                      <CommandEmpty>Nessun ragazzo trovato</CommandEmpty>
+                    )}
+                  </CommandList>
+                </CommandGroup>
+              </Command>
+            </PopoverContent>
+          </Popover>
+        </div>
+
+        {/* <Select onValueChange={setRider} defaultValue="all">
           <div className="space-y-2 w-1/3">
             <Label htmlFor="rider">Chi?</Label>
             <SelectTrigger id="rider">
@@ -121,7 +228,7 @@ export default function Stats({
               </SelectItem>
             ))}
           </SelectContent>
-        </Select>
+        </Select> */}
 
         <div className="space-y-2 w-1/2">
           <Label htmlFor="date">Data</Label>
@@ -239,9 +346,9 @@ export default function Stats({
         </Select>
       </div>
 
-      {rider !== "all" && date?.from && date?.to && (
+      {rider.id !== -1 && date?.from && date?.to && (
         <StatsResult
-          riderId={parseInt(rider.split("-")[0])}
+          riderId={rider.id}
           date={date}
           index={index}
           context={context}
@@ -251,7 +358,7 @@ export default function Stats({
         />
       )}
 
-      {rider === "all" && date?.from && date?.to && (
+      {rider.id === -1 && date?.from && date?.to && (
         <StatsResult
           date={date}
           index={index}

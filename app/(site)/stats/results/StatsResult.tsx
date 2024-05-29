@@ -40,6 +40,7 @@ import {
 } from "@/components/ui/table";
 import getTable from "./getTable";
 import getColumns from "./getColumns";
+import { cn } from "@/lib/utils";
 
 export default function StatsResult({
   index,
@@ -72,8 +73,8 @@ export default function StatsResult({
     columnVisibility,
     setColumnVisibility
   );
-
   const [noResult, setNoResult] = useState<boolean>(false);
+  const stickyColumnClass = "sticky left-0 bg-foreground/5 z-20";
 
   useEffect(() => {
     setLoading(true);
@@ -134,7 +135,6 @@ export default function StatsResult({
           setResult(sortedResult);
           onResult(sortedResult, index);
           setNoResult(sortedResult.length == 0);
-          
         });
       }
     });
@@ -180,62 +180,82 @@ export default function StatsResult({
   }, [context, session]);
 
   return (
-    <div
-      className="w-full overflow-y-auto max-h-[400px] rounded-md border"
-      id="main"
-    >
-      {loading && (
-        <BarLoader color="#00C0FF" loading={loading} width={"100%"} />
-      )}
+    <div className="w-full">
+      <div
+        className="w-full overflow-y-auto max-h-[40vh] rounded-md border"
+        id="main"
+      >
+        {loading && (
+          <BarLoader color="#00C0FF" loading={loading} width={"100%"} />
+        )}
 
-      {((date && result && result.length !== 0) || noResult) && (
-        <Table className="">
-          <TableHeader>
-            {table.getRowModel().rows?.length > 0 &&
-              table.getHeaderGroups().map((headerGroup) => (
-                <TableRow key={headerGroup.id}>
-                  {headerGroup.headers.map((header) => (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </TableHead>
-                  ))}
+        {((date && result && result.length !== 0) || noResult) && (
+          <Table>
+            <TableHeader className="sticky top-0 z-30 bg-background">
+              {table.getRowModel().rows?.length > 0 &&
+                table.getHeaderGroups().map((headerGroup) => (
+                  <TableRow key={headerGroup.id}>
+                    {headerGroup.headers.map((header, index) => (
+                      <TableHead
+                        key={header.id}
+                        className={cn(
+                          index === 0 &&
+                            "sticky left-0 bg-foreground z-40 text-background"
+                        )}
+                      >
+                        {header.isPlaceholder
+                          ? null
+                          : flexRender(
+                              header.column.columnDef.header,
+                              header.getContext()
+                            )}
+                      </TableHead>
+                    ))}
+                  </TableRow>
+                ))}
+            </TableHeader>
+            <TableBody>
+              {table.getRowModel().rows?.length > 0 ? (
+                table.getRowModel().rows.map((row) => (
+                  <TableRow
+                    key={row.id}
+                    data-state={row.getIsSelected() && "selected"}
+                  >
+                    {row.getVisibleCells().map((cell, index) => (
+                      <TableCell
+                        key={cell.id}
+                        className={cn(
+                          index === 0 &&
+                            "sticky left-0 bg-foreground z-20 text-background font-bold"
+                        )}
+                      >
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell
+                    colSpan={columns.length}
+                    className="h-24 text-center"
+                  >
+                    Nessun risultato!
+                  </TableCell>
                 </TableRow>
-              ))}
-          </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows?.length > 0 ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
-                  Nessun risultato!
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
+              )}
+            </TableBody>
+          </Table>
+        )}
+      </div>
+      {!loading && table.getRowModel().rows?.length > 1 && isAllRiders && (
+        <span className="text-muted-foreground mt-1 text-xs italic">
+          Pro tip: puoi cliccare una colonna per ordinare i risultati in base ad
+          essa
+        </span>
       )}
     </div>
   );

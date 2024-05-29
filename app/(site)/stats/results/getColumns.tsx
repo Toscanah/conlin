@@ -35,7 +35,7 @@ export default function getColumns(): ColumnDef<StatsType>[] {
       cell: ({ row }) => {
         return row.original.lunchOrders == 0 ||
           row.original.lunchOrders == undefined ? (
-          <span className="text-muted-foreground">/</span>
+          <span className="text-muted-foreground hidden">/</span>
         ) : (
           row.original.lunchOrders
         );
@@ -57,7 +57,7 @@ export default function getColumns(): ColumnDef<StatsType>[] {
       cell: ({ row }) => {
         return row.original.dinnerOrders == 0 ||
           row.original.dinnerOrders == undefined ? (
-          <span className="text-muted-foreground">/</span>
+          <span className="text-muted-foreground hidden">/</span>
         ) : (
           row.original.dinnerOrders
         );
@@ -79,7 +79,7 @@ export default function getColumns(): ColumnDef<StatsType>[] {
       cell: ({ row }) => {
         return row.original.totalOrders == 0 ||
           row.original.totalOrders == undefined ? (
-          <span className="text-muted-foreground">/</span>
+          <span className="text-muted-foreground hidden">/</span>
         ) : (
           row.original.totalOrders
         );
@@ -101,7 +101,7 @@ export default function getColumns(): ColumnDef<StatsType>[] {
       cell: ({ row }) => {
         return row.original.lunchHours == 0 ||
           row.original.lunchHours == undefined ? (
-          <span className="text-muted-foreground">/</span>
+          <span className="text-muted-foreground hidden">/</span>
         ) : (
           row.original.lunchHours
         );
@@ -123,7 +123,7 @@ export default function getColumns(): ColumnDef<StatsType>[] {
       cell: ({ row }) => {
         return row.original.dinnerHours == 0 ||
           row.original.dinnerHours == undefined ? (
-          <span className="text-muted-foreground">/</span>
+          <span className="text-muted-foreground hidden">/</span>
         ) : (
           row.original.dinnerHours
         );
@@ -145,7 +145,7 @@ export default function getColumns(): ColumnDef<StatsType>[] {
       cell: ({ row }) => {
         return row.original.totalHours == 0 ||
           row.original.totalHours == undefined ? (
-          <span className="text-muted-foreground">/</span>
+          <span className="text-muted-foreground hidden">/</span>
         ) : (
           row.original.totalHours
         );
@@ -167,7 +167,7 @@ export default function getColumns(): ColumnDef<StatsType>[] {
       cell: ({ row }) => {
         return row.original.lunchPay == 0 ||
           row.original.lunchPay == undefined ? (
-          <span className="text-muted-foreground">/</span>
+          <span className="text-muted-foreground hidden">/</span>
         ) : (
           row.original.lunchPay
         );
@@ -189,7 +189,7 @@ export default function getColumns(): ColumnDef<StatsType>[] {
       cell: ({ row }) => {
         return row.original.dinnerPay == 0 ||
           row.original.dinnerPay == undefined ? (
-          <span className="text-muted-foreground">/</span>
+          <span className="text-muted-foreground hidden">/</span>
         ) : (
           row.original.dinnerPay
         );
@@ -211,7 +211,7 @@ export default function getColumns(): ColumnDef<StatsType>[] {
       cell: ({ row }) => {
         return row.original.totalPay == 0 ||
           row.original.totalPay == undefined ? (
-          <span className="text-muted-foreground">/</span>
+          <span className="text-muted-foreground hidden">/</span>
         ) : (
           row.original.totalPay
         );
@@ -233,7 +233,7 @@ export default function getColumns(): ColumnDef<StatsType>[] {
       cell: ({ row }) => {
         return row.original.lunchTip == 0 ||
           row.original.lunchTip == undefined ? (
-          <span className="text-muted-foreground">/</span>
+          <span className="text-muted-foreground hidden">/</span>
         ) : (
           row.original.lunchTip
         );
@@ -255,7 +255,7 @@ export default function getColumns(): ColumnDef<StatsType>[] {
       cell: ({ row }) => {
         return row.original.dinnerTip == 0 ||
           row.original.dinnerTip == undefined ? (
-          <span className="text-muted-foreground">/</span>
+          <span className="text-muted-foreground hidden">/</span>
         ) : (
           row.original.dinnerTip
         );
@@ -277,7 +277,7 @@ export default function getColumns(): ColumnDef<StatsType>[] {
       cell: ({ row }) => {
         return row.original.totalTip == 0 ||
           row.original.totalTip == undefined ? (
-          <span className="text-muted-foreground">/</span>
+          <span className="text-muted-foreground hidden">/</span>
         ) : (
           row.original.totalTip
         );
@@ -299,7 +299,7 @@ export default function getColumns(): ColumnDef<StatsType>[] {
       cell: ({ row }) => {
         return row.original.totalMoney == 0 ||
           row.original.totalMoney == undefined ? (
-          <span className="text-muted-foreground">/</span>
+          <span className="text-muted-foreground hidden">/</span>
         ) : (
           row.original.totalMoney
         );

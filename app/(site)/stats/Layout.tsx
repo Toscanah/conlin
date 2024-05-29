@@ -163,7 +163,7 @@ export default function Layout({ riders }: { riders: Rider[] }) {
             </>
           )}
 
-        {results[0] && results[0]?.data.length !== 0 && (
+        {results[0] && results[0]?.data.length > 1 && (
           <>
             <span className="text-[0.25rem]">-</span>
             <Graph results={results} />

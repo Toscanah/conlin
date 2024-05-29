@@ -52,7 +52,7 @@ const tipSchema = z.coerce
 
 export const formSchema = z
   .object({
-    rider: z.string({
+    rider: z.any({
       required_error: "Questo campo è richiesto",
     }),
     lunchOrders: ordersSchema,

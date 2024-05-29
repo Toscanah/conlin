@@ -20,7 +20,7 @@ export default async function Home() {
       >
         <TabsList defaultValue="stats" className="w-full h-[50px] ">
           <TabsTrigger value="register-session" className="w-[50%] h-[46px] text-xl">
-            Aggiunta turno
+            Turni
           </TabsTrigger>
           <TabsTrigger value="stats" className="w-[50%] h-[46px] text-xl">
             Statistiche
@@ -40,7 +40,7 @@ export default async function Home() {
         </TabsContent>
       </Tabs>
 
-      <div className="flex flex-col gap-4 fixed text-4xl left-4 top-1/2 bg-foreground/5 transform -translate-y-1/2 rounded-sm p-4">
+      <div className="flex flex-col gap-4 text-4xl fixed  left-4 top-1/2 transform -translate-y-1/2  bg-foreground/5 rounded-sm p-4">
         <RidersPageButton />
         <ChangeParamsDialog />
         <SessionsPageButton />

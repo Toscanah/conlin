@@ -35,17 +35,17 @@ export default function TotalStats({ totals }: { totals: TotalsType }) {
           <TableRow className="flex justify-center w-full items-center">
             {totals.totalOrders !== undefined && (
               <TableCell className="w-[20%]">
-                <strong>{totals.totalOrders}</strong>
+                <strong>{totals.totalOrders.toFixed(2)}</strong>
               </TableCell>
             )}
             {totals.totalHours !== undefined && (
               <TableCell className="w-[20%]">
-                <strong>{totals.totalHours}</strong>
+                <strong>{totals.totalHours.toFixed(2)}</strong>
               </TableCell>
             )}
             {totals.totalPay !== undefined && (
               <TableCell className="w-[20%]">
-                <strong>{totals.totalPay}</strong>
+                <strong>{totals.totalPay.toFixed(2)}</strong>
               </TableCell>
             )}
             {totals.totalTip !== undefined && (
@@ -55,7 +55,7 @@ export default function TotalStats({ totals }: { totals: TotalsType }) {
             )}
             {totals.totalMoney !== undefined && (
               <TableCell className="w-[20%]">
-                <strong>{totals.totalMoney}€</strong>
+                <strong>{totals.totalMoney.toFixed(2)}€</strong>
               </TableCell>
             )}
           </TableRow>

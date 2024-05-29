@@ -17,7 +17,11 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { format } from "date-fns";
-import { Calendar as CalendarIcon } from "@phosphor-icons/react";
+import {
+  Calendar as CalendarIcon,
+  CaretUpDown,
+  Check,
+} from "@phosphor-icons/react";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { Question } from "@phosphor-icons/react";
@@ -51,6 +55,15 @@ import { Rider } from "@prisma/client";
 import getSessionForm, { FormValues } from "../forms/getSessionForm";
 import { Calendar } from "@/components/ui/calendar";
 import { MultiplierContext } from "../multipliers/MultipliersProvider";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import { PopoverClose } from "@radix-ui/react-popover";
 
 export const dynamic = "force-dynamic";
 
@@ -67,11 +80,10 @@ export default function AddSession({
   const [date, setDate] = useState<Date>();
   const form: any = getSessionForm();
   const { toast } = useToast();
+  const [ridersPopoverOpen, setRidersPopoverOpen] = useState<boolean>(false);
 
   const { lunchMultiplier, dinnerMultiplier, ordersMultiplier } =
     useContext(MultiplierContext);
-
-  console.log(lunchMultiplier);
 
   function onSubmit(values: FormValues) {
     setConfirmDialogOpen(true);
@@ -115,7 +127,7 @@ export default function AddSession({
       total += totalTip;
     }
 
-    if (final && (dinner > 0 || lunch > 0 || totalTip > 0)) {
+    if (final && ((dinner > 0 && lunch > 0) || totalTip > 0)) {
       final += " = " + total.toFixed(2);
     } else {
       final = total.toFixed(2);
@@ -130,8 +142,9 @@ export default function AddSession({
 
     fetch("/api/sessions/add/", {
       method: "POST",
+
       body: JSON.stringify({
-        rider_id: Number.parseInt(session?.rider.split("-")[0] ?? "0"),
+        rider_id: session?.rider.id,
         lunch_orders: session?.lunchOrders,
         dinner_orders: session?.dinnerOrders,
         lunch_time: session?.lunchTime,
@@ -151,7 +164,7 @@ export default function AddSession({
 
       setTimeout(() => {
         window.location.reload();
-      }, 3000);
+      }, 0);
     });
   }
 
@@ -169,185 +182,14 @@ export default function AddSession({
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="space-y-8 flex justify-center w-full flex-col items-center"
+          className="space-y-8 flex justify-center w-[90%] flex-col items-center"
         >
-          <FormField
-            control={form.control}
-            name="rider"
-            render={({ field }) => (
-              <FormItem className="w-[100%]">
-                <FormLabel className="flex items-center justify-between h-[16px]">
-                  Ragazzo
-                </FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {riders.map((rider) => (
-                      <SelectItem
-                        key={rider.id}
-                        value={rider.id.toString() + "-" + rider.nickname}
-                      >
-                        {rider.name + " " + (rider.surname ?? "")}
-                        {rider.nickname && (
-                          <>
-                            {" "}
-                            (<strong>{rider.nickname}</strong>)
-                          </>
-                        )}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage>
-                  {form.formState.errors.rider?.message}
-                </FormMessage>
-              </FormItem>
-            )}
-          />
-
           <div className="w-[100%] flex justify-between items-center">
-            <FormField
-              control={form.control}
-              name="lunchTime"
-              render={({ field }) => (
-                <FormItem className="w-[47%]">
-                  <FormLabel className="flex items-center justify-between">
-                    <div>
-                      Ore a <strong>PRANZO</strong>
-                    </div>
-                    <HoverCard>
-                      <HoverCardTrigger>
-                        <Question size={16} />
-                      </HoverCardTrigger>
-                      <HoverCardContent>
-                        Le ore posso anche essere "mezze", es: 4.3 ore
-                      </HoverCardContent>
-                    </HoverCard>
-                  </FormLabel>
-                  <FormControl>
-                    <Input {...field} type="number" step={0.1} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="lunchOrders"
-              render={({ field }) => (
-                <FormItem className="w-[47%]">
-                  <FormLabel className="flex items-center justify-between h-[16px]">
-                    <div>
-                      Consegne a <strong>PRANZO</strong>
-                    </div>
-                    <HoverCard>
-                      <HoverCardTrigger>
-                        <Question size={16} />
-                      </HoverCardTrigger>
-                      <HoverCardContent>
-                        Lascia vuoto se le consegne sono 0
-                      </HoverCardContent>
-                    </HoverCard>
-                  </FormLabel>
-                  <FormControl>
-                    <Input {...field} type="number" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-
-          <div className="w-[100%] flex justify-between">
-            <FormField
-              control={form.control}
-              name="dinnerTime"
-              render={({ field }) => (
-                <FormItem className="w-[47%]">
-                  <FormLabel className="flex items-center justify-between ">
-                    <div>
-                      Ore a <strong>CENA</strong>
-                    </div>
-                  </FormLabel>
-                  <FormControl>
-                    <Input {...field} type="number" step={0.1} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="dinnerOrders"
-              render={({ field }) => (
-                <FormItem className="w-[47%]">
-                  <FormLabel className="flex items-center justify-between h-[16px]">
-                    <div>
-                      Consegne a <strong>CENA</strong>
-                    </div>
-                  </FormLabel>
-                  <FormControl>
-                    <Input {...field} type="number" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-
-          <div className="w-[100%] flex justify-between">
-            <FormField
-              control={form.control}
-              name="tipLunch"
-              render={({ field }) => (
-                <FormItem className="w-[47%]">
-                  <FormLabel className="flex items-center justify-between h-[16px]">
-                    <div>
-                      Mancia a <strong>PRANZO</strong>
-                    </div>
-                  </FormLabel>
-                  <FormControl>
-                    <Input {...field} type="number" step={0.1} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="tipDinner"
-              render={({ field }) => (
-                <FormItem className="w-[47%]">
-                  <FormLabel className="flex items-center justify-between h-[16px]">
-                    <div>
-                      Mancia a <strong>CENA</strong>
-                    </div>
-                  </FormLabel>
-                  <FormControl>
-                    <Input {...field} type="number" step={0.1} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-
-          <div className="w-[100%] flex justify-between">
             <FormField
               control={form.control}
               name="date"
               render={({ field }) => (
-                <FormItem className="w-full">
+                <FormItem className="w-[47.5%]">
                   <FormLabel className="flex items-center justify-between h-[16px]">
                     Data
                   </FormLabel>
@@ -387,9 +229,217 @@ export default function AddSession({
                 </FormItem>
               )}
             />
+
+            <FormField
+              control={form.control}
+              name="rider"
+              render={({ field }) => (
+                <FormItem className="w-[47.5%]">
+                  <FormLabel className="flex items-center justify-between h-[16px]">
+                    Ragazzo
+                  </FormLabel>
+
+                  <Popover>
+                    {/**open={ridersPopoverOpen} */}
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant="outline"
+                          role="combobox"
+                          className={cn(
+                            "w-[100%] justify-between",
+                            !field.value && "text-muted-foreground"
+                          )}
+                          onClick={() => {
+                            //setRidersPopoverOpen(true);
+                          }}
+                        >
+                          {field.value ? (
+                            field.value.nickname ??
+                            field.value.name + " " + field.value.surname
+                          ) : (
+                            <span className="invisible">no placeholder</span>
+                          )}
+                          <CaretUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-[--radix-popover-trigger-width] max-h-[--radix-popover-content-available-height] p-0">
+                      <Command>
+                        <CommandInput placeholder="Cerca..." />
+                        <CommandEmpty>Nessun ragazzo trovato</CommandEmpty>
+                        <CommandGroup>
+                          <CommandList>
+                            {riders?.length ? (
+                              riders.map((rider) => (
+                                <CommandItem
+                                  key={rider.id}
+                                  onSelect={() => {
+                                    form.setValue("rider", rider);
+                                    //setRidersPopoverOpen(false);
+                                  }}
+                                >
+                                  <Check
+                                    className={cn(
+                                      "mr-2 h-4 w-4",
+                                      rider === field.value
+                                        ? "opacity-100"
+                                        : "opacity-0"
+                                    )}
+                                  />
+                                  {rider.name} {rider.surname ?? ""}{" "}
+                                  {rider.nickname && (
+                                    <>
+                                      (<strong>{rider.nickname}</strong>)
+                                    </>
+                                  )}
+                                </CommandItem>
+                              ))
+                            ) : (
+                              <CommandEmpty>
+                                Nessun ragazzo trovato
+                              </CommandEmpty>
+                            )}
+                          </CommandList>
+                        </CommandGroup>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
+
+                  <FormMessage>
+                    {form.formState.errors.rider?.message}
+                  </FormMessage>
+                </FormItem>
+              )}
+            />
           </div>
 
-          <Button type="submit" name="submit" className="w-[200px] self-end">
+          <div className="w-[100%] flex justify-between items-center">
+            <FormField
+              control={form.control}
+              name="lunchOrders"
+              render={({ field }) => (
+                <FormItem className="w-[30%]">
+                  <FormLabel className="flex items-center justify-between h-[16px]">
+                    <div>
+                      Consegne a <strong>PRANZO</strong>
+                    </div>
+                    <HoverCard>
+                      <HoverCardTrigger>
+                        <Question size={16} />
+                      </HoverCardTrigger>
+                      <HoverCardContent>
+                        Lascia vuoto se le consegne sono 0
+                      </HoverCardContent>
+                    </HoverCard>
+                  </FormLabel>
+                  <FormControl>
+                    <Input {...field} type="number" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="lunchTime"
+              render={({ field }) => (
+                <FormItem className="w-[30%]">
+                  <FormLabel className="flex items-center justify-between">
+                    <div>
+                      Ore a <strong>PRANZO</strong>
+                    </div>
+                    <HoverCard>
+                      <HoverCardTrigger>
+                        <Question size={16} />
+                      </HoverCardTrigger>
+                      <HoverCardContent>
+                        Le ore posso anche essere "mezze", es: 4.3 ore
+                      </HoverCardContent>
+                    </HoverCard>
+                  </FormLabel>
+                  <FormControl>
+                    <Input {...field} type="number" step={0.1} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="tipLunch"
+              render={({ field }) => (
+                <FormItem className="w-[30%]">
+                  <FormLabel className="flex items-center justify-between h-[16px]">
+                    <div>
+                      Mancia a <strong>PRANZO</strong>
+                    </div>
+                  </FormLabel>
+                  <FormControl>
+                    <Input {...field} type="number" step={0.1} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+
+          <div className="w-[100%] flex justify-between">
+            <FormField
+              control={form.control}
+              name="dinnerOrders"
+              render={({ field }) => (
+                <FormItem className="w-[30%]">
+                  <FormLabel className="flex items-center justify-between h-[16px]">
+                    <div>
+                      Consegne a <strong>CENA</strong>
+                    </div>
+                  </FormLabel>
+                  <FormControl>
+                    <Input {...field} type="number" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="dinnerTime"
+              render={({ field }) => (
+                <FormItem className="w-[30%]">
+                  <FormLabel className="flex items-center justify-between ">
+                    <div>
+                      Ore a <strong>CENA</strong>
+                    </div>
+                  </FormLabel>
+                  <FormControl>
+                    <Input {...field} type="number" step={0.1} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="tipDinner"
+              render={({ field }) => (
+                <FormItem className="w-[30%]">
+                  <FormLabel className="flex items-center justify-between h-[16px]">
+                    <div>
+                      Mancia a <strong>CENA</strong>
+                    </div>
+                  </FormLabel>
+                  <FormControl>
+                    <Input {...field} type="number" step={0.1} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+
+          <Button type="submit" name="submit" className="w-[100%]">
             Registra
           </Button>
 
@@ -418,7 +468,7 @@ export default function AddSession({
                   {session && (
                     <div className="flex flex-col gap-1 text-foreground">
                       <a>
-                        Ragazzo: <strong>{session.rider.split("-")[1]}</strong>
+                        Ragazzo: <strong>{session.rider.nickname}</strong>
                       </a>
                       {session.lunchTime !== undefined &&
                         session.lunchTime !== 0 && (

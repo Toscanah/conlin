@@ -6,6 +6,19 @@ import { ColumnDef } from "@tanstack/react-table";
 import { format, toZonedTime } from "date-fns-tz";
 import { it } from "date-fns/locale";
 import { SessionWithRider } from "../../types/SessionWithRider";
+import { Input } from "@/components/ui/input";
+import { Calendar } from "@/components/ui/calendar";
+import { cn } from "@/lib/utils";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  Calendar as CalendarIcon,
+  CaretUpDown,
+  Check,
+} from "@phosphor-icons/react";
 
 export default function getColumns(
   onEdit?: (session: SessionWithRider) => void,
@@ -25,6 +38,7 @@ export default function getColumns(
         return (
           <Button
             variant="ghost"
+            className="w-[200px]"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             *Data
@@ -33,14 +47,43 @@ export default function getColumns(
         );
       },
       cell: ({ row }) => {
-        const date = row.original.date;
-        const timeZone = "Europe/Rome"; // Italian timezone
-        const zonedDate = toZonedTime(date ?? new Date(), timeZone);
-        const formattedDate = format(zonedDate, "EEEE dd-MM-yyyy", {
-          locale: it,
-        });
+        // const date = row.original.date;
+        // const timeZone = "Europe/Rome"; // Italian timezone
+        // const zonedDate = toZonedTime(date ?? new Date(), timeZone);
+        // const formattedDate = format(zonedDate, "EEEE dd-MM-yyyy", {
+        //   locale: it,
+        // });
 
-        return formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1);
+        // return formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1);
+        return (
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                variant={"outline"}
+                className={cn(
+                  "w-full pl-3 text-left font-normal",
+                  !row.original.date && "text-muted-foreground"
+                )}
+              >
+                {row.original.date ? (
+                  format(row.original.date, "PPP", { locale: it })
+                ) : (
+                  <span>Filtra per data</span>
+                )}
+                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0" align="start">
+              <Calendar
+                locale={it}
+                mode="single"
+                selected={row.original.date ?? new Date()}
+                // onSelect={(date) => setDate(date ?? new Date())}
+                initialFocus
+              />
+            </PopoverContent>
+          </Popover>
+        );
       },
     },
     {
@@ -58,7 +101,7 @@ export default function getColumns(
       },
       cell: ({ row }) => {
         return row.original.rider?.nickname == undefined ? (
-          <span className="text-muted-foreground">/</span>
+          <span className="text-muted-foreground hidden">/</span>
         ) : (
           row.original.rider?.nickname
         );
@@ -81,9 +124,9 @@ export default function getColumns(
       cell: ({ row }) => {
         return row.original.lunch_orders == undefined ||
           row.original.lunch_orders == 0 ? (
-          <span className="text-muted-foreground">/</span>
+          <span className="text-muted-foreground hidden">/</span>
         ) : (
-          row.original.lunch_orders
+          <Input value={row.original.lunch_orders} />
         );
       },
     },
@@ -103,9 +146,9 @@ export default function getColumns(
       cell: ({ row }) => {
         return row.original.dinner_orders == undefined ||
           row.original.dinner_orders == 0 ? (
-          <span className="text-muted-foreground">/</span>
+          <span className="text-muted-foreground hidden">/</span>
         ) : (
-          row.original.dinner_orders
+          <Input value={row.original.dinner_orders} />
         );
       },
     },
@@ -125,9 +168,9 @@ export default function getColumns(
       cell: ({ row }) => {
         return row.original.lunch_time == undefined ||
           row.original.lunch_time == 0 ? (
-          <span className="text-muted-foreground">/</span>
+          <span className="text-muted-foreground hidden">/</span>
         ) : (
-          row.original.lunch_time
+          <Input value={row.original.lunch_time} />
         );
       },
     },
@@ -147,9 +190,9 @@ export default function getColumns(
       cell: ({ row }) => {
         return row.original.dinner_time == undefined ||
           row.original.dinner_time == 0 ? (
-          <span className="text-muted-foreground">/</span>
+          <span className="text-muted-foreground hidden">/</span>
         ) : (
-          row.original.dinner_time
+          <Input value={row.original.dinner_time} />
         );
       },
     },
@@ -169,9 +212,9 @@ export default function getColumns(
       cell: ({ row }) => {
         return row.original.tip_lunch == undefined ||
           row.original.tip_lunch == 0 ? (
-          <span className="text-muted-foreground">/</span>
+          <span className="text-muted-foreground hidden">/</span>
         ) : (
-          row.original.tip_lunch
+          <Input value={row.original.tip_lunch} />
         );
       },
     },
@@ -191,9 +234,9 @@ export default function getColumns(
       cell: ({ row }) => {
         return row.original.tip_dinner == undefined ||
           row.original.tip_dinner == 0 ? (
-          <span className="text-muted-foreground">/</span>
+          <span className="text-muted-foreground hidden">/</span>
         ) : (
-          row.original.tip_dinner
+          <Input value={row.original.tip_dinner} />
         );
       },
     },
