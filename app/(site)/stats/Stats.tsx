@@ -114,7 +114,7 @@ export default function Stats({
   return (
     <div className="flex flex-col items-center p-6 w-[100%] gap-8 border- border rounded-lg">
       <div className="flex items-center gap-8 w-full">
-        <div className="space-y-2 w-1/3">
+        <div className="space-y-2 w-[30%]">
           <Label htmlFor="rider">Ragazzo</Label>
           <Popover >
             {/**open={ridersPopoverOpen} */}
@@ -230,7 +230,7 @@ export default function Stats({
           </SelectContent>
         </Select> */}
 
-        <div className="space-y-2 w-1/2">
+        <div className="space-y-2 w-[40%]">
           <Label htmlFor="date">Data</Label>
           <Popover>
             <PopoverTrigger asChild>
@@ -295,7 +295,7 @@ export default function Stats({
         </div>
 
         <Select onValueChange={setContext} defaultValue="all">
-          <div className="space-y-2 w-1/4">
+          <div className="space-y-2 w-[15%]">
             <Label htmlFor="context">Cosa?</Label>
             <SelectTrigger id="context">
               <SelectValue placeholder="Seleziona un contesto" />
@@ -325,7 +325,7 @@ export default function Stats({
         </Select>
 
         <Select onValueChange={setSession} defaultValue="both">
-          <div className="space-y-2 w-1/4">
+          <div className="space-y-2 w-[15%]">
             <Label htmlFor="session">Turno?</Label>
             <SelectTrigger id="session">
               <SelectValue placeholder="Seleziona un turno" />
