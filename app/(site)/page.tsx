@@ -28,7 +28,7 @@ export default async function Home() {
         </TabsList>
         <TabsContent
           value="register-session"
-          className="flex justify-center items-center w-[35%]"
+          className="flex justify-center items-center w-[55%]"
         >
           <AddSession riders={await getActiveRiders()} />
         </TabsContent>
