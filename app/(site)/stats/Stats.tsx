@@ -295,7 +295,7 @@ export default function Stats({
         </div>
 
         <Select onValueChange={setContext} defaultValue="all">
-          <div className="space-y-2 w-1/3">
+          <div className="space-y-2 w-1/4">
             <Label htmlFor="context">Cosa?</Label>
             <SelectTrigger id="context">
               <SelectValue placeholder="Seleziona un contesto" />
@@ -325,7 +325,7 @@ export default function Stats({
         </Select>
 
         <Select onValueChange={setSession} defaultValue="both">
-          <div className="space-y-2 w-1/3">
+          <div className="space-y-2 w-1/4">
             <Label htmlFor="session">Turno?</Label>
             <SelectTrigger id="session">
               <SelectValue placeholder="Seleziona un turno" />
