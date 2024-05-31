@@ -1,5 +1,5 @@
-import { Session } from "@prisma/client";
+import { Prisma, Rider, Session } from "@prisma/client";
 
-export type SessionWithRider = Session & {
-  rider?: { nickname?: string | undefined | null};
-};
+export type SessionWithRider = Prisma.SessionGetPayload<{
+  include: { rider: true };
+}>;

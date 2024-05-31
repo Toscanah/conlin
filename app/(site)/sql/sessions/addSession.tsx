@@ -1,5 +1,5 @@
 import { Session } from "@prisma/client";
-import prisma from "./db";
+import prisma from ".././db";
 
 export default async function addSession(newSession: Session) {
   function storeCorrectDate(date: Date) {
