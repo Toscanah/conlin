@@ -30,6 +30,7 @@ import {
   CommandItem,
 } from "@/components/ui/command";
 import { Rider } from "@prisma/client";
+import DeleteSession from "../actions/DeleteSession";
 
 export default function getColumns(
   rowData: SessionWithRider[],
@@ -116,23 +117,21 @@ export default function getColumns(
         return (
           <Popover>
             <PopoverTrigger asChild>
-              
-                <Button
-                  variant="outline"
-                  role="combobox"
-                  className={cn(
-                    "w-[200px] justify-between",
-                    !rider && "text-muted-foreground"
-                  )}
-                >
-                  {rider ? (
-                    rider.nickname ?? rider.name + " " + rider.surname
-                  ) : (
-                    <span className="invisible">no placeholder</span>
-                  )}
-                  <CaretUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                </Button>
-              
+              <Button
+                variant="outline"
+                role="combobox"
+                className={cn(
+                  "w-[200px] justify-between",
+                  !rider && "text-muted-foreground"
+                )}
+              >
+                {rider ? (
+                  rider.nickname ?? rider.surname
+                ) : (
+                  <span className="invisible">no placeholder</span>
+                )}
+                <CaretUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+              </Button>
             </PopoverTrigger>
             <PopoverContent className="w-[--radix-popover-trigger-width] max-h-[--radix-popover-content-available-height] p-0">
               <Command>
@@ -161,7 +160,8 @@ export default function getColumns(
                                 : "opacity-0"
                             )}
                           />
-                          {singleRider.name} {singleRider.surname ?? ""}{" "}
+                          {singleRider.name.charAt(0)} {". "}
+                          {singleRider.surname}{" "}
                           {singleRider.nickname && (
                             <>
                               (<strong>{singleRider.nickname}</strong>)
@@ -186,10 +186,7 @@ export default function getColumns(
       cell: ({ row }) => {
         const value = rowData[row.original.id]?.lunch_orders;
 
-        return row.original.lunch_orders == undefined ||
-          row.original.lunch_orders == 0 ? (
-          <span className="text-muted-foreground hidden">/</span>
-        ) : (
+        return (
           <Input
             defaultValue={value || ""}
             onKeyUp={(e) => handleUpdate(row.original.id, "lunch_orders", e)}
@@ -203,10 +200,7 @@ export default function getColumns(
       cell: ({ row }) => {
         const value = rowData[row.original.id]?.dinner_orders;
 
-        return row.original.dinner_orders == undefined ||
-          row.original.dinner_orders == 0 ? (
-          <span className="text-muted-foreground hidden">/</span>
-        ) : (
+        return (
           <Input
             defaultValue={value || ""}
             onKeyUp={(e) => handleUpdate(row.original.id, "dinner_orders", e)}
@@ -220,10 +214,7 @@ export default function getColumns(
       cell: ({ row }) => {
         const value = rowData[row.original.id]?.lunch_time;
 
-        return row.original.lunch_time == undefined ||
-          row.original.lunch_time == 0 ? (
-          <span className="text-muted-foreground hidden">/</span>
-        ) : (
+        return (
           <Input
             defaultValue={value || ""}
             onKeyUp={(e) => handleUpdate(row.original.id, "lunch_time", e)}
@@ -237,10 +228,7 @@ export default function getColumns(
       cell: ({ row }) => {
         const value = rowData[row.original.id]?.dinner_time;
 
-        return row.original.dinner_time == undefined ||
-          row.original.dinner_time == 0 ? (
-          <span className="text-muted-foreground hidden">/</span>
-        ) : (
+        return (
           <Input
             defaultValue={value || ""}
             onKeyUp={(e) => handleUpdate(row.original.id, "dinner_time", e)}
@@ -254,10 +242,7 @@ export default function getColumns(
       cell: ({ row }) => {
         const value = rowData[row.original.id]?.tip_lunch;
 
-        return row.original.tip_lunch == undefined ||
-          row.original.tip_lunch == 0 ? (
-          <span className="text-muted-foreground hidden">/</span>
-        ) : (
+        return (
           <Input
             defaultValue={value || ""}
             onKeyUp={(e) => handleUpdate(row.original.id, "tip_lunch", e)}
@@ -271,10 +256,7 @@ export default function getColumns(
       cell: ({ row }) => {
         const value = rowData[row.original.id]?.tip_dinner;
 
-        return row.original.tip_dinner == undefined ||
-          row.original.tip_dinner == 0 ? (
-          <span className="text-muted-foreground hidden">/</span>
-        ) : (
+        return (
           <Input
             defaultValue={value || ""}
             onKeyUp={(e) => handleUpdate(row.original.id, "tip_dinner", e)}
@@ -284,14 +266,7 @@ export default function getColumns(
     },
     {
       accessorKey: "Azioni",
-      cell: ({ row }) => {
-        return (
-          <div className="flex gap-2">
-            {/* <EditRider rider={row.original} onEdit={onEdit} /> */}
-            {/* <DeleteRider rider={row.original} onDelete={onDelete} /> */}
-          </div>
-        );
-      },
+      cell: ({ row }) => <DeleteSession session={row.original} />,
     },
   ];
 }

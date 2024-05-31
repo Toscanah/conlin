@@ -1,5 +1,5 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import AddSession from "./sessions/AddSession";
+import AddSession from "./sessions/actions/AddSession";
 import RidersPageButton from "./RidersPageButton";
 import getRiders from "./sql/getRiders";
 import Layout from "./stats/Layout";

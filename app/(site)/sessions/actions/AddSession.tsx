@@ -52,9 +52,9 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Rider } from "@prisma/client";
-import getSessionForm, { FormValues } from "../forms/getSessionForm";
+import getSessionForm, { FormValues } from "../../forms/getSessionForm";
 import { Calendar } from "@/components/ui/calendar";
-import { MultiplierContext } from "../multipliers/MultipliersProvider";
+import { MultiplierContext } from "../../multipliers/MultipliersProvider";
 import {
   Command,
   CommandEmpty,

@@ -6,7 +6,11 @@ export default function ColumnHeader(column: any, fieldName: string) {
     <Button
       variant="ghost"
       className=""
-      onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      onClick={() => {
+        if (fieldName == "*Data") {
+          column.toggleSorting(column.getIsSorted() === "asc");
+        }
+      }}
     >
       {fieldName}
       <ArrowsDownUp className="ml-2 h-4 w-4" />

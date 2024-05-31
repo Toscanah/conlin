@@ -105,7 +105,7 @@ export const formSchema = z
 
 export type FormValues = z.infer<typeof formSchema>;
 
-export default function getSessionForm() {
+export default function getSessionForm(): any {
   return useForm<FormValues>({
     resolver: zodResolver(formSchema),
   });

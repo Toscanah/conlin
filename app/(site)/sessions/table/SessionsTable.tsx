@@ -12,6 +12,14 @@ import { Input } from "@/components/ui/input";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
+  Command,
+  CommandInput,
+  CommandEmpty,
+  CommandGroup,
+  CommandList,
+  CommandItem,
+} from "@/components/ui/command";
+import {
   ColumnFiltersState,
   flexRender,
   VisibilityState,
@@ -32,9 +40,15 @@ import {
   Calendar as CalendarIcon,
   CaretUpDown,
   Check,
+  Question,
 } from "@phosphor-icons/react";
 import { useToast } from "@/components/ui/use-toast";
 import { Rider } from "@prisma/client";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
 
 export default function SessionsTable({
   initialSessions,
@@ -45,6 +59,13 @@ export default function SessionsTable({
 }) {
   const { toast } = useToast();
   const [date, setDate] = useState<Date>();
+  const [rider, setRider] = useState<Rider>({
+    id: -1,
+    name: "Tutti",
+    surname: "Tutti",
+    nickname: "Tutti",
+    is_active: false,
+  });
   const [sessions, setSessions] = useState<SessionWithRider[]>(initialSessions);
   const [filteredSessions, setFilteredSession] =
     useState<SessionWithRider[]>(sessions);
@@ -52,13 +73,24 @@ export default function SessionsTable({
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
 
   useEffect(() => {
+    let filtered = sessions;
+
     if (date) {
-      const filtered = sessions.filter((session: SessionWithRider) => {
+      filtered = filtered.filter((session: SessionWithRider) => {
         return session.date?.toDateString() === date.toDateString();
       });
-      setFilteredSession(filtered);
     }
-  }, [date]);
+
+    if (rider) {
+      if (rider.id !== -1) {
+        filtered = filtered.filter((session: SessionWithRider) => {
+          return session.rider.id === rider.id;
+        });
+      }
+    }
+
+    setFilteredSession(filtered);
+  }, [date, rider, sessions]);
 
   const saveRowData = (id: number, data: SessionWithRider) => {
     fetch("/api/sessions/edit/", {
@@ -72,13 +104,14 @@ export default function SessionsTable({
         dinner_time: data.dinner_time,
         tip_lunch: data.tip_lunch,
         tip_dinner: data.tip_dinner,
+        rider: data.rider,
       }),
     }).then((response) => {
       if (response.ok) {
         toast({
-          title: "Successo",
-          duration: 1500,
-          description: "La sessione è stata modificata correttamente!",
+          className: cn("w-full justify-center items-center"),
+          duration: 1000,
+          description: <Check size={128} color="#7CFC00" />,
         });
       }
     });
@@ -112,7 +145,7 @@ export default function SessionsTable({
     if (field === "date" || field === "rider") {
       updatedValue = value;
     } else if (event?.key === "Enter") {
-      updatedValue = parseInt((event.target as HTMLInputElement).value) || 0;
+      updatedValue = parseFloat((event.target as HTMLInputElement).value) || 0;
     }
 
     if (updatedValue !== undefined) {
@@ -131,7 +164,6 @@ export default function SessionsTable({
     }
   };
 
-  console.log(sessions);
   const columns = getColumns(rowData, handleUpdate, riders);
   const table = getTable(
     filteredSessions,
@@ -144,21 +176,85 @@ export default function SessionsTable({
 
   return (
     <>
-      <div className="flex items-center py-4 w-full gap-2">
+      <div className="flex flex-row items-center py-4 w-full gap-2">
         {/**TODO: Potrebbe diventare un select */}
-        <Input
-          placeholder="Filtra per RAGAZZO"
-          value={
-            (table.getColumn("rider")?.getFilterValue() as string) ??
-            ""
-          }
-          onChange={(event) =>
-            table
-              .getColumn("rider")
-              ?.setFilterValue(event.target.value)
-          }
-          className="max-w-sm"
-        />
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button
+              variant="outline"
+              role="combobox"
+              className={cn(
+                "w-[300px] justify-between",
+                !rider && "text-muted-foreground"
+              )}
+            >
+              {rider ? (
+                rider.nickname ?? rider.surname
+              ) : (
+                <span className="invisible">no placeholder</span>
+              )}
+              <CaretUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-[--radix-popover-trigger-width] max-h-[--radix-popover-content-available-height] p-0">
+            <Command>
+              <CommandInput placeholder="Cerca..." />
+              <CommandEmpty>Nessun ragazzo trovato</CommandEmpty>
+              <CommandGroup>
+                <CommandList>
+                  <CommandItem
+                    key={-1}
+                    onSelect={() => {
+                      setRider({
+                        id: -1,
+                        name: "Tutti",
+                        surname: "Tutti",
+                        nickname: "Tutti",
+                        is_active: false,
+                      });
+                    }}
+                  >
+                    <Check
+                      className={cn(
+                        "mr-2 h-4 w-4",
+                        rider && rider.id === -1 ? "opacity-100" : "opacity-0"
+                      )}
+                    />
+                    Tutti
+                  </CommandItem>
+                  {riders?.length ? (
+                    riders.map((singleRider) => (
+                      <CommandItem
+                        key={singleRider.id}
+                        onSelect={() => {
+                          setRider(singleRider);
+                        }}
+                      >
+                        <Check
+                          className={cn(
+                            "mr-2 h-4 w-4",
+                            singleRider.id === rider?.id
+                              ? "opacity-100"
+                              : "opacity-0"
+                          )}
+                        />
+                        {singleRider.name.charAt(0)} {". "}
+                        {singleRider.surname}{" "}
+                        {singleRider.nickname && (
+                          <>
+                            (<strong>{singleRider.nickname}</strong>)
+                          </>
+                        )}
+                      </CommandItem>
+                    ))
+                  ) : (
+                    <CommandEmpty>Nessun ragazzo trovato</CommandEmpty>
+                  )}
+                </CommandList>
+              </CommandGroup>
+            </Command>
+          </PopoverContent>
+        </Popover>
 
         <Popover>
           <PopoverTrigger asChild>
@@ -191,37 +287,63 @@ export default function SessionsTable({
         <Button
           variant="default"
           onClick={() => {
-            table.getColumn("rider_nickname")?.setFilterValue("");
             setFilteredSession(sessions);
             setDate(undefined);
+            setRider({
+              id: -1,
+              name: "Tutti",
+              surname: "Tutti",
+              nickname: "Tutti",
+              is_active: false,
+            });
           }}
         >
           Cancella filtri
         </Button>
+
+        <div className="text-xs ml-auto">
+          <HoverCard>
+            <HoverCardTrigger>
+              <Question size={32} />
+            </HoverCardTrigger>
+            <HoverCardContent>
+              <ul>
+                <li>
+                  Per i campi numerici scrivi il nuovo valore e poi premi
+                  "invio".
+                </li>
+                <li>
+                  Per il ragazzo e la data, l'aggiornamento invece è automatico
+                </li>
+              </ul>
+            </HoverCardContent>
+          </HoverCard>
+        </div>
       </div>
 
       <div className="rounded-md border max-w-full overflow-x-auto ">
         <Table>
           <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </TableHead>
-                  );
-                })}
-              </TableRow>
-            ))}
+            {table.getRowModel().rows?.length > 0 &&
+              table.getHeaderGroups().map((headerGroup) => (
+                <TableRow key={headerGroup.id}>
+                  {headerGroup.headers.map((header) => {
+                    return (
+                      <TableHead key={header.id}>
+                        {header.isPlaceholder
+                          ? null
+                          : flexRender(
+                              header.column.columnDef.header,
+                              header.getContext()
+                            )}
+                      </TableHead>
+                    );
+                  })}
+                </TableRow>
+              ))}
           </TableHeader>
           <TableBody>
-            {table.getRowModel().rows?.length ? (
+            {table.getRowModel().rows?.length > 0 ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}

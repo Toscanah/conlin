@@ -164,7 +164,7 @@ export default function Stats({
                         )}
                       />
 
-                      <strong>Tutti</strong>
+                      Tutti
                     </CommandItem>
                     {riders?.length ? (
                       riders.map((singleRider) => (

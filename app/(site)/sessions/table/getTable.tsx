@@ -35,7 +35,7 @@ export default function getTable(
     },
     initialState: {
       pagination: {
-        pageSize: 8,
+        pageSize: 6,
       },
     },
   });

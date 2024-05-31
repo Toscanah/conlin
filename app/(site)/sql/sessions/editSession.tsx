@@ -1,7 +1,8 @@
 import { Session } from "@prisma/client";
 import prisma from "../db";
+import { SessionWithRider } from "../../types/SessionWithRider";
 
-export default async function editSession(data: Session) {
+export default async function editSession(data: SessionWithRider) {
   function storeCorrectDate(date: Date) {
     const a = new Date(date);
     return new Date(
@@ -9,7 +10,7 @@ export default async function editSession(data: Session) {
     );
   }
 
-  const boh: any = await prisma.session.update({
+  return await prisma.session.update({
     data: {
       date: storeCorrectDate(data.date ?? new Date()),
       lunch_orders: data.lunch_orders,
@@ -18,10 +19,8 @@ export default async function editSession(data: Session) {
       dinner_time: data.dinner_time,
       tip_lunch: data.tip_lunch,
       tip_dinner: data.tip_dinner,
+      rider_id: data.rider.id,
     },
     where: { id: data.id },
   });
-
-  return boh;
-
 }
