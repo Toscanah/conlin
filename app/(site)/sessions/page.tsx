@@ -12,7 +12,7 @@ export default async function manageSessions() {
       </div>
 
       <div className="absolute text-4xl top-4 left-4">
-        <BackHome />
+        <BackHome path="../home/"/>
       </div>
     </div>
   );

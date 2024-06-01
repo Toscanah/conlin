@@ -11,7 +11,7 @@ export default function Logout() {
 
   return (
     <SignOut
-      size={40}
+      size={32}
       onClick={() => {
         window.location.replace("../");
       }}

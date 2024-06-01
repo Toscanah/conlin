@@ -6,9 +6,9 @@ import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 
-export default function BackHome() {
+export default function BackHome({path}: {path: string}) {
   return (
-    <Link href={"../"}>
+    <Link href={path}>
       <ArrowBendUpLeft size={48} className="hover:cursor-pointer" />
     </Link>
   );

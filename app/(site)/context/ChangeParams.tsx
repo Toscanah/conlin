@@ -32,9 +32,6 @@ export default function ChangeParamsDialog() {
     lunchMultiplier,
     dinnerMultiplier,
     ordersMultiplier,
-    setLunchMultiplier,
-    setDinnerMultiplier,
-    setOrdersMultiplier,
   } = useContext(ConlinContext);
 
   const form: any = getParamsForm(

@@ -28,3 +28,9 @@ model Session {
     tip_dinner    Float?
     rider         Rider     @relation(fields: [rider_id], references: [id])
 }
+
+model Multiplier {
+    id    Int    @id @default(autoincrement())
+    type String
+    value Float
+}
