@@ -1,49 +1,92 @@
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import AddSession from "./sessions/actions/AddSession";
-import RidersPageButton from "./RidersPageButton";
-import getRiders from "./sql/getRiders";
-import Layout from "./stats/Layout";
-import getActiveRiders from "./sql/getActiveRiders";
-import { ChangeTheme } from "./ChangeTheme";
-import ChangeParamsDialog from "./multipliers/ChangeParams";
-import SessionsPageButton from "./SessionsPageButton";
+"use client";
+
 import Link from "next/link";
+import { ChangeTheme } from "./ChangeTheme";
+import getLoginForm, { FormValues } from "./forms/getLoginForm";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
-export const dynamic = "force-dynamic";
+import { useContext } from "react";
+import { ConlinContext } from "./context/ConlinContext";
 
-export default async function Home() {
+
+export default function Home() {
+  const form = getLoginForm();
+
+  const { setIsLogged, isLogged } = useContext(ConlinContext);
+
+  function onSubmit(values: FormValues) {
+    const { username, password } = values;
+
+    const envUsername = process.env.NEXT_PUBLIC_LOGIN_USERNAME;
+    const envPassword = process.env.NEXT_PUBLIC_LOGIN_PASSWORD;
+
+    console.log(envUsername);
+    console.log(envPassword);
+
+    if (username === envUsername && password === envPassword) {
+      setIsLogged(true);
+      window.location.replace("./home");
+    } else {
+      console.log("Login failed");
+    }
+  }
+
   return (
-    <div className="flex justify-center items-center w-full">
-      <Tabs
-        defaultValue="register-session"
-        className="flex flex-col justify-center items-center w-full p-10 "
-      >
-        <TabsList defaultValue="stats" className="w-full h-[50px] ">
-          <TabsTrigger value="register-session" className="w-[50%] h-[46px] text-xl">
-            Turni
-          </TabsTrigger>
-          <TabsTrigger value="stats" className="w-[50%] h-[46px] text-xl">
-            Statistiche
-          </TabsTrigger>
-        </TabsList>
-        <TabsContent
-          value="register-session"
-          className="flex justify-center items-center w-[55%]"
-        >
-          <AddSession riders={await getActiveRiders()} />
-        </TabsContent>
-        <TabsContent
-          value="stats"
-          className="flex justify-center items-center w-[100%] mt-0 gap-8"
-        >
-          <Layout riders={await getRiders()} />
-        </TabsContent>
-      </Tabs>
+    <div className="w-screen h-screen flex items-center justify-center">
+      <div className="w-[25%] flex flex-col justify-center gap-4 items-center">
+        <h1 className="text-4xl">Login</h1>
 
-      <div className="flex flex-col gap-4 text-4xl fixed  left-4 top-1/2 transform -translate-y-1/2  bg-foreground/5 rounded-sm p-4">
-        <RidersPageButton />
-        <ChangeParamsDialog />
-        <SessionsPageButton />
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="space-y-8 flex justify-center w-full flex-col items-center"
+          >
+            <FormField
+              control={form.control}
+              name="username"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FormLabel className="flex items-center justify-between h-[16px]">
+                    <div>Username</div>
+                  </FormLabel>
+                  <FormControl>
+                    <Input {...field} type="text" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FormLabel className="flex items-center justify-between h-[16px]">
+                    <div>Username</div>
+                  </FormLabel>
+                  <FormControl>
+                    <Input {...field} type="password" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <Button type="submit" name="submit" className="w-full">
+              Entra
+            </Button>
+          </form>
+        </Form>
       </div>
 
       <div className="fixed bottom-4 right-4 hover:cursor-pointer">

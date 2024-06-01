@@ -10,7 +10,6 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -25,13 +24,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { Question } from "@phosphor-icons/react";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import {
   HoverCard,
   HoverCardContent,
@@ -54,7 +46,7 @@ import {
 import { Rider } from "@prisma/client";
 import getSessionForm, { FormValues } from "../../forms/getSessionForm";
 import { Calendar } from "@/components/ui/calendar";
-import { MultiplierContext } from "../../multipliers/MultipliersProvider";
+import { ConlinContext } from "../../context/ConlinContext";
 import {
   Command,
   CommandEmpty,
@@ -63,7 +55,6 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
-import { PopoverClose } from "@radix-ui/react-popover";
 
 export const dynamic = "force-dynamic";
 
@@ -80,10 +71,15 @@ export default function AddSession({
   const [date, setDate] = useState<Date>();
   const form: any = getSessionForm();
   const { toast } = useToast();
-  const [ridersPopoverOpen, setRidersPopoverOpen] = useState<boolean>(false);
 
-  const { lunchMultiplier, dinnerMultiplier, ordersMultiplier } =
-    useContext(MultiplierContext);
+  const { lunchMultiplier, dinnerMultiplier, ordersMultiplier, isLogged } =
+    useContext(ConlinContext);
+
+
+  if (!isLogged) {
+    console.log("TORNO INDEITRON");
+    //>window.location.replace("../.");
+  }
 
   function onSubmit(values: FormValues) {
     setConfirmDialogOpen(true);

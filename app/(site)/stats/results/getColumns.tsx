@@ -147,7 +147,7 @@ export default function getColumns(): ColumnDef<StatsType>[] {
           row.original.totalHours == undefined ? (
           <span className="text-muted-foreground hidden">/</span>
         ) : (
-          row.original.totalHours
+          row.original.totalHours.toFixed(2)
         );
       },
     },

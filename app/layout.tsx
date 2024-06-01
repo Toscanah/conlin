@@ -3,7 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "./components/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
-import { MultiplierProvider } from "./(site)/multipliers/MultipliersProvider";
+import ConlinProvider from "./(site)/context/ConlinContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,12 +22,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <MultiplierProvider>
+        <ConlinProvider>
           <ThemeProvider attribute="class" defaultTheme="system">
             {children}
             <Toaster />
           </ThemeProvider>
-        </MultiplierProvider>
+        </ConlinProvider>
       </body>
     </html>
   );

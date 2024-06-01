@@ -40,7 +40,8 @@ export default function getColumns(
     event?: React.KeyboardEvent<HTMLInputElement>,
     value?: any
   ) => void,
-  riders: Rider[]
+  riders: Rider[],
+  onDelete?: (id: number) => void
 ): ColumnDef<SessionWithRider>[] {
   return [
     {
@@ -54,51 +55,40 @@ export default function getColumns(
       accessorKey: "date",
       header: ({ column }) => ColumnHeader(column, "*Data"),
       cell: ({ row }) => {
-        /* const date = row.original.date;
-         const timeZone = "Europe/Rome"; // Italian timezone
-         const zonedDate = toZonedTime(date ?? new Date(), timeZone);
-         const formattedDate = format(zonedDate, "EEEE dd-MM-yyyy", {
-           locale: it,
-         });
-
-         return formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1);*/
-
         const date = rowData[row.original.id]?.date;
         const formattedDate = date ? format(date, "PPP", { locale: it }) : null;
 
         return (
-          <div className="w-[180px]">
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant={"outline"}
-                  className={cn(
-                    "w-full pl-3 text-left font-normal",
-                    !date && "text-muted-foreground"
-                  )}
-                >
-                  {formattedDate ?? <span>Filtra per data</span>}
-                  <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
-                <Calendar
-                  locale={it}
-                  mode="single"
-                  selected={date ?? new Date()}
-                  onSelect={(selectedDate) => {
-                    handleUpdate(
-                      row.original.id,
-                      "date",
-                      undefined,
-                      selectedDate
-                    );
-                  }}
-                  initialFocus
-                />
-              </PopoverContent>
-            </Popover>
-          </div>
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                variant={"outline"}
+                className={cn(
+                  "w-[250px] pl-3 text-left font-normal",
+                  !date && "text-muted-foreground"
+                )}
+              >
+                {formattedDate ?? <span>Filtra per data</span>}
+                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0" align="start">
+              <Calendar
+                locale={it}
+                mode="single"
+                selected={date ?? new Date()}
+                onSelect={(selectedDate) => {
+                  handleUpdate(
+                    row.original.id,
+                    "date",
+                    undefined,
+                    selectedDate
+                  );
+                }}
+                initialFocus
+              />
+            </PopoverContent>
+          </Popover>
         );
       },
     },
@@ -106,12 +96,6 @@ export default function getColumns(
       accessorKey: "rider",
       header: ({ column }) => ColumnHeader(column, "Ragazzo"),
       cell: ({ row }) => {
-        // return row.original.rider?.nickname == undefined ? (
-        //   <span className="text-muted-foreground hidden">/</span>
-        // ) : (
-        //   row.original.rider?.nickname
-        // );
-
         const rider = rowData[row.original.id]?.rider;
 
         return (
@@ -121,7 +105,7 @@ export default function getColumns(
                 variant="outline"
                 role="combobox"
                 className={cn(
-                  "w-[200px] justify-between",
+                  "w-[250px] justify-between",
                   !rider && "text-muted-foreground"
                 )}
               >
@@ -160,13 +144,15 @@ export default function getColumns(
                                 : "opacity-0"
                             )}
                           />
-                          {singleRider.name.charAt(0)} {". "}
-                          {singleRider.surname}{" "}
-                          {singleRider.nickname && (
-                            <>
-                              (<strong>{singleRider.nickname}</strong>)
-                            </>
-                          )}
+                          <div className="truncate">
+                            {singleRider.name.charAt(0)} {". "}
+                            {singleRider.surname}{" "}
+                            {singleRider.nickname && (
+                              <>
+                                (<strong>{singleRider.nickname}</strong>)
+                              </>
+                            )}
+                          </div>
                         </CommandItem>
                       ))
                     ) : (
@@ -252,7 +238,7 @@ export default function getColumns(
     },
     {
       accessorKey: "tip_dinner",
-      header: ({ column }) => ColumnHeader(column, "Mancia pranzo"),
+      header: ({ column }) => ColumnHeader(column, "Mancia cena"),
       cell: ({ row }) => {
         const value = rowData[row.original.id]?.tip_dinner;
 

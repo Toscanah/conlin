@@ -54,7 +54,9 @@ export default async function getStatsSingle(
 
   let lunchTip = aggregatedOrders._sum.tip_lunch ?? 0;
   let dinnerTip = aggregatedOrders._sum.tip_dinner ?? 0;
-  let totalTip = lunchTip + dinnerTip;
+  let totalTip =
+    (session === "both" || session === "lunch" ? lunchTip : 0) +
+    (session === "both" || session === "dinner" ? dinnerTip : 0);
 
   if (session === "both" || session === "lunch") {
     totalOrders += lunchOrders;

@@ -13,27 +13,24 @@ import {
 import { Trash } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
 
-export default function DeleteSession({ session }: { session: Session }) {
+export default function DeleteSession({
+  session,
+}: {
+  session: Session;
+}) {
   function onDelete(id: number) {
-  
-    // non funziona per qualche dannato motivo non trova sta grancazzo di cartella signore Dio Lord
-
     fetch("/api/sessions/delete/", {
       method: "DELETE",
-      body: JSON.stringify({ id: id }),
-    })
-      .then((response) => {
-        if (response.ok) {
-          window.location.reload();
-        } else {
-          console.error("Failed to delete session:", response.statusText);
-        }
-      })
-      .catch((error) => {
-        console.error("Error occurred while deleting session:", error);
-      });
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ id }),
+    }).then((response) => {
+      if (response.ok) {
+        window.location.reload();
+      }
+    });
   }
-
   return (
     <>
       <Dialog>

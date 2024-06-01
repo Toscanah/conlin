@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Sliders } from "@phosphor-icons/react";
-import { MultiplierContext } from "../multipliers/MultipliersProvider";
+import { ConlinContext } from "./ConlinContext";
 import { useContext, useState } from "react";
 import getParamsForm, { FormValues } from "../forms/getParamsForm";
 
@@ -35,7 +35,7 @@ export default function ChangeParamsDialog() {
     setLunchMultiplier,
     setDinnerMultiplier,
     setOrdersMultiplier,
-  } = useContext(MultiplierContext);
+  } = useContext(ConlinContext);
 
   const form: any = getParamsForm(
     lunchMultiplier,
@@ -81,7 +81,7 @@ export default function ChangeParamsDialog() {
                     Moltiplicatore <strong>PRANZO</strong>
                   </FormLabel>
                   <FormControl>
-                    <Input {...field} type="number" step={0.1}/>
+                    <Input {...field} type="number" step={0.1} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -97,7 +97,7 @@ export default function ChangeParamsDialog() {
                     Moltiplicatore <strong>CENA</strong>
                   </FormLabel>
                   <FormControl>
-                    <Input {...field} type="number" step={0.1}/>
+                    <Input {...field} type="number" step={0.1} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -113,7 +113,7 @@ export default function ChangeParamsDialog() {
                     Moltiplicatore <strong>ORDINI</strong>
                   </FormLabel>
                   <FormControl>
-                    <Input {...field} type="number" step={0.1}/>
+                    <Input {...field} type="number" step={0.1} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

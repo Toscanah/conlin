@@ -53,7 +53,9 @@ export default async function getStatsAll(
 
       let lunchTip = data._sum.tip_lunch ?? 0;
       let dinnerTip = data._sum.tip_dinner ?? 0;
-      let totalTip = lunchTip + dinnerTip;
+      let totalTip =
+        (session === "both" || session === "lunch" ? lunchTip : 0) +
+        (session === "both" || session === "dinner" ? dinnerTip : 0);
 
       if (session === "both" || session === "lunch") {
         totalOrders += lunchOrders;
@@ -173,7 +175,6 @@ export default async function getStatsAll(
                 : undefined,
           };
         case "tip":
-          
           if (lunchTip == 0 && dinnerTip == 0) {
             return null;
           }
