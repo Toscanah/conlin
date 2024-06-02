@@ -29,7 +29,7 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Separator } from "@/components/ui/separator";
 import BarLoader from "react-spinners/BarLoader";
 import { it } from "date-fns/locale";
@@ -46,7 +46,6 @@ import {
 import { Rider } from "@prisma/client";
 import getSessionForm, { FormValues } from "../../forms/getSessionForm";
 import { Calendar } from "@/components/ui/calendar";
-import { ConlinContext } from "../../context/ConlinContext";
 import {
   Command,
   CommandEmpty,
@@ -72,16 +71,33 @@ export default function AddSession({
   const form: any = getSessionForm();
   const { toast } = useToast();
 
-  const { lunchMultiplier, dinnerMultiplier, ordersMultiplier, isLogged } =
-    useContext(ConlinContext);
+  const [lunchMultiplier, setLunchMultiplier] = useState<number>(6);
+  const [dinnerMultiplier, setDinnerMultiplier] = useState<number>(7);
+  const [ordersMultiplier, setOrdersMultiplier] = useState<number>(1);
 
+  async function fetchMultipliers() {
+    const response = await fetch("/api/multipliers/get", {
+      method: "POST",
+    });
 
-  if (!isLogged) {
-    console.log("TORNO INDEITRON");
-    //>window.location.replace("../.");
+    if (response.ok) {
+      const data = await response.json();
+      if (data) {
+        //console.log(data)
+        setLunchMultiplier(data.lunchMultiplier);
+        setDinnerMultiplier(data.dinnerMultiplier);
+        setOrdersMultiplier(data.ordersMultiplier);
+      }
+    }
   }
 
+  useEffect(() => {
+    fetchMultipliers();
+  }, []);
+
   function onSubmit(values: FormValues) {
+
+
     setConfirmDialogOpen(true);
     setSession(values);
 

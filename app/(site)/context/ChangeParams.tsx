@@ -4,8 +4,6 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -13,7 +11,6 @@ import {
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -21,59 +18,109 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Sliders } from "@phosphor-icons/react";
-import { ConlinContext } from "./ConlinContext";
-import { useContext, useState } from "react";
+import { useEffect, useState } from "react";
 import getParamsForm, { FormValues } from "../forms/getParamsForm";
 
 export default function ChangeParamsDialog() {
   const [openDialog, setOpenDialog] = useState<boolean>(false);
+  const [lunchMultiplier, setLunchMultiplier] = useState<number>(6);
+  const [dinnerMultiplier, setDinnerMultiplier] = useState<number>(7);
+  const [ordersMultiplier, setOrdersMultiplier] = useState<number>(1);
 
-  const {
-    lunchMultiplier,
-    dinnerMultiplier,
-    ordersMultiplier,
-  } = useContext(ConlinContext);
-
-  const form: any = getParamsForm(
+  const form = getParamsForm(
     lunchMultiplier,
     dinnerMultiplier,
     ordersMultiplier
   );
 
-  function onSubmit(values: FormValues) {
-    setLunchMultiplier(values.lunch_mult);
-    setDinnerMultiplier(values.dinner_mult);
-    setOrdersMultiplier(values.orders_mult);
+  useEffect(() => {
+    async function fetchMultipliers() {
+      const response = await fetch("/api/multipliers/get", {
+        method: "POST",
+      });
 
-    setOpenDialog(false);
+      if (response.ok) {
+        const data = await response.json();
+        if (data) {
+          setLunchMultiplier(data.lunchMultiplier);
+          setDinnerMultiplier(data.dinnerMultiplier);
+          setOrdersMultiplier(data.ordersMultiplier);
+          form.setValue("lunch_mult", data.lunchMultiplier);
+          form.setValue("dinner_mult", data.dinnerMultiplier);
+          form.setValue("orders_mult", data.ordersMultiplier);
+        }
+      }
+    }
+
+    fetchMultipliers();
+  }, []);
+
+  function onSubmit(values: FormValues) {
+    if (values) {
+      updateMultiplier("lunch", values.lunch_mult);
+      updateMultiplier("dinner", values.dinner_mult);
+      updateMultiplier("orders", values.orders_mult);
+      setOpenDialog(false);
+      window.location.reload();
+    }
+  }
+
+  async function updateMultiplier(field: string, value: number) {
+    const parsedValue = Number.parseFloat(value.toFixed(2));
+
+    try {
+      const response = await fetch("/api/multipliers/update", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ field, value: parsedValue }),
+      });
+
+      if (response.ok) {
+        switch (field) {
+          case "lunch":
+            setLunchMultiplier(value);
+            break;
+          case "dinner":
+            setDinnerMultiplier(value);
+            break;
+          case "orders":
+            setOrdersMultiplier(value);
+            break;
+          default:
+            break;
+        }
+      } else {
+        console.error("Failed to update multiplier", response.status);
+      }
+    } catch (error) {
+      console.error("Error updating multiplier", error);
+    }
   }
 
   return (
-    <Dialog open={openDialog}>
-      <DialogTrigger asChild className="">
+    <Dialog open={openDialog} onOpenChange={setOpenDialog}>
+      <DialogTrigger asChild>
         <Sliders
           size={40}
           className="hover:cursor-pointer hover:scale-110 hover:bg-white hover:bg-opacity-5 rounded p-1"
-          onClick={(e) => setOpenDialog(true)}
         />
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Cambia i parametri</DialogTitle>
-          {/* <DialogDescription>
-            Make changes to your profile here. Click save when you're done.
-          </DialogDescription> */}
         </DialogHeader>
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="space-y-8 flex justify-center w-full flex-col "
+            className="space-y-8 flex justify-center w-full flex-col"
           >
             <FormField
               control={form.control}
               name="lunch_mult"
               render={({ field }) => (
-                <FormItem className="">
+                <FormItem>
                   <FormLabel>
                     Moltiplicatore <strong>PRANZO</strong>
                   </FormLabel>
@@ -89,7 +136,7 @@ export default function ChangeParamsDialog() {
               control={form.control}
               name="dinner_mult"
               render={({ field }) => (
-                <FormItem className="">
+                <FormItem>
                   <FormLabel>
                     Moltiplicatore <strong>CENA</strong>
                   </FormLabel>
@@ -105,7 +152,7 @@ export default function ChangeParamsDialog() {
               control={form.control}
               name="orders_mult"
               render={({ field }) => (
-                <FormItem className="">
+                <FormItem>
                   <FormLabel>
                     Moltiplicatore <strong>ORDINI</strong>
                   </FormLabel>

@@ -30,7 +30,6 @@ model Session {
 }
 
 model Multiplier {
-    id    Int    @id @default(autoincrement())
-    type String
+    type  String @id
     value Float
 }

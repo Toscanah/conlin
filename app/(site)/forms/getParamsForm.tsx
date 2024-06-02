@@ -5,7 +5,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-
 const field = z.coerce
   .string()
   .min(1, { message: "Questo campo è richiesto" })
@@ -33,10 +32,6 @@ export default function getParamsForm(
 ) {
   return useForm<FormValues>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      lunch_mult: lunchMultiplier,
-      dinner_mult: dinnerMultiplier,
-      orders_mult: ordersMultiplier,
-    },
+
   });
 }

@@ -15,13 +15,10 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 import { useContext } from "react";
-import { ConlinContext } from "./context/ConlinContext";
 
 
 export default function Home() {
   const form = getLoginForm();
-
-  const { setIsLogged, isLogged } = useContext(ConlinContext);
 
   function onSubmit(values: FormValues) {
     const { username, password } = values;
@@ -33,7 +30,6 @@ export default function Home() {
     console.log(envPassword);
 
     if (username === envUsername && password === envPassword) {
-      setIsLogged(true);
       window.location.replace("./home");
     } else {
       console.log("Login failed");
