@@ -96,8 +96,6 @@ export default function AddSession({
   }, []);
 
   function onSubmit(values: FormValues) {
-
-
     setConfirmDialogOpen(true);
     setSession(values);
 
@@ -229,6 +227,7 @@ export default function AddSession({
                         locale={it}
                         mode="single"
                         selected={field.value}
+                        numberOfMonths={2}
                         onSelect={field.onChange}
                         disabled={(date) =>
                           date > new Date() || date < new Date("1900-01-01")

@@ -74,6 +74,7 @@ export default function getColumns(
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0" align="start">
               <Calendar
+                numberOfMonths={2}
                 locale={it}
                 mode="single"
                 selected={date ?? new Date()}

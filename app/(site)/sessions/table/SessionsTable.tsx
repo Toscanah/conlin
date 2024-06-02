@@ -278,6 +278,7 @@ export default function SessionsTable({
               locale={it}
               mode="single"
               selected={date}
+              numberOfMonths={2}
               onSelect={(date) => setDate(date ?? new Date())}
               initialFocus
             />
