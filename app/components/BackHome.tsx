@@ -8,7 +8,7 @@ export const dynamic = "force-dynamic";
 
 export default function BackHome({path}: {path: string}) {
   return (
-    <Link href={path}>
+    <Link href={"./home"}>
       <ArrowBendUpLeft size={48} className="hover:cursor-pointer" />
     </Link>
   );

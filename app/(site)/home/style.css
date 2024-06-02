@@ -1,0 +1,12 @@
+.components-container {
+    opacity: 0;
+    transform: translateY(-20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    pointer-events: none; /* Prevent interaction when hidden */
+  }
+  
+  .components-container.visible {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: all; /* Enable interaction when visible */
+  }

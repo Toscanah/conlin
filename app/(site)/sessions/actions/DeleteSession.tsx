@@ -15,22 +15,25 @@ import { Button } from "@/components/ui/button";
 
 export default function DeleteSession({
   session,
+  onDelete,
 }: {
   session: Session;
+  onDelete: (id: number) => void;
 }) {
-  function onDelete(id: number) {
+  function handleDelete(id: number) {
     fetch("/api/sessions/delete/", {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ id }),
-    }).then((response) => {
+    }).then(response => {
       if (response.ok) {
-        window.location.reload();
+        onDelete(id)
       }
-    });
+    })
   }
+
   return (
     <>
       <Dialog>
@@ -53,7 +56,7 @@ export default function DeleteSession({
             </DialogClose>
             <Button
               onClick={() => {
-                onDelete(session.id);
+                handleDelete(session.id);
               }}
             >
               Save changes

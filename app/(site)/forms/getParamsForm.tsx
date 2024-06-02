@@ -25,13 +25,8 @@ export const formSchema = z.object({
 
 export type FormValues = z.infer<typeof formSchema>;
 
-export default function getParamsForm(
-  lunchMultiplier: number,
-  dinnerMultiplier: number,
-  ordersMultiplier: number
-) {
+export default function getParamsForm() {
   return useForm<FormValues>({
     resolver: zodResolver(formSchema),
-
   });
 }

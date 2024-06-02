@@ -9,7 +9,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Command,
@@ -19,6 +19,7 @@ import {
   CommandList,
   CommandItem,
 } from "@/components/ui/command";
+
 import {
   ColumnFiltersState,
   flexRender,
@@ -36,6 +37,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+
 import {
   Calendar as CalendarIcon,
   CaretUpDown,
@@ -49,6 +51,7 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
+import { debounce } from "@mui/material";
 
 export default function SessionsTable({
   initialSessions,
@@ -58,6 +61,18 @@ export default function SessionsTable({
   riders: Rider[];
 }) {
   const { toast } = useToast();
+  const [sessions, setSessions] = useState<SessionWithRider[]>(initialSessions);
+  const [filteredSessions, setFilteredSession] =
+    useState<SessionWithRider[]>(sessions);
+
+  const [rowData, setRowData] = useState<SessionWithRider[]>(() => {
+    const initialData = sessions.reduce((acc: any, session) => {
+      acc[session.id] = { ...session };
+      return acc;
+    }, {});
+    return initialData;
+  });
+
   const [date, setDate] = useState<Date>();
   const [rider, setRider] = useState<Rider>({
     id: -1,
@@ -66,48 +81,53 @@ export default function SessionsTable({
     nickname: "Tutti",
     is_active: false,
   });
-  const [sessions, setSessions] = useState<SessionWithRider[]>(initialSessions);
-  const [filteredSessions, setFilteredSession] =
-    useState<SessionWithRider[]>(sessions);
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
 
   useEffect(() => {
     let filtered = sessions;
 
     if (date) {
-      filtered = filtered.filter((session: SessionWithRider) => {
-        return session.date?.toDateString() === date.toDateString();
-      });
+      filtered = filtered.filter(
+        (session: SessionWithRider) =>
+          session.date?.toDateString() === date.toDateString()
+      );
     }
-
-    if (rider) {
-      if (rider.id !== -1) {
-        filtered = filtered.filter((session: SessionWithRider) => {
-          return session.rider.id === rider.id;
-        });
-      }
+    if (rider && rider.id !== -1) {
+      filtered = filtered.filter(
+        (session: SessionWithRider) => session.rider.id === rider.id
+      );
     }
 
     setFilteredSession(filtered);
   }, [date, rider, sessions]);
 
-  const saveRowData = (id: number, data: SessionWithRider) => {
+  function onDelete(id: number) {
+    setSessions((prevSessions) =>
+      prevSessions.filter((session) => session.id !== id)
+    );
+    setFilteredSession((prevFilteredSessions) =>
+      prevFilteredSessions.filter((session) => session.id !== id)
+    );
+  }
+
+  function onSave(id: number) {
+    const updatedData = rowData[id];
+
     fetch("/api/sessions/edit/", {
       method: "POST",
-      body: JSON.stringify({
-        id: id,
-        date: data.date,
-        lunch_orders: data.lunch_orders,
-        dinner_orders: data.dinner_orders,
-        lunch_time: data.lunch_time,
-        dinner_time: data.dinner_time,
-        tip_lunch: data.tip_lunch,
-        tip_dinner: data.tip_dinner,
-        rider: data.rider,
-      }),
+      body: JSON.stringify(updatedData),
     }).then((response) => {
       if (response.ok) {
+        setSessions((prevSessions) =>
+          prevSessions.map((session) =>
+            session.id === id ? updatedData : session
+          )
+        );
+        setFilteredSession((prevFilteredSessions) =>
+          prevFilteredSessions.map((session) =>
+            session.id === id ? updatedData : session
+          )
+        );
+
         toast({
           className: cn("w-full justify-center items-center"),
           duration: 1000,
@@ -115,56 +135,35 @@ export default function SessionsTable({
         });
       }
     });
-  };
+  }
 
-  const [rowData, setRowData] = useState<SessionWithRider[]>(() => {
-    const initialData = filteredSessions.reduce((acc: any, session) => {
-      acc[session.id] = {
-        date: session.date,
-        lunch_orders: session.lunch_orders,
-        dinner_orders: session.dinner_orders,
-        lunch_time: session.lunch_time,
-        dinner_time: session.dinner_time,
-        tip_lunch: session.tip_lunch,
-        tip_dinner: session.tip_dinner,
-        rider: session.rider,
-      };
-      return acc;
-    }, {});
-    return initialData;
-  });
+  const debouncedUpdate = useCallback(
+    debounce((id: number, field: string, value: any) => {
+      setRowData((prevData) => ({
+        ...prevData,
+        [id]: {
+          ...prevData[id],
+          [field]: value,
+        },
+      }));
+      onSave(id);
+    }, 1500),
+    []
+  );
 
-  const handleUpdate = (
-    id: number,
-    field: string,
-    event?: React.KeyboardEvent<HTMLInputElement>,
-    value?: any
-  ) => {
-    let updatedValue: any;
+  function handleInputChange(id: number, field: string, value: any) {
+    debouncedUpdate(id, field, value);
+  }
 
-    if (field === "date" || field === "rider") {
-      updatedValue = value;
-    } else if (event?.key === "Enter") {
-      updatedValue = parseFloat((event.target as HTMLInputElement).value) || 0;
-    }
-
-    if (updatedValue !== undefined) {
-      setRowData((prevData) => {
-        const updatedData = {
-          ...prevData,
-          [id]: {
-            ...prevData[id],
-            [field]: updatedValue,
-          },
-        };
-
-        saveRowData(id, updatedData[id]);
-        return updatedData;
-      });
-    }
-  };
-
-  const columns = getColumns(rowData, handleUpdate, riders);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+  const columns = getColumns(
+    rowData,
+    handleInputChange,
+    riders,
+    onDelete,
+    onSave
+  );
   const table = getTable(
     filteredSessions,
     columns,
@@ -177,7 +176,6 @@ export default function SessionsTable({
   return (
     <>
       <div className="flex flex-row items-center py-4 w-full gap-2">
-        {/**TODO: Potrebbe diventare un select */}
         <Popover>
           <PopoverTrigger asChild>
             <Button

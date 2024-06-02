@@ -1,16 +1,19 @@
 "use client";
 
-import { ListBullets } from "@phosphor-icons/react";
+import { ListMagnifyingGlass  } from "@phosphor-icons/react";
 
 import Link from "next/link";
 
 export default function SessionPageButton() {
   return (
-    <Link href={"/sessions"}>
-      <ListBullets
-        size={40}
-        className="hover:cursor-pointer hover:scale-110 hover:bg-white hover:bg-opacity-5 rounded p-1"
-      />
+    <Link
+      href={"/sessions"}
+      className="flex gap-3 items-center 
+      hover:cursor-pointer hover:bg-foreground/5 hover:underline
+      rounded p-2"
+    >
+      <ListMagnifyingGlass  size={32} />
+      <span className="text-sm">Turni</span>
     </Link>
   );
 }

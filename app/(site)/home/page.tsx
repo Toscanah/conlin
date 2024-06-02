@@ -5,12 +5,13 @@ import getRiders from "../sql/getRiders";
 import Layout from "../stats/Layout";
 import getActiveRiders from "../sql/getActiveRiders";
 import { ChangeTheme } from "../ChangeTheme";
-import ChangeParamsDialog from "../context/ChangeParams";
+import ChangeParamsDialog from "../ChangeParams";
 import SessionsPageButton from "../SessionsPageButton";
 import Link from "next/link";
 import { useContext } from "react";
-import { ConlinContext } from "../context/ConlinContext";
+
 import Logout from "../Logout";
+import Sidebar from "./Sidebar";
 
 export const dynamic = "force-dynamic";
 
@@ -46,12 +47,13 @@ export default async function Main() {
         </TabsContent>
       </Tabs>
 
-      <div className="flex flex-col gap-4 text-4xl fixed  left-4 top-1/2 transform -translate-y-1/2  bg-foreground/5 rounded-sm p-4">
-        <RidersPageButton />
-        <ChangeParamsDialog />
-        <SessionsPageButton />
-        <Logout/>
-      </div>
+      {/* <div className="flex flex-col gap-2 text-4xl fixed 
+      left-4 top-1/2 transform -translate-y-1/2 
+      bg-foreground/5 rounded-lg p-2">
+        
+      </div> */}
+
+      <Sidebar />
 
       <div className="fixed bottom-4 right-4 hover:cursor-pointer">
         <ChangeTheme />

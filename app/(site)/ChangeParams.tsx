@@ -19,19 +19,11 @@ import {
 import { Input } from "@/components/ui/input";
 import { Sliders } from "@phosphor-icons/react";
 import { useEffect, useState } from "react";
-import getParamsForm, { FormValues } from "../forms/getParamsForm";
+import getParamsForm, { FormValues } from "./forms/getParamsForm";
 
 export default function ChangeParamsDialog() {
   const [openDialog, setOpenDialog] = useState<boolean>(false);
-  const [lunchMultiplier, setLunchMultiplier] = useState<number>(6);
-  const [dinnerMultiplier, setDinnerMultiplier] = useState<number>(7);
-  const [ordersMultiplier, setOrdersMultiplier] = useState<number>(1);
-
-  const form = getParamsForm(
-    lunchMultiplier,
-    dinnerMultiplier,
-    ordersMultiplier
-  );
+  const form = getParamsForm();
 
   useEffect(() => {
     async function fetchMultipliers() {
@@ -42,9 +34,6 @@ export default function ChangeParamsDialog() {
       if (response.ok) {
         const data = await response.json();
         if (data) {
-          setLunchMultiplier(data.lunchMultiplier);
-          setDinnerMultiplier(data.dinnerMultiplier);
-          setOrdersMultiplier(data.ordersMultiplier);
           form.setValue("lunch_mult", data.lunchMultiplier);
           form.setValue("dinner_mult", data.dinnerMultiplier);
           form.setValue("orders_mult", data.ordersMultiplier);
@@ -61,6 +50,7 @@ export default function ChangeParamsDialog() {
       updateMultiplier("dinner", values.dinner_mult);
       updateMultiplier("orders", values.orders_mult);
       setOpenDialog(false);
+
       window.location.reload();
     }
   }
@@ -68,44 +58,26 @@ export default function ChangeParamsDialog() {
   async function updateMultiplier(field: string, value: number) {
     const parsedValue = Number.parseFloat(value.toFixed(2));
 
-    try {
-      const response = await fetch("/api/multipliers/update", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ field, value: parsedValue }),
-      });
-
-      if (response.ok) {
-        switch (field) {
-          case "lunch":
-            setLunchMultiplier(value);
-            break;
-          case "dinner":
-            setDinnerMultiplier(value);
-            break;
-          case "orders":
-            setOrdersMultiplier(value);
-            break;
-          default:
-            break;
-        }
-      } else {
-        console.error("Failed to update multiplier", response.status);
-      }
-    } catch (error) {
-      console.error("Error updating multiplier", error);
-    }
+    await fetch("/api/multipliers/update", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ field, value: parsedValue }),
+    });
   }
 
   return (
     <Dialog open={openDialog} onOpenChange={setOpenDialog}>
       <DialogTrigger asChild>
-        <Sliders
-          size={40}
-          className="hover:cursor-pointer hover:scale-110 hover:bg-white hover:bg-opacity-5 rounded p-1"
-        />
+        <div
+          className="flex gap-3 items-center 
+      hover:cursor-pointer hover:bg-foreground/5 hover:underline
+      rounded p-2"
+        >
+          <Sliders size={32} />
+          <span className="text-sm">Valori</span>
+        </div>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>

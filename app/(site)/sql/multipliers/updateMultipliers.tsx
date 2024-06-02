@@ -5,7 +5,7 @@ export default async function updateMultiplier(body: {
   value: number;
 }) {
   const { field, value } = body;
-  console.log(body);
+
   return await prisma.multiplier.update({
     where: { type: field },
     data: { value: value },

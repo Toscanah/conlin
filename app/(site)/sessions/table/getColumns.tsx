@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { format, toZonedTime } from "date-fns-tz";
+import { format } from "date-fns-tz";
 import { it } from "date-fns/locale";
 import { SessionWithRider } from "../../types/SessionWithRider";
 import { Input } from "@/components/ui/input";
@@ -31,17 +31,14 @@ import {
 } from "@/components/ui/command";
 import { Rider } from "@prisma/client";
 import DeleteSession from "../actions/DeleteSession";
+import SaveSession from "../actions/SaveSession";
 
 export default function getColumns(
   rowData: SessionWithRider[],
-  handleUpdate: (
-    id: number,
-    field: string,
-    event?: React.KeyboardEvent<HTMLInputElement>,
-    value?: any
-  ) => void,
+  handleUpdate: (id: number, field: string, value: any) => void,
   riders: Rider[],
-  onDelete?: (id: number) => void
+  onDelete: (id: number) => void,
+  onSave: (id: number) => void
 ): ColumnDef<SessionWithRider>[] {
   return [
     {
@@ -78,14 +75,14 @@ export default function getColumns(
                 locale={it}
                 mode="single"
                 selected={date ?? new Date()}
-                onSelect={(selectedDate) => {
-                  handleUpdate(
-                    row.original.id,
-                    "date",
-                    undefined,
-                    selectedDate
-                  );
-                }}
+                // onSelect={(selectedDate) => {
+                //   handleUpdate(
+                //     row.original.id,
+                //     "date",
+                //     undefined,
+                //     selectedDate
+                //   );
+                // }}
                 initialFocus
               />
             </PopoverContent>
@@ -128,14 +125,14 @@ export default function getColumns(
                       riders.map((singleRider) => (
                         <CommandItem
                           key={singleRider.id}
-                          onSelect={() => {
-                            handleUpdate(
-                              row.original.id,
-                              "rider",
-                              undefined,
-                              singleRider
-                            );
-                          }}
+                          // onSelect={() => {
+                          //   handleUpdate(
+                          //     row.original.id,
+                          //     "rider",
+                          //     undefined,
+                          //     singleRider
+                          //   );
+                          // }}
                         >
                           <Check
                             className={cn(
@@ -176,7 +173,13 @@ export default function getColumns(
         return (
           <Input
             defaultValue={value || ""}
-            onKeyUp={(e) => handleUpdate(row.original.id, "lunch_orders", e)}
+            onChange={(e) =>
+              handleUpdate(
+                row.original.id,
+                "lunch_orders",
+                parseFloat(e.target.value) || 0
+              )
+            }
           />
         );
       },
@@ -190,7 +193,13 @@ export default function getColumns(
         return (
           <Input
             defaultValue={value || ""}
-            onKeyUp={(e) => handleUpdate(row.original.id, "dinner_orders", e)}
+            onChange={(e) =>
+              handleUpdate(
+                row.original.id,
+                "dinner_orders",
+                parseFloat(e.target.value) || 0
+              )
+            }
           />
         );
       },
@@ -204,7 +213,13 @@ export default function getColumns(
         return (
           <Input
             defaultValue={value || ""}
-            onKeyUp={(e) => handleUpdate(row.original.id, "lunch_time", e)}
+            onChange={(e) =>
+              handleUpdate(
+                row.original.id,
+                "lunch_time",
+                parseFloat(e.target.value) || 0
+              )
+            }
           />
         );
       },
@@ -218,7 +233,13 @@ export default function getColumns(
         return (
           <Input
             defaultValue={value || ""}
-            onKeyUp={(e) => handleUpdate(row.original.id, "dinner_time", e)}
+            onChange={(e) =>
+              handleUpdate(
+                row.original.id,
+                "dinner_time",
+                parseFloat(e.target.value) || 0
+              )
+            }
           />
         );
       },
@@ -232,7 +253,13 @@ export default function getColumns(
         return (
           <Input
             defaultValue={value || ""}
-            onKeyUp={(e) => handleUpdate(row.original.id, "tip_lunch", e)}
+            onChange={(e) =>
+              handleUpdate(
+                row.original.id,
+                "tip_lunch",
+                parseFloat(e.target.value) || 0
+              )
+            }
           />
         );
       },
@@ -246,14 +273,25 @@ export default function getColumns(
         return (
           <Input
             defaultValue={value || ""}
-            onKeyUp={(e) => handleUpdate(row.original.id, "tip_dinner", e)}
+            onChange={(e) =>
+              handleUpdate(
+                row.original.id,
+                "tip_dinner",
+                parseFloat(e.target.value) || 0
+              )
+            }
           />
         );
       },
     },
     {
       accessorKey: "Azioni",
-      cell: ({ row }) => <DeleteSession session={row.original} />,
+      cell: ({ row }) => (
+        <div className="flex gap-5">
+          {/* <SaveSession session={row.original} onSave={onSave} /> */}
+          <DeleteSession session={row.original} onDelete={onDelete} />
+        </div>
+      ),
     },
   ];
 }

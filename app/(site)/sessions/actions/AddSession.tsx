@@ -67,14 +67,15 @@ export default function AddSession({
   const [session, setSession] = useState<FormValues>();
   const [total, setTotal] = useState<string | undefined>("");
   const [loading, setLoading] = useState<boolean>(false);
-  const [date, setDate] = useState<Date>();
-  const form: any = getSessionForm();
+  const form = getSessionForm();
   const { toast } = useToast();
-
+  
   const [lunchMultiplier, setLunchMultiplier] = useState<number>(6);
   const [dinnerMultiplier, setDinnerMultiplier] = useState<number>(7);
   const [ordersMultiplier, setOrdersMultiplier] = useState<number>(1);
-
+  
+  form.setValue("date", new Date());
+  
   async function fetchMultipliers() {
     const response = await fetch("/api/multipliers/get", {
       method: "POST",
