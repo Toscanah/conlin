@@ -8,8 +8,8 @@ export default function Logout() {
     <Link
       href={"../"}
       className="flex gap-3 items-center 
-    hover:cursor-pointer hover:bg-foreground/5 hover:underline
-    rounded p-2"
+                  hover:cursor-pointer hover:bg-foreground/5 hover:underline
+                  rounded p-2"
     >
       <SignOut size={32} />
       <span className="text-sm">Esci</span>

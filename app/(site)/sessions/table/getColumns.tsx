@@ -35,7 +35,7 @@ import SaveSession from "../actions/SaveSession";
 
 export default function getColumns(
   rowData: SessionWithRider[],
-  handleUpdate: (id: number, field: string, value: any) => void,
+  handleInputChange: (id: number, field: string, value: any) => void,
   riders: Rider[],
   onDelete: (id: number) => void,
   onSave: (id: number) => void
@@ -75,14 +75,13 @@ export default function getColumns(
                 locale={it}
                 mode="single"
                 selected={date ?? new Date()}
-                // onSelect={(selectedDate) => {
-                //   handleUpdate(
-                //     row.original.id,
-                //     "date",
-                //     undefined,
-                //     selectedDate
-                //   );
-                // }}
+                onSelect={(selectedDate) => {
+                  handleInputChange(
+                    row.original.id,
+                    "date",
+                    selectedDate
+                  );
+                }}
                 initialFocus
               />
             </PopoverContent>
@@ -125,14 +124,13 @@ export default function getColumns(
                       riders.map((singleRider) => (
                         <CommandItem
                           key={singleRider.id}
-                          // onSelect={() => {
-                          //   handleUpdate(
-                          //     row.original.id,
-                          //     "rider",
-                          //     undefined,
-                          //     singleRider
-                          //   );
-                          // }}
+                          onSelect={() => {
+                            handleInputChange(
+                              row.original.id,
+                              "rider",
+                              singleRider
+                            );
+                          }}
                         >
                           <Check
                             className={cn(
@@ -174,7 +172,7 @@ export default function getColumns(
           <Input
             defaultValue={value || ""}
             onChange={(e) =>
-              handleUpdate(
+              handleInputChange(
                 row.original.id,
                 "lunch_orders",
                 parseFloat(e.target.value) || 0
@@ -194,7 +192,7 @@ export default function getColumns(
           <Input
             defaultValue={value || ""}
             onChange={(e) =>
-              handleUpdate(
+              handleInputChange(
                 row.original.id,
                 "dinner_orders",
                 parseFloat(e.target.value) || 0
@@ -214,7 +212,7 @@ export default function getColumns(
           <Input
             defaultValue={value || ""}
             onChange={(e) =>
-              handleUpdate(
+              handleInputChange(
                 row.original.id,
                 "lunch_time",
                 parseFloat(e.target.value) || 0
@@ -234,7 +232,7 @@ export default function getColumns(
           <Input
             defaultValue={value || ""}
             onChange={(e) =>
-              handleUpdate(
+              handleInputChange(
                 row.original.id,
                 "dinner_time",
                 parseFloat(e.target.value) || 0
@@ -254,7 +252,7 @@ export default function getColumns(
           <Input
             defaultValue={value || ""}
             onChange={(e) =>
-              handleUpdate(
+              handleInputChange(
                 row.original.id,
                 "tip_lunch",
                 parseFloat(e.target.value) || 0
@@ -274,7 +272,7 @@ export default function getColumns(
           <Input
             defaultValue={value || ""}
             onChange={(e) =>
-              handleUpdate(
+              handleInputChange(
                 row.original.id,
                 "tip_dinner",
                 parseFloat(e.target.value) || 0

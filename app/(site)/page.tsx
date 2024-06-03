@@ -14,8 +14,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
-import { useContext } from "react";
-
+import { useEffect } from "react";
 
 export default function Home() {
   const form = getLoginForm();
@@ -30,11 +29,14 @@ export default function Home() {
     console.log(envPassword);
 
     if (username === envUsername && password === envPassword) {
+      sessionStorage.setItem("isLogged", JSON.stringify(true));
       window.location.replace("./home");
-    } else {
-      console.log("Login failed");
     }
   }
+
+  useEffect(() => {
+    sessionStorage.setItem("isLogged", JSON.stringify(false));
+  },[])
 
   return (
     <div className="w-screen h-screen flex items-center justify-center">

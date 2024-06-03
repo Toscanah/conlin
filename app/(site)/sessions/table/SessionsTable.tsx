@@ -111,6 +111,7 @@ export default function SessionsTable({
 
   function onSave(id: number) {
     const updatedData = rowData[id];
+    console.log(updatedData);
 
     fetch("/api/sessions/edit/", {
       method: "POST",
@@ -139,15 +140,12 @@ export default function SessionsTable({
 
   const debouncedUpdate = useCallback(
     debounce((id: number, field: string, value: any) => {
-      setRowData((prevData) => ({
-        ...prevData,
-        [id]: {
-          ...prevData[id],
-          [field]: value,
-        },
-      }));
+      const updatedRowData: any = { ...rowData };
+      updatedRowData[id][field] = value;
+      setRowData(updatedRowData);
+
       onSave(id);
-    }, 1500),
+    }, 1000),
     []
   );
 

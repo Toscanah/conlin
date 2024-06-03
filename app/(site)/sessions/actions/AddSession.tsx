@@ -69,13 +69,13 @@ export default function AddSession({
   const [loading, setLoading] = useState<boolean>(false);
   const form = getSessionForm();
   const { toast } = useToast();
-  
+
   const [lunchMultiplier, setLunchMultiplier] = useState<number>(6);
   const [dinnerMultiplier, setDinnerMultiplier] = useState<number>(7);
   const [ordersMultiplier, setOrdersMultiplier] = useState<number>(1);
-  
+
   form.setValue("date", new Date());
-  
+
   async function fetchMultipliers() {
     const response = await fetch("/api/multipliers/get", {
       method: "POST",
@@ -178,6 +178,12 @@ export default function AddSession({
       }, 0);
     });
   }
+
+  useEffect(() => {
+    if (JSON.stringify(sessionStorage.getItem("isLogged")) == "true") {
+      window.location.replace("../.");
+    }
+  }, []);
 
   return (
     <div className="flex flex-col items-center w-full">

@@ -76,7 +76,7 @@ export default function ChangeParamsDialog() {
       rounded p-2"
         >
           <Sliders size={32} />
-          <span className="text-sm">Valori</span>
+          <span className="text-sm">Parametri</span>
         </div>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">

@@ -1,6 +1,7 @@
 "use client";
 
 import { Session } from "@prisma/client";
+import { it } from "date-fns/locale";
 import {
   Dialog,
   DialogContent,
@@ -12,12 +13,14 @@ import {
 } from "@/components/ui/dialog";
 import { Trash } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
+import { SessionWithRider } from "../../types/SessionWithRider";
+import { format } from "date-fns";
 
 export default function DeleteSession({
   session,
   onDelete,
 }: {
-  session: Session;
+  session: SessionWithRider;
   onDelete: (id: number) => void;
 }) {
   function handleDelete(id: number) {
@@ -27,11 +30,11 @@ export default function DeleteSession({
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ id }),
-    }).then(response => {
+    }).then((response) => {
       if (response.ok) {
-        onDelete(id)
+        onDelete(id);
       }
-    })
+    });
   }
 
   return (
@@ -42,16 +45,21 @@ export default function DeleteSession({
         </DialogTrigger>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle className="mb-4">Sei sicuro?</DialogTitle>
+            <DialogTitle className="mb-4">Elimina turno</DialogTitle>
             <div>
-              Stai per eliminare <strong>{JSON.stringify(session)}</strong>, sei
-              sicuro?
+              Stai per eliminare il turno di{" "}
+              <strong>{session.rider.nickname ?? session.rider.surname}</strong>{" "}
+              del giorno{" "}
+              <strong>
+                {format(session.date ?? new Date(), "PPP", { locale: it })}
+              </strong>
+              , sei sicuro?
             </div>
           </DialogHeader>
           <DialogFooter>
             <DialogClose asChild>
               <Button type="button" variant="secondary">
-                Close
+                Indietro
               </Button>
             </DialogClose>
             <Button
@@ -59,7 +67,7 @@ export default function DeleteSession({
                 handleDelete(session.id);
               }}
             >
-              Save changes
+              Elimina
             </Button>
           </DialogFooter>
         </DialogContent>

@@ -116,7 +116,7 @@ export default function Stats({
       <div className="flex items-center gap-8 w-full">
         <div className="space-y-2 w-[30%]">
           <Label htmlFor="rider">Ragazzo</Label>
-          <Popover >
+          <Popover>
             {/**open={ridersPopoverOpen} */}
             <PopoverTrigger asChild id="rider">
               <Button
@@ -163,7 +163,6 @@ export default function Stats({
                           rider && rider.id === -1 ? "opacity-100" : "opacity-0"
                         )}
                       />
-
                       Tutti
                     </CommandItem>
                     {riders?.length ? (
@@ -346,7 +345,7 @@ export default function Stats({
         </Select>
       </div>
 
-      {rider.id !== -1 && date?.from && date?.to && (
+      {rider.id !== -1 && date?.from && date?.to &&  (
         <StatsResult
           riderId={rider.id}
           date={date}
@@ -358,7 +357,7 @@ export default function Stats({
         />
       )}
 
-      {rider.id === -1 && date?.from && date?.to && (
+      {rider.id === -1 && date?.from && date?.to &&  (
         <StatsResult
           date={date}
           index={index}
