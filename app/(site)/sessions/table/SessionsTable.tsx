@@ -375,8 +375,8 @@ export default function SessionsTable({
 
       <div className="flex items-center justify-end space-x-2 py-4">
         <div className="mr-auto text-sm w-[700px]">
-          Attenzione: in questa tabella non ci sono tutti i controlli come quando si aggiunge un turno.
-          Prestare attenzione a modificare tutto correttamente
+          <strong>Messaggio per Lin:</strong> in questa tabella PERORA non ci sono gli stessi controlli della pagina dove aggiungi i turni.
+          Fai attenzione ad aggiungere i dati correttamente in modo logico e coeso
           
         </div>
         <Button
