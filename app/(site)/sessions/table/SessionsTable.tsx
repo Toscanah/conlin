@@ -301,8 +301,11 @@ export default function SessionsTable({
 
         {/* <Button onClick={() => rerender()}>Rerender</Button> */}
 
-        <div className="text-xs ml-auto">
-          <HoverCard>
+        <div className="text-xs ml-auto mt-auto">
+          <span className="mt-auto text-muted-foreground">
+            Gli aggiornamenti sono automatici
+          </span>
+          {/* <HoverCard>
             <HoverCardTrigger>
               <Question size={32} />
             </HoverCardTrigger>
@@ -317,7 +320,7 @@ export default function SessionsTable({
                 </li>
               </ul>
             </HoverCardContent>
-          </HoverCard>
+          </HoverCard> */}
         </div>
       </div>
 
@@ -374,10 +377,10 @@ export default function SessionsTable({
       </div>
 
       <div className="flex items-center justify-end space-x-2 py-4">
-        <div className="mr-auto text-sm w-[700px]">
-          <strong>Messaggio per Lin:</strong> in questa tabella PERORA non ci sono gli stessi controlli della pagina dove aggiungi i turni.
-          Fai attenzione ad aggiungere i dati correttamente in modo logico e coeso
-          
+        <div className="mr-auto text-sm text-muted-foreground">
+          <strong>Attenzione:</strong> in questa tabella non ci sono gli stessi
+          controlli della pagina dove si aggiungono i turni. Fai attenzione ad
+          aggiungere i dati correttamente in modo logico e coeso
         </div>
         <Button
           variant="outline"

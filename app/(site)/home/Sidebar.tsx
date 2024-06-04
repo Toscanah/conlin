@@ -17,7 +17,7 @@ export default function Sidebar() {
     left-0 top-1/2 transform -translate-y-1/2
     transition-transform duration-500 
     ${isVisible ? "translate-x-0" : "-translate-x-[72.5%]"}
-    hover:cursor-pointer bg-foreground/5 p-2 rounded-r-xl h-[210px]
+    hover:cursor-pointer bg-foreground/5 p-2 rounded-r-xl h-[210px] z-50
     `}
     >
       <div className={`w-[130px] ${isVisible ? "" : ""}`}>

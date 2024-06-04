@@ -101,7 +101,7 @@ export default function ChangeParamsDialog() {
                     Moltiplicatore <strong>PRANZO</strong>
                   </FormLabel>
                   <FormControl>
-                    <Input {...field} type="number" step={0.1} />
+                    <Input {...field} type="number" step={0.1} min={0}/>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -117,7 +117,7 @@ export default function ChangeParamsDialog() {
                     Moltiplicatore <strong>CENA</strong>
                   </FormLabel>
                   <FormControl>
-                    <Input {...field} type="number" step={0.1} />
+                    <Input {...field} type="number" step={0.1} min={0}/>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -133,7 +133,7 @@ export default function ChangeParamsDialog() {
                     Moltiplicatore <strong>ORDINI</strong>
                   </FormLabel>
                   <FormControl>
-                    <Input {...field} type="number" step={0.1} />
+                    <Input {...field} type="number" step={0.1} min={0}/>
                   </FormControl>
                   <FormMessage />
                 </FormItem>

@@ -55,7 +55,7 @@ export default async function Main() {
 
       <Sidebar />
 
-      <div className="fixed bottom-4 right-4 hover:cursor-pointer">
+      {/* <div className="fixed bottom-4 right-4 hover:cursor-pointer">
         <ChangeTheme />
       </div>
 
@@ -68,7 +68,7 @@ export default async function Main() {
         >
           Cecchini A. © - fatto per Lin
         </Link>
-      </div>
+      </div> */}
     </div>
   );
 }

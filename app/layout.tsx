@@ -3,6 +3,8 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "./components/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
+import { ChangeTheme } from "./(site)/ChangeTheme";
+import Link from "next/link";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -23,6 +25,20 @@ export default function RootLayout({
       <body className={inter.className} suppressHydrationWarning>
         <ThemeProvider attribute="class" defaultTheme="system">
           {children}
+          <div className="fixed bottom-4 right-4 hover:cursor-pointer">
+            <ChangeTheme />
+          </div>
+
+          <div className="fixed bottom-4 left-4 flex flex-col justify-center">
+            <Link
+              className="text-xs hover:cursor-pointer hover:underline"
+              href={"https://github.com/Toscanah/conlin"}
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              Cecchini A. © - fatto per Lin
+            </Link>
+          </div>
           <Toaster />
         </ThemeProvider>
       </body>

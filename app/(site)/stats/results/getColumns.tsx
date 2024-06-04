@@ -37,7 +37,7 @@ export default function getColumns(): ColumnDef<StatsType>[] {
           row.original.lunchOrders == undefined ? (
           <span className="text-muted-foreground hidden">/</span>
         ) : (
-          row.original.lunchOrders
+          row.original.lunchOrders.toFixed(2)
         );
       },
     },
@@ -59,7 +59,7 @@ export default function getColumns(): ColumnDef<StatsType>[] {
           row.original.dinnerOrders == undefined ? (
           <span className="text-muted-foreground hidden">/</span>
         ) : (
-          row.original.dinnerOrders
+          row.original.dinnerOrders.toFixed(2)
         );
       },
     },
@@ -81,7 +81,7 @@ export default function getColumns(): ColumnDef<StatsType>[] {
           row.original.totalOrders == undefined ? (
           <span className="text-muted-foreground hidden">/</span>
         ) : (
-          row.original.totalOrders
+          row.original.totalOrders.toFixed(2)
         );
       },
     },
@@ -103,7 +103,7 @@ export default function getColumns(): ColumnDef<StatsType>[] {
           row.original.lunchHours == undefined ? (
           <span className="text-muted-foreground hidden">/</span>
         ) : (
-          row.original.lunchHours
+          row.original.lunchHours.toFixed(2)
         );
       },
     },
@@ -125,7 +125,7 @@ export default function getColumns(): ColumnDef<StatsType>[] {
           row.original.dinnerHours == undefined ? (
           <span className="text-muted-foreground hidden">/</span>
         ) : (
-          row.original.dinnerHours
+          row.original.dinnerHours.toFixed(2)
         );
       },
     },
@@ -169,7 +169,7 @@ export default function getColumns(): ColumnDef<StatsType>[] {
           row.original.lunchPay == undefined ? (
           <span className="text-muted-foreground hidden">/</span>
         ) : (
-          row.original.lunchPay
+          row.original.lunchPay.toFixed(2)
         );
       },
     },
@@ -191,7 +191,7 @@ export default function getColumns(): ColumnDef<StatsType>[] {
           row.original.dinnerPay == undefined ? (
           <span className="text-muted-foreground hidden">/</span>
         ) : (
-          row.original.dinnerPay
+          row.original.dinnerPay.toFixed(2)
         );
       },
     },
@@ -213,7 +213,7 @@ export default function getColumns(): ColumnDef<StatsType>[] {
           row.original.totalPay == undefined ? (
           <span className="text-muted-foreground hidden">/</span>
         ) : (
-          row.original.totalPay
+          row.original.totalPay.toFixed(2)
         );
       },
     },
@@ -235,7 +235,7 @@ export default function getColumns(): ColumnDef<StatsType>[] {
           row.original.lunchTip == undefined ? (
           <span className="text-muted-foreground hidden">/</span>
         ) : (
-          row.original.lunchTip
+          row.original.lunchTip.toFixed(2)
         );
       },
     },
@@ -257,7 +257,7 @@ export default function getColumns(): ColumnDef<StatsType>[] {
           row.original.dinnerTip == undefined ? (
           <span className="text-muted-foreground hidden">/</span>
         ) : (
-          row.original.dinnerTip
+          row.original.dinnerTip.toFixed(2)
         );
       },
     },
@@ -279,7 +279,7 @@ export default function getColumns(): ColumnDef<StatsType>[] {
           row.original.totalTip == undefined ? (
           <span className="text-muted-foreground hidden">/</span>
         ) : (
-          row.original.totalTip
+          row.original.totalTip.toFixed(2)
         );
       },
     },
@@ -301,7 +301,7 @@ export default function getColumns(): ColumnDef<StatsType>[] {
           row.original.totalMoney == undefined ? (
           <span className="text-muted-foreground hidden">/</span>
         ) : (
-          row.original.totalMoney
+          row.original.totalMoney.toFixed(2)
         );
       },
     },

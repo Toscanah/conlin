@@ -87,7 +87,7 @@ export default function Home() {
         </Form>
       </div>
 
-      <div className="fixed bottom-4 right-4 hover:cursor-pointer">
+      {/* <div className="fixed bottom-4 right-4 hover:cursor-pointer">
         <ChangeTheme />
       </div>
 
@@ -100,7 +100,7 @@ export default function Home() {
         >
           Cecchini A. © - fatto per Lin
         </Link>
-      </div>
+      </div> */}
     </div>
   );
 }

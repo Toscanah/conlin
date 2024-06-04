@@ -74,24 +74,31 @@ export default function AddSession({
   const [lunchMultiplier, setLunchMultiplier] = useState<number>(6);
   const [dinnerMultiplier, setDinnerMultiplier] = useState<number>(7);
   const [ordersMultiplier, setOrdersMultiplier] = useState<number>(1);
+  
+  const [isLogged, setIsLogged] = useState<boolean>();
 
   useEffect(() => {
     fetchMultipliers();
+    form.setValue("date", new Date());
+    setIsLogged(sessionStorage.getItem("isLogged") === "true");
 
-    if (isLogged === "false") {
-      window.location.replace("../.");
-    }
+    const timer = setTimeout(() => {
+      setIsLogged(false);
+      sessionStorage.setItem("isLogged", "false");
+    }, 1800000);
+
+    return () => clearTimeout(timer);
   }, []);
 
   useEffect(() => {
-    if (form.formState.errors.errorMessage) {
-      setValid(false);
-    } else {
-      setValid(true);
+    if (isLogged == false) {
+      window.location.replace("../.");
     }
-  }, [form.formState.errors.errorMessage]);
+  }, [isLogged]);
 
-  form.setValue("date", new Date());
+  useEffect(() => {
+    setValid(!form.formState.errors.errorMessage)
+  }, [form.formState.errors.errorMessage]);
 
   async function fetchMultipliers() {
     const response = await fetch("/api/multipliers/get", {
@@ -107,8 +114,6 @@ export default function AddSession({
       }
     }
   }
-
-  const isLogged = sessionStorage.getItem("isLogged");
 
   function onSubmit(values: FormValues) {
     setConfirmDialogOpen(true);
@@ -165,6 +170,8 @@ export default function AddSession({
     setConfirmDialogOpen(false);
     setLoading(true);
 
+    console.log(session?.date)
+
     fetch("/api/sessions/add/", {
       method: "POST",
 
@@ -194,7 +201,7 @@ export default function AddSession({
   }
 
   return (
-    isLogged === "true" && (
+    isLogged && (
       <div className="flex flex-col items-center w-full">
         <h1 className="text-4xl my-8">Aggiungi turno</h1>
         {loading && (
