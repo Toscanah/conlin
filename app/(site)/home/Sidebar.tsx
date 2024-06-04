@@ -9,7 +9,7 @@ import SessionsPageButton from "../SessionsPageButton";
 import Logout from "../Logout";
 
 export default function Sidebar() {
-  const [isVisible, setIsVisible] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
 
   return (
     <div
@@ -22,8 +22,8 @@ export default function Sidebar() {
     >
       <div className={`w-[130px] ${isVisible ? "" : ""}`}>
         <RidersPageButton />
-        <ChangeParamsDialog />
         <SessionsPageButton />
+        <ChangeParamsDialog />
         <Logout />
       </div>
       <div

@@ -15,7 +15,7 @@ export default async function ManageRiders() {
       </div>
 
       <div className="absolute text-4xl top-4 left-4">
-        <BackHome />
+        <BackHome path=""/>
       </div>
     </div>
   );

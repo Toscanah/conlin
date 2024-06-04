@@ -9,7 +9,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useReducer, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Command,
@@ -60,6 +60,7 @@ export default function SessionsTable({
   initialSessions: SessionWithRider[];
   riders: Rider[];
 }) {
+  const rerender = useReducer(() => ({}), {})[1];
   const { toast } = useToast();
   const [sessions, setSessions] = useState<SessionWithRider[]>(initialSessions);
   const [filteredSessions, setFilteredSession] =
@@ -298,6 +299,8 @@ export default function SessionsTable({
           Cancella filtri
         </Button>
 
+        {/* <Button onClick={() => rerender()}>Rerender</Button> */}
+
         <div className="text-xs ml-auto">
           <HoverCard>
             <HoverCardTrigger>
@@ -371,6 +374,11 @@ export default function SessionsTable({
       </div>
 
       <div className="flex items-center justify-end space-x-2 py-4">
+        <div className="mr-auto text-sm w-[700px]">
+          Attenzione: in questa tabella non ci sono tutti i controlli come quando si aggiunge un turno.
+          Prestare attenzione a modificare tutto correttamente
+          
+        </div>
         <Button
           variant="outline"
           size="sm"

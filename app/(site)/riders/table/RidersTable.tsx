@@ -137,6 +137,7 @@ export default function RidersTable({
       </div>
 
       <div className="flex items-center justify-end space-x-2 py-4">
+
         <Button
           variant="outline"
           size="sm"

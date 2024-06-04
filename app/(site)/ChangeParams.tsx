@@ -4,9 +4,11 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  DialogClose,
 } from "@/components/ui/dialog";
 import {
   Form,
@@ -79,16 +81,18 @@ export default function ChangeParamsDialog() {
           <span className="text-sm">Parametri</span>
         </div>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[425px]" onOpenAutoFocus={(e) => e.preventDefault()}>
         <DialogHeader>
           <DialogTitle>Cambia i parametri</DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form
+            
             onSubmit={form.handleSubmit(onSubmit)}
             className="space-y-8 flex justify-center w-full flex-col"
           >
             <FormField
+            
               control={form.control}
               name="lunch_mult"
               render={({ field }) => (
@@ -136,15 +140,18 @@ export default function ChangeParamsDialog() {
               )}
             />
 
-            <div className="flex justify-end gap-2 w-full">
-              <Button
-                onClick={() => setOpenDialog(false)}
-                variant={"secondary"}
-              >
-                Indietro
-              </Button>
+            <DialogFooter className="flex justify-end gap-2 w-full">
+              <DialogClose asChild>
+                <Button
+                  onClick={() => setOpenDialog(false)}
+                  variant={"secondary"}
+                >
+                  Indietro
+                </Button>
+              </DialogClose>
+
               <Button type="submit">Salva</Button>
-            </div>
+            </DialogFooter>
           </form>
         </Form>
       </DialogContent>

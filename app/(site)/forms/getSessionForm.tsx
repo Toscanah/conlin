@@ -72,8 +72,34 @@ export const formSchema = z
         (data.lunchTime === undefined || data.lunchTime === 0) &&
         (data.dinnerTime === undefined || data.dinnerTime === 0);
 
+      if (!data.rider) {
+        return false;
+      }
+
       // se tutti i campi sono vuoti allora via
       if (allFieldsUndefined) {
+        return false;
+      }
+
+      /**
+       * the "return false" invalides the form
+       *
+       * if the lunch and/or dinner tip exists (can be 0) BUT
+       * the corrisponding lunch/dinner orders do not, then invalide the form.
+       *
+       * This because it doesn't make sense to have tips if no orders were made
+       *
+       */
+      if (
+        (data.tipLunch !== undefined &&
+          data.tipLunch !== 0 &&
+          (data.lunchOrders === undefined || data.lunchOrders === 0)) ||
+        (data.tipDinner !== undefined &&
+          data.tipDinner !== 0 &&
+          (data.dinnerOrders === undefined || data.dinnerOrders === 0))
+      ) {
+        console.log("LOL!!");
+
         return false;
       }
 
@@ -98,7 +124,7 @@ export const formSchema = z
     },
     {
       message:
-        'Assicurati che le consegne abbiano un rispettivo ammontare di ore o che almeno un campo "ore" non sia vuoto.',
+        'Assicurati che le consegne abbiano un rispettivo ammontare di ore o che almeno un campo "ore" non sia vuoto. Inoltre il campo ragazzo non può essere vuoto.',
       path: ["errorMessage"],
     }
   );
