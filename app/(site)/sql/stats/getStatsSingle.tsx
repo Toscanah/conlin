@@ -1,6 +1,7 @@
 import { StatsType } from "../../types/StatsType";
 import prisma from "../db";
 import { DateRange } from "react-day-picker";
+import getMultipliers from "../multipliers/getMultipliers";
 
 export default async function getStatsSingle(
   riderId: number,
@@ -39,6 +40,9 @@ export default async function getStatsSingle(
     },
   });
 
+  const { lunchMultiplier, dinnerMultiplier, ordersMultiplier } =
+    await getMultipliers();
+
   // Initialize values
   let lunchOrders = aggregatedOrders._sum.lunch_orders ?? 0;
   let dinnerOrders = aggregatedOrders._sum.dinner_orders ?? 0;
@@ -61,14 +65,15 @@ export default async function getStatsSingle(
   if (session === "both" || session === "lunch") {
     totalOrders += lunchOrders;
     totalHours += lunchHours;
-    lunchPay = lunchHours * 6 + lunchOrders;
+    lunchPay = lunchHours * lunchMultiplier + lunchOrders * ordersMultiplier;
     totalPay += lunchPay;
   }
 
   if (session === "both" || session === "dinner") {
     totalOrders += dinnerOrders;
     totalHours += dinnerHours;
-    dinnerPay = dinnerHours * 7 + dinnerOrders;
+    dinnerPay =
+      dinnerHours * dinnerMultiplier + dinnerOrders * ordersMultiplier;
     totalPay += dinnerPay;
   }
 

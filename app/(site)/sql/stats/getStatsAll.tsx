@@ -1,6 +1,7 @@
 import { StatsType } from "../../types/StatsType";
 import prisma from "../db";
 import { DateRange } from "react-day-picker";
+import getMultipliers from "../multipliers/getMultipliers";
 
 export default async function getStatsAll(
   date: DateRange,
@@ -8,6 +9,9 @@ export default async function getStatsAll(
   session: string
 ): Promise<StatsType[]> {
   const { from, to } = date;
+
+  const { lunchMultiplier, dinnerMultiplier, ordersMultiplier } =
+    await getMultipliers();
 
   const aggregatedData = await prisma.session.groupBy({
     by: ["rider_id"],
@@ -60,14 +64,16 @@ export default async function getStatsAll(
       if (session === "both" || session === "lunch") {
         totalOrders += lunchOrders;
         totalHours += lunchHours;
-        lunchPay = lunchHours * 6 + lunchOrders;
+        lunchPay =
+          lunchHours * lunchMultiplier + lunchOrders * ordersMultiplier;
         totalPay += lunchPay;
       }
 
       if (session === "both" || session === "dinner") {
         totalOrders += dinnerOrders;
         totalHours += dinnerHours;
-        dinnerPay = dinnerHours * 7 + dinnerOrders;
+        dinnerPay =
+          dinnerHours * dinnerMultiplier + dinnerOrders * ordersMultiplier;
         totalPay += dinnerPay;
       }
 
