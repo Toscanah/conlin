@@ -10,7 +10,7 @@ import { TotalsType } from "../../types/TotalType";
 
 export default function TotalStats({ totals }: { totals: TotalsType }) {
   return (
-    <div className="flex flex-col gap-4 items-center w-[80%] text-center">
+    <div className="flex flex-col gap-4 items-center w-[100%] text-center">
       <Table className="text-xl w-full text-center">
         <TableHeader >
           <TableRow className="flex justify-center w-full items-center">

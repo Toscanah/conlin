@@ -9,7 +9,7 @@ import SessionsPageButton from "../SessionsPageButton";
 import Logout from "../Logout";
 
 export default function Sidebar() {
-  const [isVisible, setIsVisible] = useState(true);
+  const [isVisible, setIsVisible] = useState(false);
 
   return (
     <div

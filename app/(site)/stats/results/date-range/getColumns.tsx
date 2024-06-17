@@ -1,5 +1,5 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { StatsType } from "../../types/StatsType";
+import { StatsType } from "./StatsType";
 import { Button } from "@/components/ui/button";
 import { ArrowsDownUp } from "@phosphor-icons/react";
 

@@ -206,7 +206,7 @@ export default function AddSession({
         <h1 className="text-4xl my-8">Aggiungi turno</h1>
         {loading && (
           <BarLoader
-            color="#00C0FF"
+            color="#D81B60"
             loading={loading}
             width={"100%"}
             className="mb-4"

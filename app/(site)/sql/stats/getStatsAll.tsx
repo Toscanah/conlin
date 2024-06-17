@@ -1,4 +1,4 @@
-import { StatsType } from "../../types/StatsType";
+import { StatsType } from "../../stats/results/date-range/StatsType";
 import prisma from "../db";
 import { DateRange } from "react-day-picker";
 import getMultipliers from "../multipliers/getMultipliers";
