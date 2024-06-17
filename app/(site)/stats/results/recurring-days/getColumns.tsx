@@ -23,7 +23,7 @@ export default function getColumns(): ColumnDef<StatsType>[] {
       cell: ({ row }) => {
         const formattedDate = format(
           subDays(row.original.day, 1),
-          "EEEE d MMMM",
+          "EEEE d MMMM yyyy",
           { locale: it }
         );
         return formattedDate

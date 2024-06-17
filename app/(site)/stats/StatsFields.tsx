@@ -7,6 +7,7 @@ import {
   startOfDay,
 } from "date-fns";
 import { it } from "date-fns/locale";
+
 import {
   Select,
   SelectContent,
@@ -35,7 +36,7 @@ import {
   Check,
 } from "@phosphor-icons/react";
 import { format } from "date-fns";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { Rider } from "@prisma/client";
 import { DateRange } from "react-day-picker";
 import { Label } from "@/components/ui/label";
@@ -52,6 +53,7 @@ export default function StatsFields({
   days,
   periodChoice,
   period,
+  yearOfPeriod,
   setRider,
   setDate,
   setContext,
@@ -60,6 +62,7 @@ export default function StatsFields({
   setDays,
   setPeriodChoice,
   setPeriod,
+  setYearOfPeriod,
 }: {
   riders: Rider[];
   rider: Rider;
@@ -68,6 +71,7 @@ export default function StatsFields({
   days: string[];
   periodChoice: string;
   period: string;
+  yearOfPeriod: string;
   setRider: Dispatch<SetStateAction<Rider>>;
   setDate: Dispatch<SetStateAction<DateRange | undefined>>;
   setContext: Dispatch<SetStateAction<string>>;
@@ -76,8 +80,10 @@ export default function StatsFields({
   setDays: Dispatch<SetStateAction<string[]>>;
   setPeriodChoice: Dispatch<SetStateAction<string>>;
   setPeriod: Dispatch<SetStateAction<string>>;
+  setYearOfPeriod: Dispatch<SetStateAction<string>>;
 }) {
   const daysOfWeek = ["mar", "mer", "gio", "ven", "sab", "dom"];
+
   const getMonths = () => {
     const months = [];
     for (let i = 0; i < 12; i++) {
@@ -136,6 +142,44 @@ export default function StatsFields({
         return [...prevDays, day];
       }
     });
+  };
+
+  const [month, setMonth] = useState<string>("");
+  const [year, setYear] = useState<string>(new Date().getFullYear().toString());
+
+  function handleYearOfPeriod(value: string) {
+    setYearOfPeriod(value);
+  }
+
+  function handlePeriod(value: string) {
+    if (periodChoice == "year") {
+      setYear(value);
+      setPeriod(value);
+    }
+
+    if (periodChoice == "month") {
+      setMonth(value);
+      setPeriod(value);
+    }
+  }
+
+  const periodOptions = {
+    year: {
+      label: "Anno?",
+      placeholder: "Seleziona quale anno",
+      options: getYears(),
+      onValueChange: handlePeriod,
+      defaultValue: new Date().getFullYear().toString(),
+      value: year,
+    },
+    month: {
+      label: "Mese?",
+      placeholder: "Seleziona il mese",
+      options: getMonths(),
+      onValueChange: handlePeriod,
+      defaultValue: "",
+      value: month,
+    },
   };
 
   return (
@@ -359,34 +403,50 @@ export default function StatsFields({
               </SelectContent>
             </Select>
 
-            <Select onValueChange={setPeriod} defaultValue="">
+            {periodChoice === "month" && (
               <div className="space-y-2 w-[50%]">
-                <Label htmlFor="period">
-                  {periodChoice == "month" ? "Mese?" : "Anno?"}
-                </Label>
-                <SelectTrigger id="period">
-                  <SelectValue
-                    placeholder={`Seleziona ${
-                      periodChoice === "month" ? "il mese" : "l'anno"
-                    }`}
-                  />
-                </SelectTrigger>
+                <Label htmlFor="open-popover">Dati</Label>
+                <Popover>
+                  <PopoverTrigger asChild className="w-full" id="open-popover">
+                    <Button variant="secondary">Cliccami</Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="space-y-2">
+                    <SelectComponent
+                      id="period-month"
+                      label={periodOptions.month.label}
+                      placeholder={periodOptions.month.placeholder}
+                      options={periodOptions.month.options}
+                      onValueChange={periodOptions.month.onValueChange}
+                      defaultValue={periodOptions.month.defaultValue}
+                      value={periodOptions.month.value}
+                    />
+                    <SelectComponent
+                      id="period-year"
+                      label={periodOptions.year.label}
+                      placeholder={periodOptions.year.placeholder}
+                      options={getYears()}
+                      onValueChange={handleYearOfPeriod}
+                      defaultValue={""}
+                      value={yearOfPeriod}
+                    />
+                  </PopoverContent>
+                </Popover>
               </div>
+            )}
 
-              <SelectContent>
-                {periodChoice == "month"
-                  ? getMonths().map((month) => (
-                      <SelectItem key={month} value={month}>
-                        {month}
-                      </SelectItem>
-                    ))
-                  : getYears().map((year) => (
-                      <SelectItem key={year} value={year}>
-                        {year}
-                      </SelectItem>
-                    ))}
-              </SelectContent>
-            </Select>
+            {periodChoice === "year" && (
+              <div className="w-1/2">
+                <SelectComponent
+                  id="period-year"
+                  label={periodOptions.year.label}
+                  placeholder={periodOptions.year.placeholder}
+                  options={periodOptions.year.options}
+                  onValueChange={periodOptions.year.onValueChange}
+                  defaultValue={periodOptions.year.defaultValue}
+                  value={periodOptions.year.value}
+                />
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -446,3 +506,42 @@ export default function StatsFields({
     </div>
   );
 }
+
+const SelectComponent = ({
+  id,
+  label,
+  placeholder,
+  options,
+  onValueChange,
+  defaultValue,
+  value,
+}: {
+  id: string;
+  label: string;
+  placeholder: string;
+  options: string[];
+  onValueChange: (value: string) => void;
+  defaultValue: string;
+  value: string;
+}) => (
+  <Select
+    onValueChange={onValueChange}
+    defaultValue={defaultValue}
+    value={value}
+  >
+    <div className={cn("space-y-2 w-full")}>
+      <Label htmlFor={id}>{label}</Label>
+      <SelectTrigger id={id}>
+        <SelectValue placeholder={placeholder} />
+      </SelectTrigger>
+    </div>
+
+    <SelectContent>
+      {options.map((option: string) => (
+        <SelectItem key={option} value={option}>
+          {option}
+        </SelectItem>
+      ))}
+    </SelectContent>
+  </Select>
+);

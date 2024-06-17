@@ -5,7 +5,8 @@ import Stats from "./Stats";
 import { ReactElement, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Plus, X } from "@phosphor-icons/react";
-import { Resizable } from "re-resizable";
+import { Flipper, Flipped, spring } from "react-flip-toolkit";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 export default function Layout({ riders }: { riders: Rider[] }) {
   const [currentIndex, setCurrentIndex] = useState(1);
@@ -25,42 +26,50 @@ export default function Layout({ riders }: { riders: Rider[] }) {
     setStats((prevStats) => prevStats.filter((_, i) => i !== index));
   }
 
-  return (
-    <div className="w-full flex flex-col items-center justify-center">
-      <h1 className="text-4xl my-8">Statistiche</h1>
+  const onElementAppear = (el: any, index: number) => {
+    spring({
+      onUpdate: (val) => {
+        el.style.opacity = val;
+      },
+      delay: index * 50,
+    });
+  };
 
-      <div className="flex flex-col items-center w-full gap-y-14">
-        <div className="w-[97%] flex flex-wrap gap-y-8 justify-between">
-          {stats.map((stat, index) => (
+  return (
+    <div className="w-full flex flex-col items-center justify-center gap-4">
+      <h1 className="text-4xl mt-8">Statistiche</h1>
+
+      <Button className="" onClick={addStats}>
+        <Plus className="mr-2 h-4 w-4" />
+        Aggiungi sezione
+      </Button>
+
+      <Flipper
+        flipKey={stats.map((stat) => stat.key).join("")}
+        spring={"noWobble"}
+        className="flex w-full space-x-4 p-8 overflow-x-auto"
+      >
+        {stats.map((stat, index) => (
+          <Flipped
+            key={stat.key}
+            flipId={stat.key?.toString()}
+            onAppear={onElementAppear}
+          >
             <div
-              className={`relative group select-none w-[49%] ${
-                (index + 1) % 3 === 0 ? "" : ""
-              }`}
-              key={stat.key}
+              className="relative group select-none w-full min-w-[45%]"
             >
               {stat}
               <X
                 onClick={() => removeStats(index)}
                 size={36}
                 className="absolute top-[-1rem] right-[-1rem] invisible 
-                          group-hover:visible hover:cursor-pointer hover:bg-opacity-50 
-                          hover:bg-muted-foreground/20 rounded-full p-1"
+                                group-hover:visible hover:cursor-pointer hover:bg-opacity-50 
+                                hover:bg-muted-foreground/20 rounded-full p-1"
               />
             </div>
-          ))}
-
-          <div
-            className={`${
-              stats.length % 2 === 0 ? "w-full" : "w-[49%]"
-            } flex items-center justify-center`}
-          >
-            <Button className="" onClick={addStats}>
-              <Plus className="mr-2 h-4 w-4" />
-              Aggiungi sezione
-            </Button>
-          </div>
-        </div>
-      </div>
+          </Flipped>
+        ))}
+      </Flipper>
     </div>
   );
 }

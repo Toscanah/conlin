@@ -7,7 +7,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useEffect, useState } from "react";
-import BarLoader from "react-spinners/BarLoader";
+import { ThreeDots } from "react-loader-spinner";
 import { StatsType } from "./StatsType";
 import getColumns from "./getColumns";
 import getTable from "./getTable";
@@ -22,12 +22,14 @@ export default function Results({
   session,
   periodChoice,
   period,
+  yearOfPeriod,
 }: {
   days: string[];
   context: string;
   session: string;
   periodChoice: string;
   period: string;
+  yearOfPeriod: string;
 }) {
   const [totals, setTotals] = useState<TotalsType>({});
   const [loading, setLoading] = useState<boolean>(false);
@@ -43,6 +45,8 @@ export default function Results({
   );
 
   useEffect(() => {
+    setResult([])
+    setNoResult(false);
     setLoading(true);
     const body = {
       days,
@@ -50,6 +54,7 @@ export default function Results({
       session,
       periodChoice,
       period,
+      yearOfPeriod,
     };
 
     fetch("/api/stats/get", {
@@ -64,7 +69,7 @@ export default function Results({
         });
       }
     });
-  }, [days, context, session, periodChoice, period]);
+  }, [days, context, session, periodChoice, period, yearOfPeriod]);
 
   useEffect(() => {
     const visibility = {
@@ -107,13 +112,16 @@ export default function Results({
                   flex-col gap-8 p-4 rounded-lg"
     >
       <div className="flex flex-col">
-        <span className="mb-2">Risultati:</span>
+        {loading && <span className="mb-2">Risultati:</span>}
+
         <div
           className="w-full overflow-y-auto max-h-[40vh] rounded-md border"
           id="main"
         >
           {loading && (
-            <BarLoader color="#D81B60" loading={loading} width={"100%"} />
+            <div className="p-4">
+              <ThreeDots color="#D81B60" visible={loading} width={"100%"} />
+            </div>
           )}
 
           {((days.length > 0 && result.length > 0 && period) || noResult) && (

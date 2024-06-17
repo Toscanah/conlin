@@ -1,6 +1,6 @@
 "use client";
 
-import BarLoader from "react-spinners/BarLoader";
+import { ThreeDots } from "react-loader-spinner";
 import { DateRange } from "react-day-picker";
 import { useEffect, useState } from "react";
 import { StatsType } from "./StatsType";
@@ -51,6 +51,9 @@ export default function Results({
   const [noResult, setNoResult] = useState<boolean>(false);
 
   useEffect(() => {
+    setResult([]);
+    setNoResult(false);
+    
     setLoading(true);
     const body = isAllRiders
       ? { date, context, session, isAllRiders: true }
@@ -63,6 +66,7 @@ export default function Results({
       if (response.ok) {
         response.json().then((result) => {
           setLoading(false);
+
           let sortedResult: StatsType[];
 
           switch (context) {
@@ -180,13 +184,16 @@ export default function Results({
                   flex-col gap-8 p-4 rounded-lg"
     >
       <div className="flex flex-col">
-        <span className="mb-2">Risultati:</span>
+        {loading && <span className="mb-2">Risultati:</span>}
+
         <div
           className="w-full overflow-y-auto max-h-[40vh] rounded-md border"
           id="main"
         >
           {loading && (
-            <BarLoader color="#D81B60" loading={loading} width={"100%"} />
+            <div className="p-4">
+              <ThreeDots color="#D81B60" visible={loading} width={"100%"} />
+            </div>
           )}
 
           {((date && result && result.length !== 0) || noResult) && (

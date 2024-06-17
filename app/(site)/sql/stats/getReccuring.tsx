@@ -18,22 +18,18 @@ export default async function getReccuring(body: {
   session: string;
   periodChoice: string;
   period: string;
+  yearOfPeriod: string;
 }) {
-  const { days, context, session, periodChoice, period } = body;
+  const { days, context, session, periodChoice, period, yearOfPeriod } = body;
 
   let startDate: Date;
   let endDate: Date;
 
-  if (periodChoice === "month") {
-    // se Lin mi chiede di poter essere ancora piu specifico aggiungendo anche l'anno del mese
-    // sarebbe meglio avere un parametro aggiuntivo chiamato tipo "annoDelMese" invece che estrapolarlo dal "period"
-    // const [monthName, yearStr] = period.split(" "); // Splitting "May 2024" into ["May", "2024"]
-    // const year = parseInt(yearStr, 10);
+  console.log(yearOfPeriod)
 
-    // altrimenti l'anno di default è l'anno corrente
-    const currentYear = new Date().getFullYear();
+  if (periodChoice === "month") {
     startDate = parse(
-      `01 ${period} ${currentYear}`,
+      `01 ${period} ${yearOfPeriod}`,
       "dd LLLL yyyy",
       new Date(),
       {

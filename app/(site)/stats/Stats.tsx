@@ -9,6 +9,8 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import StatsFields from "./StatsFields";
 import { Separator } from "@/components/ui/separator";
+import { Button } from "@/components/ui/button";
+import { Broom } from "@phosphor-icons/react";
 
 export const revalidate = false;
 
@@ -35,9 +37,32 @@ export default function Stats({
   const [days, setDays] = useState<string[]>([]);
   const [periodChoice, setPeriodChoice] = useState<string>("month");
   const [period, setPeriod] = useState<string>("");
+  const [yearOfPeriod, setYearOfPeriod] = useState<string>(
+    new Date().getFullYear().toString()
+  );
 
   return (
-    <div className="flex flex-col items-center p-6 w-[100%] gap-8 border- border rounded-lg">
+    <div
+      className="flex flex-col items-center p-6 w-full 
+    gap-8 border-2 rounded-lg  hover:border-foreground "
+    >
+      {/* <Broom  className="absolute top-0 left-0 p-1 hover:cursor-pointer" size={32} onClick={() => {
+        setRider({
+          id: -1,
+          name: "Tutti",
+          surname: "Tutti",
+          nickname: "Tutti",
+          is_active: false,
+        });
+        setDate(undefined)
+        setContext("all")
+        setSession("both")
+        setDateChoice("range")
+        setDays([])
+        setPeriodChoice("month");
+        setPeriod("");
+      }}>pulisci</Broom > */}
+
       <StatsFields
         riders={riders}
         rider={rider}
@@ -46,6 +71,7 @@ export default function Stats({
         days={days}
         periodChoice={periodChoice}
         period={period}
+        yearOfPeriod={yearOfPeriod}
         setRider={setRider}
         setDate={setDate}
         setContext={setContext}
@@ -54,6 +80,7 @@ export default function Stats({
         setDays={setDays}
         setPeriodChoice={setPeriodChoice}
         setPeriod={setPeriod}
+        setYearOfPeriod={setYearOfPeriod}
       />
 
       <div className={`w-full ${dateChoice === "range" ? "block" : "hidden"}`}>
@@ -80,6 +107,7 @@ export default function Stats({
             session={session}
             periodChoice={periodChoice}
             period={period}
+            yearOfPeriod={yearOfPeriod}
           />
         )}
       </div>
