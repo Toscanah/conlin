@@ -15,27 +15,35 @@ import { VisibilityState, flexRender } from "@tanstack/react-table";
 import { cn } from "@/lib/utils";
 import { TotalsType } from "@/app/(site)/types/TotalType";
 import TotalStats from "../TotalStats";
+import AverageStats from "./AverageStats";
+import { addDays, subDays } from "date-fns";
+import { Separator } from "@/components/ui/separator";
 
 export default function Results({
-  days,
+  index,
+  daysOfWeek,
   context,
   session,
   periodChoice,
-  period,
-  yearOfPeriod,
+  year,
+  yearOfMonth,
+  month,
 }: {
-  days: string[];
+  index: number,
+  daysOfWeek: string[];
   context: string;
   session: string;
   periodChoice: string;
-  period: string;
-  yearOfPeriod: string;
+  year: string;
+  yearOfMonth: string;
+  month: string;
 }) {
   const [totals, setTotals] = useState<TotalsType>({});
   const [loading, setLoading] = useState<boolean>(false);
   const [result, setResult] = useState<StatsType[]>([]);
   const [noResult, setNoResult] = useState<boolean>(false);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+
   const columns = getColumns();
   const table = getTable(
     result,
@@ -45,17 +53,19 @@ export default function Results({
   );
 
   useEffect(() => {
-    setResult([])
+    setResult([]);
     setNoResult(false);
     setLoading(true);
     const body = {
-      days,
+      days: daysOfWeek,
       context,
       session,
       periodChoice,
-      period,
-      yearOfPeriod,
+      month,
+      year,
+      yearOfMonth,
     };
+    console.log(body)
 
     fetch("/api/stats/get", {
       method: "POST",
@@ -63,13 +73,22 @@ export default function Results({
     }).then((response) => {
       if (response.ok) {
         response.json().then((result: StatsType[]) => {
+
+
+          result.sort((a, b) => {
+            const dayOfWeekA = subDays(new Date(a.day), 2).getDay();
+            const dayOfWeekB = subDays(new Date(b.day), 2).getDay();
+
+            return dayOfWeekA - dayOfWeekB;
+          });
+
           setLoading(false);
           setResult(result);
           setNoResult(result.length == 0);
         });
       }
     });
-  }, [days, context, session, periodChoice, period, yearOfPeriod]);
+  }, [daysOfWeek, context, session, periodChoice, month, year, yearOfMonth]);
 
   useEffect(() => {
     const visibility = {
@@ -106,16 +125,20 @@ export default function Results({
     }
   }, [result]);
 
+  let previousDay = null;
+
   return (
     <div
       className="w-full flex justify-center 
-                  flex-col gap-8 p-4 rounded-lg"
+                  flex-col gap-8 rounded-lg"
     >
       <div className="flex flex-col">
-        {loading && <span className="mb-2">Risultati:</span>}
+        {!loading && (
+          <span className="mb-2 w-full flex justify-center">Risultati:</span>
+        )}
 
         <div
-          className="w-full overflow-y-auto max-h-[40vh] rounded-md border"
+          className="w-full overflow-y-auto max-h-[40vh] rounded-md border-2 border-primary"
           id="main"
         >
           {loading && (
@@ -124,7 +147,13 @@ export default function Results({
             </div>
           )}
 
-          {((days.length > 0 && result.length > 0 && period) || noResult) && (
+          {((daysOfWeek.length > 0 &&
+            result.length > 0 &&
+            ((periodChoice === "year" && year !== "") ||
+              (periodChoice === "month" &&
+                month !== "" &&
+                yearOfMonth !== ""))) ||
+            noResult) && (
             <Table>
               <TableHeader className="sticky top-0 z-30 bg-background">
                 {table.getRowModel().rows?.length > 0 &&
@@ -195,10 +224,28 @@ export default function Results({
         )}
       </div>
 
-      {Object.keys(totals).length !== 0 && totals && (
-        <div className="w-full">
-          {/* <span className="text-[0.25rem]">-</span> */}
-          <TotalStats totals={totals} />
+      {!loading && (
+        <div className={cn("flex w-full items-center gap-8 rounded-md border-2 border-primary p-4 flex-col")}>
+          {Object.keys(totals).length !== 0 && totals && (
+            <div className="w-[100%] overflow-x-auto">
+              <span className="mb-2 w-full flex justify-center">Totale:</span>
+              <div className="w-full">
+                <TotalStats totals={totals} />
+              </div>
+            </div>
+          )}
+
+          {/* <Separator orientation="vertical" className="h-auto" /> */}
+          <span className="text-[0.25rem]">-</span>
+
+          {result.length !== 0 && (
+            <div className="w-[100%] overflow-x-auto">
+              <span className="mb-2 w-full flex justify-center">Media:</span>
+              <div className="w-full">
+                <AverageStats result={result} />
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>

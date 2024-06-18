@@ -15,8 +15,8 @@ export async function POST(request: Request) {
     return NextResponse.json(
       await getStatsAll(
         {
-          from: addDays(body.date.from, 1),
-          to: addDays(body.date.to, 1),
+          from: addDays(body.dateRange.from, 1),
+          to: addDays(body.dateRange.to, 1),
         },
         body.context,
         body.session
@@ -27,8 +27,8 @@ export async function POST(request: Request) {
       await getStatsSingle(
         body.riderId,
         {
-          from: addDays(body.date.from, 1),
-          to: addDays(body.date.to, 1),
+          from: addDays(body.dateRange.from, 1),
+          to: addDays(body.dateRange.to, 1),
         },
         body.context,
         body.session

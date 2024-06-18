@@ -6,6 +6,7 @@ import {
   parse,
   endOfMonth,
   addDays,
+  subDays,
 } from "date-fns";
 import { it } from "date-fns/locale";
 import prisma from "../db";
@@ -17,19 +18,18 @@ export default async function getReccuring(body: {
   context: string;
   session: string;
   periodChoice: string;
-  period: string;
-  yearOfPeriod: string;
+  month: string;
+  year: string;
+  yearOfMonth: string;
 }) {
-  const { days, context, session, periodChoice, period, yearOfPeriod } = body;
+  const { days, context, session, periodChoice, month, year, yearOfMonth } = body;
 
   let startDate: Date;
   let endDate: Date;
 
-  console.log(yearOfPeriod)
-
   if (periodChoice === "month") {
     startDate = parse(
-      `01 ${period} ${yearOfPeriod}`,
+      `01 ${month} ${yearOfMonth}`,
       "dd LLLL yyyy",
       new Date(),
       {
@@ -37,24 +37,24 @@ export default async function getReccuring(body: {
       }
     );
 
-    endDate = endOfMonth(startDate);
     startDate = addDays(startDate, 1);
+    endDate = endOfMonth(startDate);
   } else if (periodChoice === "year") {
-    startDate = new Date(Number(period), 0, 1);
-    endDate = new Date(Number(period), 11, 31);
+    startDate = addDays(new Date(Number(year), 0, 1), 1);
+    endDate = addDays(new Date(Number(year), 11, 31), 1);
   } else {
     throw new Error("Invalid periodChoice");
   }
 
-  const daysMap: any = { mar: 2, mer: 3, gio: 4, ven: 5, sab: 6, dom: 0 };
+  const daysMap: any = { martedì: 2, mercoledì: 3, giovedì: 4, venerdì: 5, sabato: 6, domenica: 0 };
   const selectedDays = days.map((day) => daysMap[day]);
 
   const datesInRange = eachDayOfInterval({
     start: startDate,
     end: endDate,
-  }).filter((date) => selectedDays.includes(date.getDay() - 1));
+  }).filter((date) => selectedDays.includes(subDays(date, 1).getDay()));
 
-  const dayOrder = ["mar", "mer", "gio", "ven", "sab", "dom"];
+  const dayOrder = ["martedì", "mercoledì", "giovedì", "venerdì", "sabato", "domenica"];
 
   datesInRange.sort((a, b) => {
     return (

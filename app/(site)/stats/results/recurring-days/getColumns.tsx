@@ -1,25 +1,88 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { StatsType } from "./StatsType";
 import { Button } from "@/components/ui/button";
-import { ArrowsDownUp } from "@phosphor-icons/react";
+import {
+  ArrowsDownUp,
+  CaretDown,
+  CaretUp,
+  DotOutline,
+  Equals,
+} from "@phosphor-icons/react";
 import { format, subDays } from "date-fns";
 import { it } from "date-fns/locale";
+
+interface ColumnConfig {
+  accessorKey: keyof StatsType;
+  headerLabel: string;
+}
+
+// Function to create a sortable column with shared comparison logic
+function createSortableColumn({
+  accessorKey,
+  headerLabel,
+}: ColumnConfig): ColumnDef<StatsType> {
+  return {
+    accessorKey,
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        {headerLabel}
+        <ArrowsDownUp className="ml-2 h-4 w-4" />
+      </Button>
+    ),
+    cell: ({ row, table }) => {
+      const currentVal = row.original[accessorKey] as number | undefined;
+
+      if (currentVal == null || isNaN(currentVal)) {
+        return <span className="text-muted-foreground hidden">/</span>;
+      }
+
+      const sortedRows = table.getSortedRowModel().rows;
+      const currentIndex = sortedRows.findIndex((r) => r.id === row.id); // Get current index in sorted rows
+      const prevIndex = currentIndex - 1;
+      const prevRow = sortedRows[prevIndex];
+      const prevVal = sortedRows[prevIndex]?.original[accessorKey] as
+        | number
+        | undefined;
+
+      let comparisonSymbol = null;
+      if (
+        prevRow &&
+        new Date(prevRow.original.day).getDay() ===
+          new Date(row.original.day).getDay()
+      ) {
+        if (prevVal !== undefined) {
+          if (currentVal > prevVal) {
+            comparisonSymbol = <CaretUp size={20} color={"green"} />; // Up arrow
+          } else if (currentVal < prevVal) {
+            comparisonSymbol = <CaretDown size={20} color={"red"} />; // Down arrow
+          } else {
+            comparisonSymbol = <Equals size={20} color={"orange"} />; // Equal sign
+          }
+        } else {
+          comparisonSymbol = <DotOutline size={20} color={"gray"} />;
+        }
+      } else {
+        comparisonSymbol = <DotOutline size={20} color={"gray"} />;
+      }
+
+      return (
+        <div className="flex items-center gap-x-2">
+          {comparisonSymbol}
+          {currentVal.toFixed(2)}{" "}
+        </div>
+      );
+    },
+  };
+}
 
 export default function getColumns(): ColumnDef<StatsType>[] {
   return [
     {
       accessorKey: "day",
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            Giorno
-            <ArrowsDownUp className="ml-2 h-4 w-4" />
-          </Button>
-        );
-      },
+      header: ({ column }) => "Giorno",
       cell: ({ row }) => {
         const formattedDate = format(
           subDays(row.original.day, 1),
@@ -32,291 +95,30 @@ export default function getColumns(): ColumnDef<StatsType>[] {
           .join(" ");
       },
     },
-    // {
-    //   accessorKey: "lunchOrders",
-    //   header: ({ column }) => {
-    //     return (
-    //       <Button
-    //         variant="ghost"
-    //         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-    //       >
-    //         Consegne pranzo
-    //         <ArrowsDownUp className="ml-2 h-4 w-4" />
-    //       </Button>
-    //     );
-    //   },
-    //   cell: ({ row }) => {
-    //     return row.original.lunchOrders == 0 ||
-    //       row.original.lunchOrders == undefined ? (
-    //       <span className="text-muted-foreground hidden">/</span>
-    //     ) : (
-    //       row.original.lunchOrders.toFixed(2)
-    //     );
-    //   },
-    // },
-    // {
-    //   accessorKey: "dinnerOrders",
-    //   header: ({ column }) => {
-    //     return (
-    //       <Button
-    //         variant="ghost"
-    //         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-    //       >
-    //         Consegne cena
-    //         <ArrowsDownUp className="ml-2 h-4 w-4" />
-    //       </Button>
-    //     );
-    //   },
-    //   cell: ({ row }) => {
-    //     return row.original.dinnerOrders == 0 ||
-    //       row.original.dinnerOrders == undefined ? (
-    //       <span className="text-muted-foreground hidden">/</span>
-    //     ) : (
-    //       row.original.dinnerOrders.toFixed(2)
-    //     );
-    //   },
-    // },
-    {
+
+    createSortableColumn({
       accessorKey: "totalOrders",
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            Consegne totali
-            <ArrowsDownUp className="ml-2 h-4 w-4" />
-          </Button>
-        );
-      },
-      cell: ({ row }) => {
-        return row.original.totalOrders == 0 ||
-          row.original.totalOrders == undefined ? (
-          <span className="text-muted-foreground hidden">/</span>
-        ) : (
-          row.original.totalOrders.toFixed(2)
-        );
-      },
-    },
-    // {
-    //   accessorKey: "lunchHours",
-    //   header: ({ column }) => {
-    //     return (
-    //       <Button
-    //         variant="ghost"
-    //         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-    //       >
-    //         Ore pranzo
-    //         <ArrowsDownUp className="ml-2 h-4 w-4" />
-    //       </Button>
-    //     );
-    //   },
-    //   cell: ({ row }) => {
-    //     return row.original.lunchHours == 0 ||
-    //       row.original.lunchHours == undefined ? (
-    //       <span className="text-muted-foreground hidden">/</span>
-    //     ) : (
-    //       row.original.lunchHours.toFixed(2)
-    //     );
-    //   },
-    // },
-    // {
-    //   accessorKey: "dinnerHours",
-    //   header: ({ column }) => {
-    //     return (
-    //       <Button
-    //         variant="ghost"
-    //         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-    //       >
-    //         Ore cena
-    //         <ArrowsDownUp className="ml-2 h-4 w-4" />
-    //       </Button>
-    //     );
-    //   },
-    //   cell: ({ row }) => {
-    //     return row.original.dinnerHours == 0 ||
-    //       row.original.dinnerHours == undefined ? (
-    //       <span className="text-muted-foreground hidden">/</span>
-    //     ) : (
-    //       row.original.dinnerHours.toFixed(2)
-    //     );
-    //   },
-    // },
-    {
+      headerLabel: "Consegne totali",
+    }),
+
+    createSortableColumn({
       accessorKey: "totalHours",
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            Ore totali
-            <ArrowsDownUp className="ml-2 h-4 w-4" />
-          </Button>
-        );
-      },
-      cell: ({ row }) => {
-        return row.original.totalHours == 0 ||
-          row.original.totalHours == undefined ? (
-          <span className="text-muted-foreground hidden">/</span>
-        ) : (
-          row.original.totalHours.toFixed(2)
-        );
-      },
-    },
-    // {
-    //   accessorKey: "lunchPay",
-    //   header: ({ column }) => {
-    //     return (
-    //       <Button
-    //         variant="ghost"
-    //         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-    //       >
-    //         Paga pranzo
-    //         <ArrowsDownUp className="ml-2 h-4 w-4" />
-    //       </Button>
-    //     );
-    //   },
-    //   cell: ({ row }) => {
-    //     return row.original.lunchPay == 0 ||
-    //       row.original.lunchPay == undefined ? (
-    //       <span className="text-muted-foreground hidden">/</span>
-    //     ) : (
-    //       row.original.lunchPay.toFixed(2)
-    //     );
-    //   },
-    // },
-    // {
-    //   accessorKey: "dinnerPay",
-    //   header: ({ column }) => {
-    //     return (
-    //       <Button
-    //         variant="ghost"
-    //         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-    //       >
-    //         Paga cena
-    //         <ArrowsDownUp className="ml-2 h-4 w-4" />
-    //       </Button>
-    //     );
-    //   },
-    //   cell: ({ row }) => {
-    //     return row.original.dinnerPay == 0 ||
-    //       row.original.dinnerPay == undefined ? (
-    //       <span className="text-muted-foreground hidden">/</span>
-    //     ) : (
-    //       row.original.dinnerPay.toFixed(2)
-    //     );
-    //   },
-    // },
-    {
+      headerLabel: "Ore totali",
+    }),
+
+    createSortableColumn({
       accessorKey: "totalPay",
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            Paga totale
-            <ArrowsDownUp className="ml-2 h-4 w-4" />
-          </Button>
-        );
-      },
-      cell: ({ row }) => {
-        return row.original.totalPay == 0 ||
-          row.original.totalPay == undefined ? (
-          <span className="text-muted-foreground hidden">/</span>
-        ) : (
-          row.original.totalPay.toFixed(2)
-        );
-      },
-    },
-    // {
-    //   accessorKey: "lunchTip",
-    //   header: ({ column }) => {
-    //     return (
-    //       <Button
-    //         variant="ghost"
-    //         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-    //       >
-    //         Mancia pranzo
-    //         <ArrowsDownUp className="ml-2 h-4 w-4" />
-    //       </Button>
-    //     );
-    //   },
-    //   cell: ({ row }) => {
-    //     return row.original.lunchTip == 0 ||
-    //       row.original.lunchTip == undefined ? (
-    //       <span className="text-muted-foreground hidden">/</span>
-    //     ) : (
-    //       row.original.lunchTip.toFixed(2)
-    //     );
-    //   },
-    // },
-    // {
-    //   accessorKey: "dinnerTip",
-    //   header: ({ column }) => {
-    //     return (
-    //       <Button
-    //         variant="ghost"
-    //         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-    //       >
-    //         Mancia cena
-    //         <ArrowsDownUp className="ml-2 h-4 w-4" />
-    //       </Button>
-    //     );
-    //   },
-    //   cell: ({ row }) => {
-    //     return row.original.dinnerTip == 0 ||
-    //       row.original.dinnerTip == undefined ? (
-    //       <span className="text-muted-foreground hidden">/</span>
-    //     ) : (
-    //       row.original.dinnerTip.toFixed(2)
-    //     );
-    //   },
-    // },
-    {
+      headerLabel: "Paga totale",
+    }),
+
+    createSortableColumn({
       accessorKey: "totalTip",
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            Mancia totale
-            <ArrowsDownUp className="ml-2 h-4 w-4" />
-          </Button>
-        );
-      },
-      cell: ({ row }) => {
-        return row.original.totalTip == 0 ||
-          row.original.totalTip == undefined ? (
-          <span className="text-muted-foreground hidden">/</span>
-        ) : (
-          row.original.totalTip.toFixed(2)
-        );
-      },
-    },
-    {
+      headerLabel: "Mancia totale",
+    }),
+
+    createSortableColumn({
       accessorKey: "totalMoney",
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            Incasso totale
-            <ArrowsDownUp className="ml-2 h-4 w-4" />
-          </Button>
-        );
-      },
-      cell: ({ row }) => {
-        return row.original.totalMoney == 0 ||
-          row.original.totalMoney == undefined ? (
-          <span className="text-muted-foreground hidden">/</span>
-        ) : (
-          row.original.totalMoney.toFixed(2)
-        );
-      },
-    },
+      headerLabel: "Incasso totale",
+    }),
   ];
 }

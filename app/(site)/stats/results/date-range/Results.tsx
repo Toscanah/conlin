@@ -23,13 +23,13 @@ import Graph from "../Graph";
 
 export default function Results({
   riderId,
-  date,
+  dateRange,
   context,
   session,
   isAllRiders,
 }: {
   riderId?: number;
-  date: DateRange | undefined;
+  dateRange: DateRange | undefined;
   context: string;
   session: string;
   isAllRiders: boolean;
@@ -53,11 +53,11 @@ export default function Results({
   useEffect(() => {
     setResult([]);
     setNoResult(false);
-    
+
     setLoading(true);
     const body = isAllRiders
-      ? { date, context, session, isAllRiders: true }
-      : { date, context, session, isAllRiders: false, riderId };
+      ? { dateRange, context, session, isAllRiders: true }
+      : { dateRange, context, session, isAllRiders: false, riderId };
 
     fetch("/api/stats/get", {
       method: "POST",
@@ -115,7 +115,7 @@ export default function Results({
         });
       }
     });
-  }, [riderId, date, context, session, isAllRiders]);
+  }, [riderId, dateRange, context, session, isAllRiders]);
 
   useEffect(() => {
     const isSessionBoth = session === "both";
@@ -181,13 +181,15 @@ export default function Results({
   return (
     <div
       className="w-full flex justify-center 
-                  flex-col gap-8 p-4 rounded-lg"
+                  flex-col gap-8 rounded-lg"
     >
       <div className="flex flex-col">
-        {loading && <span className="mb-2">Risultati:</span>}
+        {!loading && (
+          <span className="mb-2 w-full flex justify-center">Risultati:</span>
+        )}
 
         <div
-          className="w-full overflow-y-auto max-h-[40vh] rounded-md border"
+          className="w-full overflow-y-auto max-h-[40vh] rounded-md border-2 border-primary"
           id="main"
         >
           {loading && (
@@ -196,7 +198,7 @@ export default function Results({
             </div>
           )}
 
-          {((date && result && result.length !== 0) || noResult) && (
+          {((dateRange && result && result.length !== 0) || noResult) && (
             <Table>
               <TableHeader className="sticky top-0 z-30 bg-background">
                 {table.getRowModel().rows?.length > 0 &&
@@ -267,10 +269,12 @@ export default function Results({
         )}
       </div>
 
-      {Object.keys(totals).length !== 0 && totals && (
-        <div className="w-full">
-          {/* <span className="text-[0.25rem]">-</span> */}
-          <TotalStats totals={totals} />
+      {Object.keys(totals).length !== 0 && totals && !loading && (
+        <div className="w-[100%] overflow-x-auto rounded-md border-2 border-primary p-4">
+          <span className="mb-2 w-full flex justify-center">Totale:</span>
+          <div className="w-full">
+            <TotalStats totals={totals} />
+          </div>
         </div>
       )}
 

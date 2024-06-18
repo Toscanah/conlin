@@ -5,6 +5,7 @@ import {
   startOfYear,
   endOfYear,
   startOfDay,
+  subYears,
 } from "date-fns";
 import { it } from "date-fns/locale";
 
@@ -46,43 +47,52 @@ import { Toggle } from "@/components/ui/toggle";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 
 export default function StatsFields({
+  dateChoice,
+  setDateChoice,
   riders,
   rider,
-  date,
-  dateChoice,
-  days,
-  periodChoice,
-  period,
-  yearOfPeriod,
   setRider,
-  setDate,
+  dateRange,
+  setDateRange,
+  periodChoice,
+  setPeriodChoice,
   setContext,
   setSession,
-  setDateChoice,
-  setDays,
-  setPeriodChoice,
-  setPeriod,
-  setYearOfPeriod,
+  setDaysOfWeek,
+  month,
+  setMonth,
+  yearOfMonth,
+  setYearOfMonth,
+  year,
+  setYear,
 }: {
+  dateChoice: string;
   riders: Rider[];
   rider: Rider;
-  date: DateRange | undefined;
-  dateChoice: string;
-  days: string[];
+  dateRange: DateRange | undefined;
   periodChoice: string;
-  period: string;
-  yearOfPeriod: string;
+  yearOfMonth: string;
+  year: string;
+  month: string;
   setRider: Dispatch<SetStateAction<Rider>>;
-  setDate: Dispatch<SetStateAction<DateRange | undefined>>;
+  setDateRange: Dispatch<SetStateAction<DateRange | undefined>>;
   setContext: Dispatch<SetStateAction<string>>;
   setSession: Dispatch<SetStateAction<string>>;
   setDateChoice: Dispatch<SetStateAction<string>>;
-  setDays: Dispatch<SetStateAction<string[]>>;
+  setDaysOfWeek: Dispatch<SetStateAction<string[]>>;
   setPeriodChoice: Dispatch<SetStateAction<string>>;
-  setPeriod: Dispatch<SetStateAction<string>>;
-  setYearOfPeriod: Dispatch<SetStateAction<string>>;
+  setYear: Dispatch<SetStateAction<string>>;
+  setMonth: Dispatch<SetStateAction<string>>;
+  setYearOfMonth: Dispatch<SetStateAction<string>>;
 }) {
-  const daysOfWeek = ["mar", "mer", "gio", "ven", "sab", "dom"];
+  const daysOfWeek = [
+    "martedì",
+    "mercoledì",
+    "giovedì",
+    "venerdì",
+    "sabato",
+    "domenica",
+  ];
 
   const getMonths = () => {
     const months = [];
@@ -107,35 +117,41 @@ export default function StatsFields({
 
     switch (value) {
       case "today":
-        setDate({ from: startOfDay(today), to: startOfDay(today) });
+        setDateRange({ from: startOfDay(today), to: startOfDay(today) });
         break;
       case "yesterday":
         const yesterday = subDays(today, 1);
-        setDate({ from: startOfDay(yesterday), to: startOfDay(yesterday) });
+        setDateRange({
+          from: startOfDay(yesterday),
+          to: startOfDay(yesterday),
+        });
         break;
       case "last7":
         const last7 = subDays(today, 6);
-        setDate({ from: startOfDay(last7), to: startOfDay(today) });
+        setDateRange({ from: startOfDay(last7), to: startOfDay(today) });
         break;
       case "last30":
         const last30 = subDays(today, 29);
-        setDate({ from: startOfDay(last30), to: startOfDay(today) });
+        setDateRange({ from: startOfDay(last30), to: startOfDay(today) });
         break;
       case "thisMonth":
-        setDate({
+        setDateRange({
           from: startOfMonth(today),
           to: startOfDay(endOfMonth(today)),
         });
         break;
       case "thisYear":
-        setDate({ from: startOfYear(today), to: startOfDay(endOfYear(today)) });
+        setDateRange({
+          from: startOfYear(today),
+          to: startOfDay(endOfYear(today)),
+        });
         break;
       default:
         break;
     }
   };
   const toggleDay = (day: string) => {
-    setDays((prevDays) => {
+    setDaysOfWeek((prevDays) => {
       if (prevDays.includes(day)) {
         return prevDays.filter((d) => d !== day);
       } else {
@@ -144,39 +160,29 @@ export default function StatsFields({
     });
   };
 
-  const [month, setMonth] = useState<string>("");
-  const [year, setYear] = useState<string>(new Date().getFullYear().toString());
-
-  function handleYearOfPeriod(value: string) {
-    setYearOfPeriod(value);
-  }
-
-  function handlePeriod(value: string) {
+  const handleYearChange = (year: string) => {
     if (periodChoice == "year") {
-      setYear(value);
-      setPeriod(value);
+      setYear(year);
+    } else if (periodChoice == "month") {
+      setYearOfMonth(year);
     }
-
-    if (periodChoice == "month") {
-      setMonth(value);
-      setPeriod(value);
-    }
-  }
+  };
 
   const periodOptions = {
     year: {
       label: "Anno?",
-      placeholder: "Seleziona quale anno",
+      placeholder: "Seleziona l'anno",
       options: getYears(),
-      onValueChange: handlePeriod,
-      defaultValue: new Date().getFullYear().toString(),
-      value: year,
+      onValueChange: handleYearChange,
+      defaultValue: "",
     },
     month: {
       label: "Mese?",
       placeholder: "Seleziona il mese",
       options: getMonths(),
-      onValueChange: handlePeriod,
+      onValueChange: (month: string) => {
+        setMonth(month);
+      },
       defaultValue: "",
       value: month,
     },
@@ -186,7 +192,9 @@ export default function StatsFields({
     <div className="w-full flex gap-8 items-center flex-col">
       <RadioGroup
         defaultValue="range"
-        onValueChange={setDateChoice}
+        onValueChange={(e) => {
+          setDateChoice(e);
+        }}
         className="flex w-full flex-row justify-around h-10"
       >
         <div className="flex items-center space-x-2">
@@ -303,20 +311,20 @@ export default function StatsFields({
                   variant={"outline"}
                   className={cn(
                     "w-full justify-start text-left font-normal",
-                    !date && "text-muted-foreground"
+                    !dateRange && "text-muted-foreground"
                   )}
                 >
                   <CalendarIcon className="mr-2 h-4 w-4" />
-                  {date ? (
+                  {dateRange ? (
                     <>
-                      {date.from
-                        ? `${format(date.from, "PPP", {
+                      {dateRange.from
+                        ? `${format(dateRange.from, "PPP", {
                             locale: it,
                           })}`
                         : ""}
                       {" - "}
-                      {date.to
-                        ? `${format(date.to, "PPP", {
+                      {dateRange.to
+                        ? `${format(dateRange.to, "PPP", {
                             locale: it,
                           })}`
                         : ""}
@@ -348,8 +356,8 @@ export default function StatsFields({
                   <Calendar
                     locale={it}
                     mode="range"
-                    selected={date}
-                    onSelect={setDate}
+                    selected={dateRange}
+                    onSelect={setDateRange}
                     numberOfMonths={2}
                   />
                 </div>
@@ -365,27 +373,31 @@ export default function StatsFields({
         }`}
       >
         <div className="w-full flex gap-8">
-          <div className="space-y-2 w-[50%]">
+          <div className="space-y-2 w-[50%] overflow-hidden">
             <Label>Che giorni?</Label>
             <ToggleGroup
-              className="border rounded-md flex justify-evenly h-10"
+              className="flex h-10 w-full border rounded-lg gap-0 overflow-hidden"
               type="multiple"
             >
-              {daysOfWeek.map((day) => (
+              {daysOfWeek.map((day, index) => (
                 <ToggleGroupItem
                   key={day}
-                  className={"hover:cursor-pointer"}
+                  className={cn(
+                    "flex-1 hover:cursor-pointer min-w-0 rounded-none",
+                    index === 0 && "rounded-s-lg",
+                    index + 1 === daysOfWeek.length && "rounded-e-lg"
+                  )}
                   onClick={() => toggleDay(day)}
                   value={day}
                 >
-                  {day.toUpperCase()}
+                  <div className="w-full truncate">{day.toUpperCase()}</div>
                 </ToggleGroupItem>
               ))}
             </ToggleGroup>
           </div>
 
           <div className="w-[50%] flex gap-8">
-            <Select onValueChange={setPeriodChoice} defaultValue="month">
+            <Select onValueChange={setPeriodChoice} defaultValue="year">
               <div className="space-y-2 w-[50%]">
                 <Label htmlFor="period">Ogni cosa?</Label>
                 <SelectTrigger id="period">
@@ -394,10 +406,10 @@ export default function StatsFields({
               </div>
 
               <SelectContent>
-                <SelectItem key={1} value={"month"} defaultChecked={true}>
+                <SelectItem key={1} value={"month"}>
                   Mese
                 </SelectItem>
-                <SelectItem key={2} value={"year"}>
+                <SelectItem key={2} value={"year"} defaultChecked={true}>
                   Anno
                 </SelectItem>
               </SelectContent>
@@ -405,10 +417,16 @@ export default function StatsFields({
 
             {periodChoice === "month" && (
               <div className="space-y-2 w-[50%]">
-                <Label htmlFor="open-popover">Dati</Label>
+                <Label htmlFor="open-popover">Dati (click per inserire)</Label>
                 <Popover>
                   <PopoverTrigger asChild className="w-full" id="open-popover">
-                    <Button variant="secondary">Cliccami</Button>
+                    <Button variant="secondary" className="hover:underline">
+                      {month && yearOfMonth
+                        ? `${month}, ${yearOfMonth}`
+                        : month || yearOfMonth
+                        ? month || yearOfMonth
+                        : "Dati"}
+                    </Button>
                   </PopoverTrigger>
                   <PopoverContent className="space-y-2">
                     <SelectComponent
@@ -425,9 +443,9 @@ export default function StatsFields({
                       label={periodOptions.year.label}
                       placeholder={periodOptions.year.placeholder}
                       options={getYears()}
-                      onValueChange={handleYearOfPeriod}
+                      onValueChange={periodOptions.year.onValueChange}
                       defaultValue={""}
-                      value={yearOfPeriod}
+                      value={yearOfMonth}
                     />
                   </PopoverContent>
                 </Popover>
@@ -443,7 +461,7 @@ export default function StatsFields({
                   options={periodOptions.year.options}
                   onValueChange={periodOptions.year.onValueChange}
                   defaultValue={periodOptions.year.defaultValue}
-                  value={periodOptions.year.value}
+                  value={year}
                 />
               </div>
             )}
