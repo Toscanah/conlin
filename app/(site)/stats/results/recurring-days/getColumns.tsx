@@ -7,6 +7,7 @@ import {
   CaretUp,
   DotOutline,
   Equals,
+  Minus,
 } from "@phosphor-icons/react";
 import { format, subDays } from "date-fns";
 import { it } from "date-fns/locale";
@@ -62,10 +63,10 @@ function createSortableColumn({
             comparisonSymbol = <Equals size={20} color={"orange"} />; // Equal sign
           }
         } else {
-          comparisonSymbol = <DotOutline size={20} color={"gray"} />;
+          comparisonSymbol = <Minus size={20} color={"gray"} />;
         }
       } else {
-        comparisonSymbol = <DotOutline size={20} color={"gray"} />;
+        comparisonSymbol = <Minus size={20} color={"gray"} />;
       }
 
       return (

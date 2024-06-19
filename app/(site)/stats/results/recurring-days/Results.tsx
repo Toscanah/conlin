@@ -15,9 +15,9 @@ import { VisibilityState, flexRender } from "@tanstack/react-table";
 import { cn } from "@/lib/utils";
 import { TotalsType } from "@/app/(site)/types/TotalType";
 import TotalStats from "../TotalStats";
-import AverageStats from "./AverageStats";
 import { addDays, subDays } from "date-fns";
 import { Separator } from "@/components/ui/separator";
+import AverageStats from "./average/AverageStats";
 
 export default function Results({
   index,
@@ -138,7 +138,8 @@ export default function Results({
         )}
 
         <div
-          className="w-full overflow-y-auto max-h-[40vh] rounded-md border-2 border-primary"
+          className="w-full overflow-y-auto max-h-[40vh] 
+          rounded-md border-2 border-primary"
           id="main"
         >
           {loading && (
