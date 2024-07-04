@@ -19,10 +19,10 @@ export default async function Main() {
   return (
     <div className="flex justify-center items-center w-full">
       <Tabs
-        defaultValue="stats" /**si cambia da qua il default */
+        defaultValue="register-session" /**si cambia da qua il default */
         className="flex flex-col justify-center items-center w-full p-10 "
       >
-        <TabsList defaultValue="stats" className="w-full h-[50px] ">
+        <TabsList defaultValue="register-session" className="w-full h-[50px] ">
           <TabsTrigger
             value="register-session"
             className="w-[50%] h-[46px] text-xl"
