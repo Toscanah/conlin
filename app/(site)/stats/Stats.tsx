@@ -2,7 +2,7 @@
 
 import { DateRange } from "react-day-picker";
 import { Rider } from "@prisma/client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import RangeResults from "./results/date-range/Results";
 import ReccuringResults from "./results/recurring-days/Results";
 import StatsFields from "./StatsFields";
@@ -51,6 +51,8 @@ export default function Stats({
     }
     return false;
   };
+
+
 
   const riderProps = { rider, setRider };
   const dateRangeProps = { dateRange, setDateRange };

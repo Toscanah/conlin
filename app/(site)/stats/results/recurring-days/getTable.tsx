@@ -16,6 +16,8 @@ export default function getTable(
   columnVisibility: VisibilityState,
   setColumnVisibility: Dispatch<SetStateAction<VisibilityState>>
 ) {
+
+
   return useReactTable({
     onColumnVisibilityChange: setColumnVisibility,
     getFilteredRowModel: getFilteredRowModel(),
@@ -27,6 +29,11 @@ export default function getTable(
     getSortedRowModel: getSortedRowModel(),
     state: {
       columnVisibility,
+    },
+    initialState: {
+      pagination: {
+        pageSize: 1234,
+      },
     },
   });
 }

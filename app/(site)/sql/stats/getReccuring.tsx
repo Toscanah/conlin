@@ -123,25 +123,25 @@ export default async function getReccuring(body: {
       case "orders":
         result = {
           day: date,
-          totalOrders: totalOrders > 0 ? totalOrders : undefined,
+          totalOrders: totalOrders > 0 ? parseFloat(totalOrders.toFixed(2)) : undefined,
         };
         break;
       case "time":
         result = {
           day: date,
-          totalHours: totalHours > 0 ? totalHours : undefined,
+          totalHours: totalHours > 0 ? parseFloat(totalHours.toFixed(2)) : undefined,
         };
         break;
       case "pay":
         result = {
           day: date,
-          totalPay: totalPay > 0 ? totalPay : undefined,
+          totalPay: totalPay > 0 ?  parseFloat(totalPay.toFixed(2)) : undefined,
         };
         break;
       case "tip":
         result = {
           day: date,
-          totalTip: totalTip > 0 ? totalTip : undefined,
+          totalTip: totalTip > 0 ? parseFloat(totalTip.toFixed(2)) : undefined,
         };
         break;
       case "total":
@@ -154,10 +154,10 @@ export default async function getReccuring(body: {
       case "all":
         result = {
           day: date,
-          totalOrders: totalOrders > 0 ? totalOrders : undefined,
-          totalHours: totalHours > 0 ? totalHours : undefined,
-          totalPay: totalPay > 0 ? totalPay : undefined,
-          totalTip: totalTip > 0 ? totalTip : undefined,
+          totalOrders: totalOrders > 0 ? parseFloat(totalOrders.toFixed(2)) : undefined,
+          totalHours: totalHours > 0 ? parseFloat(totalHours.toFixed(2)) : undefined,
+          totalPay: totalPay > 0 ? parseFloat(totalPay.toFixed(2)) : undefined,
+          totalTip: totalTip > 0 ? parseFloat(totalTip.toFixed(2)) : undefined,
           totalMoney:
             totalMoney > 0 ? parseFloat(totalMoney.toFixed(2)) : undefined,
         };

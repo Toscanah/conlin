@@ -30,6 +30,8 @@ export default async function getStatsSingle(
     },
   });
 
+
+
   const rider = await prisma.rider.findUnique({
     where: {
       id: riderId,
@@ -61,6 +63,8 @@ export default async function getStatsSingle(
   let totalTip =
     (session === "both" || session === "lunch" ? lunchTip : 0) +
     (session === "both" || session === "dinner" ? dinnerTip : 0);
+
+
 
   if (session === "both" || session === "lunch") {
     totalOrders += lunchOrders;
@@ -133,8 +137,10 @@ export default async function getStatsSingle(
       ];
       break;
     case "tip":
+      
+
       if (
-        (lunchTip == 0 && session !== "dinner") ||
+        (lunchTip == 0 && session !== "dinner") &&
         (dinnerTip == 0 && session !== "lunch")
       ) {
         return [];

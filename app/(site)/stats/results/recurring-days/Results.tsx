@@ -29,7 +29,7 @@ export default function Results({
   yearOfMonth,
   month,
 }: {
-  index: number,
+  index: number;
   daysOfWeek: string[];
   context: string;
   session: string;
@@ -44,14 +44,7 @@ export default function Results({
   const [noResult, setNoResult] = useState<boolean>(false);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
 
-  const columns = getColumns();
-  const table = getTable(
-    result,
-    columns,
-    columnVisibility,
-    setColumnVisibility
-  );
-
+  
   useEffect(() => {
     setResult([]);
     setNoResult(false);
@@ -65,7 +58,6 @@ export default function Results({
       year,
       yearOfMonth,
     };
-    console.log(body)
 
     fetch("/api/stats/get", {
       method: "POST",
@@ -73,15 +65,13 @@ export default function Results({
     }).then((response) => {
       if (response.ok) {
         response.json().then((result: StatsType[]) => {
-
-
           result.sort((a, b) => {
             const dayOfWeekA = subDays(new Date(a.day), 2).getDay();
             const dayOfWeekB = subDays(new Date(b.day), 2).getDay();
-
+            
             return dayOfWeekA - dayOfWeekB;
           });
-
+          
           setLoading(false);
           setResult(result);
           setNoResult(result.length == 0);
@@ -89,7 +79,7 @@ export default function Results({
       }
     });
   }, [daysOfWeek, context, session, periodChoice, month, year, yearOfMonth]);
-
+  
   useEffect(() => {
     const visibility = {
       riderName: true,
@@ -99,14 +89,16 @@ export default function Results({
       totalTip: context === "tip" || context === "all",
       totalMoney: context === "all" || context === "total",
     };
-
+    
     setColumnVisibility(visibility);
   }, [context, session]);
-
+  
   useEffect(() => {
+      
+
     if (result) {
       let totals: TotalsType = {};
-
+      
       result.map((single) => {
         if (single.totalOrders !== undefined)
           totals.totalOrders = (totals.totalOrders ?? 0) + single.totalOrders;
@@ -124,16 +116,24 @@ export default function Results({
       setTotals(totals);
     }
   }, [result]);
-
+  
   let previousDay = null;
+  
+  const columns = getColumns(result);
+  const table = getTable(
+    result,
+    columns,
+    columnVisibility,
+    setColumnVisibility
+  );
 
   return (
     <div
-      className="w-full flex justify-center 
-                  flex-col gap-8 rounded-lg"
+    className="w-full flex justify-center 
+    flex-col gap-8 rounded-lg"
     >
       <div className="flex flex-col">
-        {!loading && (
+        {!loading && !noResult && (
           <span className="mb-2 w-full flex justify-center">Risultati:</span>
         )}
 
@@ -141,10 +141,16 @@ export default function Results({
           className="w-full overflow-y-auto max-h-[40vh] 
           rounded-md border-2 border-primary"
           id="main"
-        >
+          >
           {loading && (
             <div className="p-4">
-              <ThreeDots color="#D81B60" visible={loading} width={"100%"} />
+              <ThreeDots
+                color={`hsl(${getComputedStyle(document.documentElement)
+                  .getPropertyValue("--foreground")
+                  .trim()})`}
+                  visible={loading}
+                  width={"100%"}
+                  />
             </div>
           )}
 
@@ -225,8 +231,12 @@ export default function Results({
         )}
       </div>
 
-      {!loading && (
-        <div className={cn("flex w-full items-center gap-8 rounded-md border-2 border-primary p-4 flex-col")}>
+      {!loading && !noResult && (
+        <div
+          className={cn(
+            "flex w-full items-center gap-8 rounded-md border-2 border-primary p-4 flex-col"
+          )}
+        >
           {Object.keys(totals).length !== 0 && totals && (
             <div className="w-[100%] overflow-x-auto">
               <span className="mb-2 w-full flex justify-center">Totale:</span>

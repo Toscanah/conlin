@@ -13,7 +13,7 @@ export default function getColumns(): ColumnDef<AverageType>[] {
           {row.original.dayOfWeek.charAt(0).toUpperCase() +
             row.original.dayOfWeek.slice(1)}
         </div>
-      ),/**ashdbiasbdu */
+      ),
     },
     {
       accessorKey: "totalOrders",
@@ -28,7 +28,7 @@ export default function getColumns(): ColumnDef<AverageType>[] {
       ),
       cell: ({ row }) => (
         <div className="flex items-center gap-x-2">
-          {row.original.totalOrders}
+          {row.original.totalOrders.toFixed(2)}
         </div>
       ),
     },
@@ -45,7 +45,7 @@ export default function getColumns(): ColumnDef<AverageType>[] {
       ),
       cell: ({ row }) => (
         <div className="flex items-center gap-x-2">
-          {row.original.totalHours}
+          {row.original.totalHours.toFixed(2)}
         </div>
       ),
     },
@@ -61,7 +61,9 @@ export default function getColumns(): ColumnDef<AverageType>[] {
         </Button>
       ),
       cell: ({ row }) => (
-        <div className="flex items-center gap-x-2">{row.original.totalPay}</div>
+        <div className="flex items-center gap-x-2">
+          {row.original.totalPay.toFixed(2)}
+        </div>
       ),
     },
     {
@@ -76,7 +78,9 @@ export default function getColumns(): ColumnDef<AverageType>[] {
         </Button>
       ),
       cell: ({ row }) => (
-        <div className="flex items-center gap-x-2">{row.original.totalTip}</div>
+        <div className="flex items-center gap-x-2">
+          {row.original.totalTip.toFixed(2)}
+        </div>
       ),
     },
     {
@@ -92,7 +96,7 @@ export default function getColumns(): ColumnDef<AverageType>[] {
       ),
       cell: ({ row }) => (
         <div className="flex items-center gap-x-2">
-          {row.original.totalMoney}
+          {row.original.totalMoney.toFixed(2)}
         </div>
       ),
     },

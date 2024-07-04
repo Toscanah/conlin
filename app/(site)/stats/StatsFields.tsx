@@ -37,7 +37,7 @@ import {
   Check,
 } from "@phosphor-icons/react";
 import { format } from "date-fns";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Rider } from "@prisma/client";
 import { DateRange } from "react-day-picker";
 import { Label } from "@/components/ui/label";
@@ -159,6 +159,8 @@ export default function StatsFields({
       }
     });
   };
+
+  
 
   const handleYearChange = (year: string) => {
     if (periodChoice == "year") {

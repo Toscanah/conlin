@@ -178,13 +178,15 @@ export default function Results({
     }
   }, [result]);
 
+ 
+
   return (
     <div
       className="w-full flex justify-center 
                   flex-col gap-8 rounded-lg"
     >
       <div className="flex flex-col">
-        {!loading && (
+        {!loading && !noResult && (
           <span className="mb-2 w-full flex justify-center">Risultati:</span>
         )}
 
@@ -194,7 +196,8 @@ export default function Results({
         >
           {loading && (
             <div className="p-4">
-              <ThreeDots color="#D81B60" visible={loading} width={"100%"} />
+              <ThreeDots color={`hsl(${getComputedStyle(document.documentElement).
+                getPropertyValue("--foreground").trim()})`} visible={loading} width={"100%"} />
             </div>
           )}
 

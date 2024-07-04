@@ -79,7 +79,9 @@ function createSortableColumn({
   };
 }
 
-export default function getColumns(): ColumnDef<StatsType>[] {
+export default function getColumns(data: StatsType[]): ColumnDef<StatsType>[] {
+  
+
   return [
     {
       accessorKey: "day",
@@ -90,6 +92,9 @@ export default function getColumns(): ColumnDef<StatsType>[] {
           "EEEE d MMMM yyyy",
           { locale: it }
         );
+
+        console.log(data.length)
+
         return formattedDate
           .split(" ")
           .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
